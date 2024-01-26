@@ -1,0 +1,25 @@
+{
+  "name": "com.accelix.accelib",
+  "version": "0.0.1",
+  "displayName": "Accelib",
+  "description": "A handy library is a must for the lazy developer. We've gathered all the features necessary for game development.",
+  "unity": "2022.3",
+  "author": { 
+    "name": "Accelix Games",
+    "email": "accelix.official@gmail.com",
+    "url": "https://github.com/AccelixGames"
+  },
+  "keywords": [ 
+    "Accelix",
+    "Library",
+    "Utility"
+  ],
+  "license": "GPL",
+  "dependencies": {
+    "com.cysharp.unitask" : "2.3.1"
+  },
+  "repository": {
+    "url": "https://github.com/AccelixGames/Accelib.git?path=Packages/Accelib",
+    "type": "git"
+  }
+}
