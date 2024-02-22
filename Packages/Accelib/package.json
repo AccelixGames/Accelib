@@ -18,7 +18,8 @@
   "dependencies": {
     "com.cysharp.unitask": "2.3.1",
     "com.esotericsoftware.spine.spine-unity": "4.1.35",
-    "com.esotericsoftware.spine.spine-csharp": "4.1.2"
+    "com.esotericsoftware.spine.spine-csharp": "4.1.2",
+    "com.dbrizov.naughtyattributes": "2.1.4"
   },
   "repository": {
     "url": "https://github.com/AccelixGames/Accelib.git?path=Packages/Accelib",
