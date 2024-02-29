@@ -26,8 +26,6 @@ namespace Accelib.Spine
 
         private void OnEnd(TrackEntry trackEntry)
         {
-            Debug.Log($"{trackEntry} OnEnd");
-            
             if(endMode == EndMode.Disable)
                 gameObject.SetActive(false);
             else if(endMode == EndMode.Destroy)

@@ -8,14 +8,14 @@ namespace Accelib.Extensions
         
         public static Vector3 ToVec3(this in Vector2 v) => new Vector3(v.x, v.y, 0f);
         
-        public static Vector2 ToCardinal(this in Vector2 target, float minMagnitude = 0.01f)
+        public static Vector2 ToCardinal(this in Vector2 v, float minMagnitude = 0.01f)
         {
-            if (target.sqrMagnitude <= minMagnitude) return Vector2.zero;
+            if (v.sqrMagnitude <= minMagnitude) return Vector2.zero;
             
-            var u = Vector2.Dot(target, Vector2.up);
-            var d = Vector2.Dot(target, Vector2.down);
-            var l = Vector2.Dot(target, Vector2.left);
-            var r = Vector2.Dot(target, Vector2.right);
+            var u = Vector2.Dot(v, Vector2.up);
+            var d = Vector2.Dot(v, Vector2.down);
+            var l = Vector2.Dot(v, Vector2.left);
+            var r = Vector2.Dot(v, Vector2.right);
 
             var max = u;
             var result = Vector2.up;
@@ -38,5 +38,7 @@ namespace Accelib.Extensions
 
             return result;
         }
+
+        public static float Random(this in Vector2 v) => UnityEngine.Random.Range(v.x, v.y);
     }
 }
