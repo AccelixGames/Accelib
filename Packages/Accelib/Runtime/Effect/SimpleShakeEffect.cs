@@ -1,30 +1,26 @@
-﻿using System;
-using DG.Tweening;
+﻿using DG.Tweening;
 using NaughtyAttributes;
 using UnityEngine;
 
 namespace Accelib.Effect
 {
-    public class CameraShakeEffect : MonoBehaviour
+    public class SimpleShakeEffect : MonoBehaviour
     {
+        [Header("타겟")] 
+        [SerializeField] private Transform target;
+        
+        [Header("수치")]
         [SerializeField] private float duration = 1f;
         [SerializeField] private float strength = 1f;
         [SerializeField] private int vibrato = 30;
         [SerializeField] private float randomness = 90f;
+        [SerializeField] private bool snapping = false;
         [SerializeField] private bool fadeOut = true;
         [SerializeField] private ShakeRandomnessMode randomnessMode = ShakeRandomnessMode.Full;
 
-        [Header("Debug")] 
-        [SerializeField, ReadOnly] private Camera cam;
-
-        [ContextMenu(nameof(DoShake))]
-        public void DoShake()
-        {
-            cam = Camera.main;
-            if(cam == null) return;
-
-            cam.DOShakePosition(duration, strength, vibrato, randomness, fadeOut, randomnessMode);
-        }
+        [Button]
+        public DG.Tweening.Tween DoShake() => 
+            target.DOShakePosition(duration, strength, vibrato, randomness, snapping, fadeOut, randomnessMode);
 
         private void Reset()
         {
@@ -32,6 +28,7 @@ namespace Accelib.Effect
             strength = 1f;
             vibrato = 30;
             randomness = 90f;
+            snapping = false;
             fadeOut = true;
             randomnessMode = ShakeRandomnessMode.Full;
         }

@@ -1,4 +1,5 @@
-﻿using System;
+﻿#if ACCELIX_SPINE
+using System;
 using System.Collections.Generic;
 using NaughtyAttributes;
 using Spine.Unity;
@@ -47,3 +48,4 @@ namespace Accelib.Spine
         }
     }
 }
+#endif

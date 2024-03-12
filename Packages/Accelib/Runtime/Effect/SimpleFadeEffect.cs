@@ -7,20 +7,24 @@ namespace Accelib.Effect
 {
     public class SimpleFadeEffect : MonoBehaviour
     {
+        private enum FadeMode { In, Out, None }
+        
         [SerializeField] private CanvasGroup group;
         [SerializeField] private EasePairTweenConfig config;
 
-        [Header("설정")]
-        [SerializeField] private bool autoFadeOnStart = false;
+        [Header("설정")] 
+        [SerializeField] private FadeMode startFadeMode = FadeMode.None;
 
         private DG.Tweening.Tween tween;
-        
-        private void Start()
+
+        private void OnEnable()
         {
             group.alpha = 0f;
-            
-            if (autoFadeOnStart)
+
+            if (startFadeMode == FadeMode.In)
                 FadeIn();
+            else if (startFadeMode == FadeMode.Out)
+                FadeOut();
         }
 
         private void OnDisable() => tween?.Kill();

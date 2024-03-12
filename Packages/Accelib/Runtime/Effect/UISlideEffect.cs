@@ -31,10 +31,10 @@ namespace Accelib.Effect
 
         private void OnDestroy() => tween?.Kill();
 
-        [Button] public void Show() => DoSlide(true, hidePos, showPos);
-        [Button] public void Hide() => DoSlide(false, showPos, hidePos);
+        [Button] public DG.Tweening.Tween Show() => DoSlide(true, hidePos, showPos);
+        [Button] public DG.Tweening.Tween Hide() => DoSlide(false, showPos, hidePos);
 
-        private void DoSlide(bool show, RectTransform initPos, RectTransform endPos)
+        private DG.Tweening.Tween DoSlide(bool show, RectTransform initPos, RectTransform endPos)
         {
             tween?.Kill(true);
             
@@ -50,6 +50,8 @@ namespace Accelib.Effect
                 tween.SetDelay(config.delay);
             if (!show)
                 tween.OnComplete(() => gameObject.SetActive(false));
+
+            return tween;
         }
     }
 }

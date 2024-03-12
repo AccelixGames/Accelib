@@ -1,5 +1,6 @@
 ﻿using Accelib.Data;
 using DG.Tweening;
+using NaughtyAttributes;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.EventSystems;
@@ -10,15 +11,21 @@ namespace Accelib.Utility
     {
         [Header("Config")]
         [SerializeField] private ButtonTweenConfig config;
+        [SerializeField] private bool useClick = true;
+        [SerializeField] private bool useDown;
+        [SerializeField] private bool useUp;
         
         [Header("이벤트")]
-        [SerializeField] private UnityEvent onPointerClick = new();
+        [SerializeField, ShowIf(nameof(useClick))] private UnityEvent onPointerClick = new();
+        [SerializeField, ShowIf(nameof(useDown))] private UnityEvent onPointerDown = new();
+        [SerializeField, ShowIf(nameof(useUp))] private UnityEvent onPointerUp = new();
         
         private DG.Tweening.Tween idleTween;
         
         public void OnPointerClick(PointerEventData eventData)
         {
-            onPointerClick.Invoke();
+            if(useClick)
+                onPointerClick?.Invoke();
         }
 
         public void OnPointerDown(PointerEventData eventData)
@@ -27,6 +34,9 @@ namespace Accelib.Utility
             
             transform.DOScale(config.DownAmount, config.DownDuration)
                 .SetEase(config.DownEase);
+            
+            if(useDown)
+                onPointerDown?.Invoke();
         }
 
         public void OnPointerUp(PointerEventData eventData)
@@ -35,6 +45,9 @@ namespace Accelib.Utility
             
             transform.DOScale(1f, config.UpDuration)
                 .SetEase(config.UpEase);
+            
+            if(useUp)
+                onPointerUp?.Invoke();
         }
 
         private void OnDestroy()

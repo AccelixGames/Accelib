@@ -2,7 +2,6 @@
 using Accelib.Data;
 using DG.Tweening;
 using UnityEngine;
-using UnityEngine.Serialization;
 
 namespace Accelib.Effect
 {
@@ -11,17 +10,15 @@ namespace Accelib.Effect
         [SerializeField] private CanvasGroup group;
         [SerializeField] private EasePairTweenConfig config;
 
-        [Header("설정")]
-        [SerializeField] private bool blinkOnStart = false;
+        [Header("설정")] 
+        [SerializeField] private bool playOnStart = false;
         [SerializeField] private int loopCount = -1;
 
         private Sequence seq;
-        
-        private void Start()
+
+        private void OnEnable()
         {
-            group.alpha = 0f;
-            
-            if (blinkOnStart)
+            if (playOnStart)
                 Blink();
         }
 
