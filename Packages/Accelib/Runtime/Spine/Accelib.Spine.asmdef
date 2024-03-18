@@ -1,0 +1,30 @@
+{
+    "name": "Accelib.Spine",
+    "rootNamespace": "Accelib",
+    "references": [
+        "Accelib.Runtime",
+        "spine-csharp",
+        "spine-unity",
+        "NaughtyAttributes.Core"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [
+        {
+            "name": "com.esotericsoftware.spine.spine-csharp",
+            "expression": "",
+            "define": "ACCELIX_SPINE"
+        },
+        {
+            "name": "com.esotericsoftware.spine.spine-unity",
+            "expression": "",
+            "define": "ACCELIX_SPINE"
+        }
+    ],
+    "noEngineReferences": false
+}
