@@ -21,22 +21,30 @@ namespace Accelib.Effect
         private void Awake()
         {
             rt = GetComponent<RectTransform>();
-        }
-
-        private void Start()
-        {
             rt.anchoredPosition = showOnStart ? showPos.anchoredPosition : hidePos.anchoredPosition;
+
+            tween = null;
+            
             gameObject.SetActive(showOnStart);
         }
 
         private void OnDestroy() => tween?.Kill();
 
-        [Button] public DG.Tweening.Tween Show() => DoSlide(true, hidePos, showPos);
-        [Button] public DG.Tweening.Tween Hide() => DoSlide(false, showPos, hidePos);
+        [Button(enabledMode:EButtonEnableMode.Playmode)] 
+        public DG.Tweening.Tween Show() => DoSlide(true, hidePos, showPos);
+        
+        [Button(enabledMode:EButtonEnableMode.Playmode)]
+        public DG.Tweening.Tween Hide() => DoSlide(false, showPos, hidePos);
 
         private DG.Tweening.Tween DoSlide(bool show, RectTransform initPos, RectTransform endPos)
         {
-            tween?.Kill(true);
+            Debug.Log($"{gameObject.name}: {show}");
+
+            if (tween != null)
+            {
+                Debug.Log("Tween Killed");
+                tween.Kill(true);
+            }
             
             gameObject.SetActive(true);
             rt.anchoredPosition = initPos.anchoredPosition;
@@ -49,7 +57,7 @@ namespace Accelib.Effect
             if (config.delay > 0f)
                 tween.SetDelay(config.delay);
             if (!show)
-                tween.OnComplete(() => gameObject.SetActive(false));
+                tween.onComplete += () => gameObject.SetActive(false);
 
             return tween;
         }
