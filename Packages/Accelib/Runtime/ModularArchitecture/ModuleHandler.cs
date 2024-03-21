@@ -21,8 +21,10 @@ namespace Accelib.ModularArchitecture
         
         [Header("State")]
         [SerializeField, ReadOnly] private LoadState loadState = LoadState.Unloaded;
-
         private ModuleBase moduleInstance;
+
+        public UnityAction OnLoad;
+        public UnityAction OnUnload;
 
         public void LoadAdditive() => Load(LoadSceneMode.Additive);
         public void LoadSingle() => Load(LoadSceneMode.Single);
@@ -76,6 +78,8 @@ namespace Accelib.ModularArchitecture
                 // 화면전환 종료
                 if (mode == LoadSceneMode.Single)
                     await TransitionHandler.EndTransition();
+                
+                OnLoad?.Invoke();
             }
             catch (Exception e)
             {
@@ -102,6 +106,8 @@ namespace Accelib.ModularArchitecture
                     // 인스턴스 비우기
                     moduleInstance = null;
                     loadState = LoadState.Unloaded;
+                    
+                    OnUnload?.Invoke();
                 };
             }
             catch (Exception e)
