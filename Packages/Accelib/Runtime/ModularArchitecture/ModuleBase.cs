@@ -10,6 +10,6 @@ namespace Accelib.ModularArchitecture
     {
         [SerializeField, ReadOnly] internal ModuleHandler handler;
 
-        public void Unload() => handler.Unload();
+        protected void Unload() => handler.Unload();
     }
 }

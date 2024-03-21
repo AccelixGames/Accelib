@@ -5,6 +5,8 @@ namespace Accelib.Core
     [DefaultExecutionOrder(-1000)]
     public class MonoSingleton<T> : MonoBehaviour where T : MonoBehaviour
     {
+        [SerializeField] private bool dontDestroyOnLoad = false;
+        
         public static T Instance { get; protected set; }
         
         protected virtual void Awake()
@@ -18,6 +20,9 @@ namespace Accelib.Core
             }
 
             Instance = GetComponent<T>();
+            
+            if(dontDestroyOnLoad)
+                DontDestroyOnLoad(this);
         }
     }
 }
