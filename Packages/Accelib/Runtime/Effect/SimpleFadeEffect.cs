@@ -5,11 +5,12 @@ using UnityEngine;
 
 namespace Accelib.Effect
 {
+    [RequireComponent(typeof(CanvasGroup))]
     public class SimpleFadeEffect : MonoBehaviour
     {
         private enum FadeMode { In, Out, None }
         
-        [SerializeField] private CanvasGroup group;
+        private CanvasGroup group = null;
         [SerializeField] private EasePairTweenConfig config;
 
         [Header("설정")] 
@@ -19,8 +20,6 @@ namespace Accelib.Effect
 
         private void OnEnable()
         {
-            group.alpha = 0f;
-
             if (startFadeMode == FadeMode.In)
                 FadeIn();
             else if (startFadeMode == FadeMode.Out)
@@ -31,6 +30,8 @@ namespace Accelib.Effect
 
         public DG.Tweening.Tween FadeIn()
         {
+            group = GetComponent<CanvasGroup>();
+            
             tween?.Kill();
             gameObject.SetActive(true);
             group.alpha = 0f;
@@ -44,6 +45,8 @@ namespace Accelib.Effect
 
         public DG.Tweening.Tween FadeOut()
         {
+            group = GetComponent<CanvasGroup>();
+            
             tween?.Kill();
             gameObject.SetActive(true);
             group.alpha = 1f;

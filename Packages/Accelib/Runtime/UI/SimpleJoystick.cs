@@ -15,13 +15,12 @@ namespace Accelib.UI
         [field: SerializeField, ReadOnly] public Vector2 OutputNormalized { get; private set; }
 
         [Header("디버그")] 
+        [SerializeField] private Camera targetCam;
+        [SerializeField, ReadOnly] private RectTransform rt;
         [SerializeField, ReadOnly] private bool isDown = false;
-        
-        private RectTransform rt;
-        
-        private Vector2 pointerPos;
-        private float joystickRadius;
-        private float joystickRadiusReversed;
+        [SerializeField, ReadOnly] private Vector2 pointerPos;
+        [SerializeField, ReadOnly] private float joystickRadius;
+        [SerializeField, ReadOnly] private float joystickRadiusReversed;
 
         public void Clear()
         {
@@ -45,6 +44,8 @@ namespace Accelib.UI
             isDown = false;
             Output = Vector2.zero;
             OutputNormalized = Vector2.zero;
+            
+            targetCam = Camera.main;
         }
 
         public void OnPointerDown(PointerEventData eventData)
@@ -72,7 +73,7 @@ namespace Accelib.UI
         }
 
         private void ConvertPos(Vector2 screenPoint) =>
-            RectTransformUtility.ScreenPointToLocalPointInRectangle(rt, screenPoint, Camera.main,
+            RectTransformUtility.ScreenPointToLocalPointInRectangle(rt, screenPoint, null,
                 out pointerPos);
 
         private void UpdateJoystick()

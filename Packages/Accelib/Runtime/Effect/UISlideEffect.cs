@@ -38,14 +38,8 @@ namespace Accelib.Effect
 
         private DG.Tweening.Tween DoSlide(bool show, RectTransform initPos, RectTransform endPos)
         {
-            Debug.Log($"{gameObject.name}: {show}");
+            tween?.Kill(true);
 
-            if (tween != null)
-            {
-                Debug.Log("Tween Killed");
-                tween.Kill(true);
-            }
-            
             gameObject.SetActive(true);
             rt.anchoredPosition = initPos.anchoredPosition;
 

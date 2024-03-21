@@ -19,11 +19,6 @@ namespace Accelib.ModularArchitecture
 
         private ModuleBase moduleInstance;
 
-        // 모듈 로드 완료 액션
-        public UnityAction OnLoaded;
-        // 모듈 언로드 완료 액션
-        public UnityAction OnUnloaded;
-
         /// <summary>모듈을 로드한다</summary>
         public void Load(LoadSceneMode mode)
         {
@@ -59,8 +54,6 @@ namespace Accelib.ModularArchitecture
                             // 인스턴스 핸들러 설정
                             moduleInstance.handler = this;
 
-                            // 로드 액션
-                            OnLoaded?.Invoke();
                             return;
                         }
                 };
@@ -87,9 +80,6 @@ namespace Accelib.ModularArchitecture
                 // 씬 언로드
                 SceneManager.UnloadSceneAsync(moduleScn).completed += _ =>
                 {
-                    // 언로드 액션
-                    OnUnloaded?.Invoke();
-                    
                     // 인스턴스 비우기
                     moduleInstance = null;
                     loadState = LoadState.Unloaded;
