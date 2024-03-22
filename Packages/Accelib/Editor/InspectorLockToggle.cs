@@ -1,7 +1,7 @@
 using System.Reflection;
 using UnityEditor;
 
-namespace Accelix.Editor
+namespace Accelib.Editor
 {
     /// <summary>
     /// 인스펙터 창을 잠금/잠금해제 토글한다.
