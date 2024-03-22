@@ -1,11 +1,9 @@
-﻿using System;
-using Accelib.Data;
+﻿using Accelib.Data;
 using DG.Tweening;
 using NaughtyAttributes;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.EventSystems;
-using UnityEngine.Serialization;
 
 namespace Accelib.Utility
 {
@@ -25,48 +23,35 @@ namespace Accelib.Utility
         [SerializeField, ShowIf(nameof(useDown))] public UnityEvent onPointerDown = new();
         [SerializeField, ShowIf(nameof(useUp))] public UnityEvent onPointerUp = new();
         
-        private DG.Tweening.Tween idleTween;
-
-        public void SetEnabled(bool enable) => isEnabled = enable;
-        
         public void OnPointerClick(PointerEventData eventData)
         {
             if(!isEnabled) return;
             
-            if(useClick)
-                onPointerClick?.Invoke();
+            if(useClick) onPointerClick?.Invoke();
         }
 
         public void OnPointerDown(PointerEventData eventData)
         {
             if(!isEnabled) return;
             
-            idleTween?.Complete();
+            transform
+                .DOScale(config.DownAmount, config.DownDuration)
+                .SetEase(config.DownEase)
+                .SetLink(gameObject);
             
-            transform.DOScale(config.DownAmount, config.DownDuration)
-                .SetEase(config.DownEase);
-            
-            if(useDown)
-                onPointerDown?.Invoke();
+            if(useDown) onPointerDown?.Invoke();
         }
 
         public void OnPointerUp(PointerEventData eventData)
         {
             if(!isEnabled) return;
             
-            idleTween?.Complete();
+            transform
+                .DOScale(1f, config.UpDuration)
+                .SetEase(config.UpEase)
+                .SetLink(gameObject);
             
-            transform.DOScale(1f, config.UpDuration)
-                .SetEase(config.UpEase);
-            
-            if(useUp)
-                onPointerUp?.Invoke();
-        }
-
-        protected void OnDestroy()
-        {
-            idleTween?.Kill(true);
-            idleTween = null;
+            if(useUp) onPointerUp?.Invoke();
         }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using System;
+using NaughtyAttributes;
 using UnityEngine;
 
 namespace Accelib.Utility
@@ -13,15 +14,17 @@ namespace Accelib.Utility
 
         [Header("StartMode")] 
         [SerializeField] private Mode startMode = Mode.On;
+        [SerializeField, ReadOnly] private Mode current = Mode.On;
         
         private void OnEnable() => Set(startMode);
 
-        public void Toggle() => Set(startMode == Mode.On ? Mode.Off : Mode.On);
+        public void Toggle() => Set(current == Mode.On ? Mode.Off : Mode.On);
 
         public void Toggle(bool on) => Set(on ? Mode.On : Mode.Off);
         
         private void Set(Mode mode)
         {
+            current = mode;
             onObj.SetActive(mode == Mode.On);
             offObj.SetActive(mode == Mode.Off);
         }
