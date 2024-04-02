@@ -4,6 +4,15 @@ namespace Accelib.Extensions
 {
     public static class VectorExtension
     {
+        public static Vector2Int Clamp(this Vector2Int v, int min, int max)
+        {
+            v.x = Mathf.Clamp(v.x, min, max);
+            v.y = Mathf.Clamp(v.y, min, max);
+            return v;
+        }
+
+        public static Vector2Int ToVec2Int(this in Vector3 v) => new Vector2Int((int)v.x, (int)v.y);
+        
         public static Vector3Int ToVec3(this in Vector2Int v) => new Vector3Int(v.x, v.y, 0);
         
         public static Vector3 ToVec3(this in Vector2 v) => new Vector3(v.x, v.y, 0f);

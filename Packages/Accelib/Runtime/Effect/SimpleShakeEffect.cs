@@ -18,7 +18,7 @@ namespace Accelib.Effect
         [SerializeField] private bool fadeOut = true;
         [SerializeField] private ShakeRandomnessMode randomnessMode = ShakeRandomnessMode.Full;
 
-        [Button]
+        [Button(enabledMode: EButtonEnableMode.Playmode)]
         public DG.Tweening.Tween DoShake() => 
             target.DOShakePosition(duration, strength, vibrato, randomness, snapping, fadeOut, randomnessMode);
 
