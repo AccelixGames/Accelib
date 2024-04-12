@@ -11,11 +11,17 @@ namespace Accelib.Extensions
             return v;
         }
 
-        public static Vector2Int ToVec2Int(this in Vector3 v) => new Vector2Int((int)v.x, (int)v.y);
+        public static Vector2Int ToVec2Int(this in Vector3 v) => new((int)v.x, (int)v.y);
+
+        public static Vector2Int ToVec2Int(this in Vector2 v) => new Vector2Int((int)v.x, (int)v.y);
+
+        public static Vector2Int Sign(this in Vector2Int v) => new(
+            v.x == 0 ? 0 : v.x > 0 ? 1 : -1, 
+            v.y == 0 ? 0 : (v.y > 0 ? 1 : -1));
+
+        public static Vector3Int ToVec3(this in Vector2Int v) => new(v.x, v.y, 0);
         
-        public static Vector3Int ToVec3(this in Vector2Int v) => new Vector3Int(v.x, v.y, 0);
-        
-        public static Vector3 ToVec3(this in Vector2 v) => new Vector3(v.x, v.y, 0f);
+        public static Vector3 ToVec3(this in Vector2 v) => new(v.x, v.y, 0f);
         
         public static Vector2 ToCardinal(this in Vector2 v, float minMagnitude = 0.01f)
         {

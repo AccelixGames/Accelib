@@ -11,11 +11,15 @@ namespace Accelib.Effect
         [SerializeField] private EasePairTweenConfig config;
 
         private static readonly Vector3 Small = Vector3.one * 0.0001f;
+
+        private DG.Tweening.Tween _tween;
         
         private void OnEnable()
         {
+            _tween?.Kill();
+            
             transform.localScale = Small;
-            transform.DOScale(Vector3.one, config.duration)
+            _tween = transform.DOScale(Vector3.one, config.duration)
                 .SetEase(config.easeA)
                 .SetDelay(config.delay);
         }
@@ -25,7 +29,9 @@ namespace Accelib.Effect
         {
             if(!gameObject.activeSelf) return;
             
-            transform.DOScale(Small, config.duration)
+            _tween?.Kill();
+            
+            _tween = transform.DOScale(Small, config.duration)
                 .SetEase(config.easeB)
                 .SetDelay(config.delay)
                 .OnComplete(() => gameObject.SetActive(false));

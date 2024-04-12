@@ -16,10 +16,17 @@ namespace Accelib.Effect
         [SerializeField, ReadOnly] private float timer;
         [SerializeField, ReadOnly] private Vector3 localPos;
 
+        private RectTransform _rt;
+
+        private void Awake()
+        {
+            _rt = GetComponent<RectTransform>();
+        }
+
         private void Start()
         {
             timer = 0f;
-            localPos = transform.localPosition;
+            localPos = _rt == null ? transform.localPosition : _rt.anchoredPosition;
         }
 
         private void Update()
@@ -32,7 +39,10 @@ namespace Accelib.Effect
             var eval = curve.Evaluate(normal);
 
             localPos.y = eval * height;
-            transform.localPosition = localPos;
+            if (_rt == null)
+                transform.localPosition = localPos;
+            else
+                _rt.anchoredPosition = localPos;
         }
     }
 }
