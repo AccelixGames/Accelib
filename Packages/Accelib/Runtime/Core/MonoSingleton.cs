@@ -11,13 +11,13 @@ namespace Accelib.Core
         
         protected virtual void Awake()
         {
-            if (Instance != null)
-            {
-                Debug.LogWarning("이미 인스턴스가 존재합니다:" + gameObject.name);
-                
-                Destroy(gameObject);
-                return;
-            }
+            // if (Instance != null)
+            // {
+            //     Debug.LogWarning("이미 인스턴스가 존재합니다:" + gameObject.name);
+            //     
+            //     Destroy(gameObject);
+            //     return;
+            // }
 
             Instance = GetComponent<T>();
             
