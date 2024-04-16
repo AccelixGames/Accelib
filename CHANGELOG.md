@@ -14,6 +14,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+- CHANGELOG.md 추가
+
+### Changed
+- ReadME.md 파일 내요 수정
+
 ## [0.0.2] - 2014-04-16
 
 ### Added
