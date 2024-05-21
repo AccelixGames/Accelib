@@ -12,7 +12,13 @@ namespace Accelib.Utility
 
         private void OnEnable()
         {
-            SceneManager.LoadScene(targetScene,loadMode);
+#if UNITY_EDITOR
+            if(SceneManager.loadedSceneCount == 1)
+                SceneManager.LoadScene(targetScene,loadMode);
+#else
+
+                SceneManager.LoadScene(targetScene,loadMode);
+#endif
         }
     }
 }

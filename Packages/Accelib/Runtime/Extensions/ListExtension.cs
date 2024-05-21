@@ -9,8 +9,8 @@ namespace Accelib.Extensions
         {
             for (var i = 0; i < list.Count; ++i)
             {
-                var random1 = Random.Range(0, list.Count);
-                var random2 = Random.Range(0, list.Count);
+                var random1 = UnityEngine.Random.Range(0, list.Count);
+                var random2 = UnityEngine.Random.Range(0, list.Count);
 
                 (list[random1], list[random2]) = (list[random2], list[random1]);
             }

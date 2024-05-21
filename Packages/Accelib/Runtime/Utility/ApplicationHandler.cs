@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.SceneManagement;
 
 namespace Accelib.Utility
 {
@@ -12,6 +13,11 @@ namespace Accelib.Utility
 #else
             Application.Quit();
 #endif
+        }
+        
+        public void LoadScn(int id)
+        {
+            SceneManager.LoadScene(id);
         }
     }
 }

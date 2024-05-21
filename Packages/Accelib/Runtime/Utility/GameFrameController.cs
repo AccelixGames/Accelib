@@ -1,6 +1,4 @@
-﻿using System;
-using UnityEngine;
-// ReSharper disable NotAccessedField.Local
+﻿using UnityEngine;
 
 namespace Accelib.Utility
 {

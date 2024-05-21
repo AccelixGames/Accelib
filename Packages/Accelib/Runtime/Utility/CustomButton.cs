@@ -22,6 +22,8 @@ namespace Accelib.Utility
         [SerializeField, ShowIf(nameof(useClick))] public UnityEvent onPointerClick = new();
         [SerializeField, ShowIf(nameof(useDown))] public UnityEvent onPointerDown = new();
         [SerializeField, ShowIf(nameof(useUp))] public UnityEvent onPointerUp = new();
+
+        private Tweener _tween;
         
         public void OnPointerClick(PointerEventData eventData)
         {
@@ -34,7 +36,8 @@ namespace Accelib.Utility
         {
             if(!isEnabled) return;
             
-            transform
+            _tween?.Kill();
+            _tween = transform
                 .DOScale(config.DownAmount, config.DownDuration)
                 .SetEase(config.DownEase)
                 .SetLink(gameObject);
@@ -45,8 +48,9 @@ namespace Accelib.Utility
         public void OnPointerUp(PointerEventData eventData)
         {
             if(!isEnabled) return;
-            
-            transform
+
+            _tween?.Kill();
+            _tween = transform
                 .DOScale(1f, config.UpDuration)
                 .SetEase(config.UpEase)
                 .SetLink(gameObject);

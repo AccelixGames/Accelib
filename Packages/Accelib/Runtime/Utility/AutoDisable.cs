@@ -1,3 +1,4 @@
+using NaughtyAttributes;
 using UnityEngine;
 
 namespace Accelib.Utility
@@ -10,29 +11,31 @@ namespace Accelib.Utility
             Destroy = 1
         }
         
-        [SerializeField] private float disableTime;
+        [Header("Option")]
         [SerializeField] private Mode endMode = Mode.Disable;
+        [SerializeField] private float disableTime;
     
-        private float _timer;
+        [Header("Debug")]
+        [SerializeField, ReadOnly] private float timer;
 
         public void Initialize(float time, Mode mode = Mode.Disable)
         {
             disableTime = time;
             endMode  = mode;
-            _timer = 0;
+            timer = 0;
         }
     
         private void OnEnable()
         {
-            _timer = 0;
+            timer = 0;
         }
 
         private void Update()
         {
-            _timer += Time.deltaTime;
-            if (!(_timer >= disableTime)) return;
+            timer += Time.deltaTime;
+            if (!(timer >= disableTime)) return;
         
-            _timer = 0;
+            timer = 0;
             
             if (endMode == Mode.Destroy)
                 Destroy(gameObject);

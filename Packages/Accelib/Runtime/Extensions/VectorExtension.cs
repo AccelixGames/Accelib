@@ -4,6 +4,13 @@ namespace Accelib.Extensions
 {
     public static class VectorExtension
     {
+        public static Vector3 Clamp(this Vector3 v, int min, int max)
+        {
+            v.x = Mathf.Clamp(v.x, min, max);
+            v.y = Mathf.Clamp(v.y, min, max);
+            return v;
+        }
+        
         public static Vector2Int Clamp(this Vector2Int v, int min, int max)
         {
             v.x = Mathf.Clamp(v.x, min, max);
@@ -12,8 +19,10 @@ namespace Accelib.Extensions
         }
 
         public static Vector2Int ToVec2Int(this in Vector3 v) => new((int)v.x, (int)v.y);
+        public static Vector2Int ToVec2IntRound(this in Vector3 v) => new(Mathf.RoundToInt(v.x), Mathf.RoundToInt(v.y));
 
-        public static Vector2Int ToVec2Int(this in Vector2 v) => new Vector2Int((int)v.x, (int)v.y);
+        public static Vector2Int ToVec2Int(this in Vector2 v) => new((int)v.x, (int)v.y);
+        public static Vector2Int ToVec2IntRound(this in Vector2 v) => new(Mathf.RoundToInt(v.x), Mathf.RoundToInt(v.y));
 
         public static Vector2Int Sign(this in Vector2Int v) => new(
             v.x == 0 ? 0 : v.x > 0 ? 1 : -1, 

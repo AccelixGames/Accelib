@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace Accelib.Data
 {
-    [CreateAssetMenu(fileName = "config-tween-", menuName = "Accelix/Tween/Default", order = 0)]
+    [CreateAssetMenu(fileName = "tween-", menuName = "Accelix/Tween/Default", order = 0)]
     public class DefaultTweenConfig : ScriptableObject
     {
         [Range(0f, 10f)] public float delay = 0f;
