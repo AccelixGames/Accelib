@@ -21,7 +21,13 @@ namespace Accelib.Effect
             transform.localScale = Small;
             _tween = transform.DOScale(Vector3.one, config.duration)
                 .SetEase(config.easeA)
-                .SetDelay(config.delay);
+                .SetDelay(config.delay)
+                .SetLink(gameObject);
+        }
+
+        private void OnDisable()
+        {
+            _tween?.Kill();
         }
 
         [Button]
@@ -34,7 +40,8 @@ namespace Accelib.Effect
             _tween = transform.DOScale(Small, config.duration)
                 .SetEase(config.easeB)
                 .SetDelay(config.delay)
-                .OnComplete(() => gameObject.SetActive(false));
+                .OnComplete(() => gameObject.SetActive(false))
+                .SetLink(gameObject);
         }
     }
 }
