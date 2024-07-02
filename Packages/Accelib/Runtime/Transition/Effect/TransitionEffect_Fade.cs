@@ -12,25 +12,23 @@ namespace Accelib.Transition.Effect
     internal  class TransitionEffect_Fade : TransitionEffect
     {
         [Header("Effect")]
-        [SerializeField] private Image image;
+        [SerializeField] private CanvasGroup group;
+        [SerializeField] private float durationOut;
         
         [Button]
         public override async UniTask StartTransition()
         {
             canvas.gameObject.SetActive(true);
-            
-            var color = image.color;
-            color.a = 0f;
-            image.color = color;
 
-            await image.DOFade(1f, duration)
+            group.alpha = 0f;
+            await group.DOFade(1f, duration)
                 .SetEase(easeStart);
         }
 
         [Button]
         public override async UniTask EndTransition()
         {
-            await image.DOFade(0f, duration)
+            await group.DOFade(0f, durationOut)
                 .SetEase(easeEnd)
                 .OnComplete(() => canvas.gameObject.SetActive(false));
         }

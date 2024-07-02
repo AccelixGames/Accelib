@@ -14,7 +14,7 @@ namespace Accelib.Transition
 
         public static UniTask StartTransition() => Instance.targetEffect.StartTransition();
         public static UniTask EndTransition() => Instance.targetEffect.EndTransition();
-        
+
 #if UNITY_EDITOR
         [Button]
         public void TrStart() => targetEffect.StartTransition().Forget();

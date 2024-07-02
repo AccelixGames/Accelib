@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace Accelib.Transition.Effect
 {
-    internal abstract class TransitionEffect : MonoBehaviour
+    public abstract class TransitionEffect : MonoBehaviour
     {
         [Header("Option")]
         [SerializeField] protected Canvas canvas;

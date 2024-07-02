@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace Accelib.Data
 {
-    [CreateAssetMenu(fileName = "ButtonTweenConfig", menuName = "Accelix/ButtonTweenConfig", order = 0)]
+    [CreateAssetMenu(fileName = "ButtonTweenConfig", menuName = "Accelix/Tween/Button", order = 0)]
     public class ButtonTweenConfig : ScriptableObject
     {
         [field: Header("Down")]

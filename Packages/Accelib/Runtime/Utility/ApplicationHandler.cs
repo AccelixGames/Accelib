@@ -3,7 +3,7 @@ using UnityEngine.SceneManagement;
 
 namespace Accelib.Utility
 {
-    [CreateAssetMenu(fileName = "ApplicationHandler", menuName = "Accelib/ApplicationHandler", order = 0)]
+    [CreateAssetMenu(fileName = "ApplicationHandler", menuName = "Accelix/ApplicationHandler", order = 0)]
     public class ApplicationHandler : ScriptableObject
     {
         public void Quit()

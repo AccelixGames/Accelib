@@ -8,6 +8,7 @@ namespace Accelib.Utility
 {
     public class SimpleTimerEvent : MonoBehaviour
     {
+        [SerializeField] private bool loop = false;
         [SerializeField] private float duration = 1f;
         [SerializeField, ReadOnly] private float timer;
 
@@ -25,8 +26,14 @@ namespace Accelib.Utility
             timer += Time.deltaTime;
             if (timer >= duration)
             {
-                onTime?.Invoke();   
-                timer = -1f;
+                onTime?.Invoke();
+                if(!loop)
+                    timer = -1f;
+                else
+                {
+                    timer -= duration;
+                    if (timer < 0f) timer = 0f;
+                }
             }
         }
 
