@@ -4,6 +4,8 @@ namespace Accelib.Extensions
 {
     public static class VectorExtension
     {
+      
+        
         public static Vector3 Clamp(this Vector3 v, int min, int max)
         {
             v.x = Mathf.Clamp(v.x, min, max);

@@ -29,6 +29,17 @@ namespace Accelib.Effect
             localPos = _rt == null ? transform.localPosition : _rt.anchoredPosition;
         }
 
+        private void OnEnable()
+        {
+            timer = 0f;
+            
+            localPos.y = curve.Evaluate(0f) * height;
+            if (_rt == null)
+                transform.localPosition = localPos;
+            else
+                _rt.anchoredPosition = localPos;
+        }
+
         private void Update()
         {
             timer += Time.deltaTime;

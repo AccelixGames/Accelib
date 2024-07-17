@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using NaughtyAttributes;
+using UnityEngine;
 
 namespace Accelib.Utility
 {
@@ -18,5 +19,13 @@ namespace Accelib.Utility
             Application.targetFrameRate = targetFrameRate;
 #endif
         }
+
+#if UNITY_EDITOR
+        [Button]
+        private void Set()
+        {
+            Application.targetFrameRate = editorFrameRate;
+        }
+#endif
     }
 }
