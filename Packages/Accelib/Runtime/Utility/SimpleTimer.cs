@@ -3,7 +3,7 @@ using UnityEngine.Serialization;
 
 namespace Accelib.Utility
 {
-    public class Timer : MonoBehaviour
+    public class SimpleTimer : MonoBehaviour
     {
         [SerializeField] private bool readyOnStart = true;
         [SerializeField, Range(0f, 1000f)] private float endTime = 1f;

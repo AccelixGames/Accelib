@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 namespace Accelib.Extensions
@@ -16,6 +17,19 @@ namespace Accelib.Extensions
             }
 
             return list;
+        }
+
+        public static T GetRandom<T>(this IEnumerable<T> enumerable)
+        {
+            return enumerable == null ? default : enumerable.ToList().GetRandom();
+        }
+
+        public static T GetRandom<T>(this List<T> list)
+        {
+            if (list is not { Count: > 0 }) return default;
+            
+            var id = UnityEngine.Random.Range(0, list.Count);
+            return list[id];
         }
     }
 }
