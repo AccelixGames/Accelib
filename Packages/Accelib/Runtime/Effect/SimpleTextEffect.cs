@@ -9,7 +9,7 @@ namespace Accelib.Effect
     public class SimpleTextEffect : MonoBehaviour
     {
         [SerializeField] private List<string> textList;
-        [SerializeField, Range(0.01f, 10f)] private float interval;
+        [SerializeField, Range(0.01f, 10f)] private float interval = 0.1f;
 
         private TMP_Text text; 
         private StringBuilder builder;
@@ -42,7 +42,7 @@ namespace Accelib.Effect
             {
                 timer -= interval;
                 id = (id + 1) % textList.Count;
-                
+
                 builder.Clear();
                 builder.Append(textList[id]);
                 text.SetText(builder);

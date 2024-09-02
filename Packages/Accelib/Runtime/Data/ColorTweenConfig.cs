@@ -10,12 +10,16 @@ namespace Accelib.Data
         public Color enabledColor = Color.black;
         public Color disabledColor = Color.black;
 
-        public Tweener Do(Image target, bool enable)
+        public void Do(ref DG.Tweening.Tween tween, Image target, bool enable)
         {
+            tween?.Kill();
+            
             var c = enable ? enabledColor : disabledColor;
             var ease = enable ? easeA : easeB;
 
-            return target.DOColor(c, duration).SetEase(ease);
+            tween = target.DOColor(c, duration).SetEase(ease);
+
+            //target.color = c;
         }
     }
 }
