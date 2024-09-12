@@ -31,6 +31,7 @@ namespace Accelib.Logging
 
         [System.Diagnostics.Conditional("ENABLE_DEBUG")]
         [System.Diagnostics.Conditional("UNITY_EDITOR")]
+        [HideInCallstack]
         public static void Log(object message, Object context = null,
             [CallerMemberName] string memberName = "", [CallerFilePath] string sourceFilePath = "", [CallerLineNumber] int sourceLineNumber = 0)
         {

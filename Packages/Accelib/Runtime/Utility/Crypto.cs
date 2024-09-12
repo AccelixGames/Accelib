@@ -4,30 +4,37 @@ namespace Accelib.Utility
 {
     public static class Crypto
     {
-        private static readonly string Cj4r83fk = "dlfi$(382fd##k72ldKDFIE$woekf@94";
+        public static string Encrypt(string str, string key)
+        {
+            var bytes = EncryptToBytes(str, key);
+            return System.Convert.ToBase64String(bytes, 0, bytes.Length);
+        }
         
-        public static string Encrypt(string data)
+        public static byte[] EncryptToBytes(string str, string key)
         {
-            var bytes = System.Text.Encoding.UTF8.GetBytes(data);
-            var rm = CreateRijndaelManaged();
+            var bytes = System.Text.Encoding.UTF8.GetBytes(str);
+            var rm = CreateRijndaelManaged(key);
             var ct = rm.CreateEncryptor();
-            var results = ct.TransformFinalBlock(bytes, 0, bytes.Length);
-            return System.Convert.ToBase64String(results, 0, results.Length);
+            return ct.TransformFinalBlock(bytes, 0, bytes.Length);
         }
  
-        public static string Decrypt(string data)
+        public static string Decrypt(string str, string key)
         {
- 
-            var bytes = System.Convert.FromBase64String(data);
-            var rm = CreateRijndaelManaged();
+            var bytes = System.Convert.FromBase64String(str);
+            return DecryptFromBytes(bytes, key);
+        }
+
+        public static string DecryptFromBytes(byte[] str, string key)
+        {
+            var rm = CreateRijndaelManaged(key);
             var ct = rm.CreateDecryptor();
-            var resultArray = ct.TransformFinalBlock(bytes, 0, bytes.Length);
-            return System.Text.Encoding.UTF8.GetString(resultArray);
+            var bytes = ct.TransformFinalBlock(str, 0, str.Length);
+            return System.Text.Encoding.UTF8.GetString(bytes);
         }
  
-        private static RijndaelManaged CreateRijndaelManaged()
+        private static RijndaelManaged CreateRijndaelManaged(string key)
         {
-            var keyArray = System.Text.Encoding.UTF8.GetBytes(Cj4r83fk);
+            var keyArray = System.Text.Encoding.UTF8.GetBytes(key);
             var result = new RijndaelManaged();
  
             var newKeysArray = new byte[16];

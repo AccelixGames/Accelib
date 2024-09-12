@@ -25,8 +25,9 @@ namespace Accelib.Utility
         private void Set(Mode mode)
         {
             current = mode;
-            onObj.SetActive(mode == Mode.On);
-            offObj.SetActive(mode == Mode.Off);
+            
+            if(onObj != null) onObj.SetActive(mode == Mode.On);
+            if(offObj != null) offObj.SetActive(mode == Mode.Off);
         }
     }
 }

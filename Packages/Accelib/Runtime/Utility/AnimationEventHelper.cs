@@ -3,6 +3,7 @@ using UnityEngine.Events;
 
 namespace Accelib.Utility
 {
+    [RequireComponent(typeof(Animator))]
     public class AnimationEventHelper : MonoBehaviour
     {
         public UnityEvent[] events;

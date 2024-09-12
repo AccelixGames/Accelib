@@ -1,11 +1,13 @@
 ﻿using System;
 using Accelib.Data;
+using Accelib.Tween.Effect;
 using DG.Tweening;
 using UnityEngine;
 
 namespace Accelib.Effect
 {
     [RequireComponent(typeof(RectTransform))]
+    [Obsolete("대신 "+nameof(SimpleEffectTween_MoveRectTransform)+"을 사용하세요.")]
     public class SimpleMoveEffect : MonoBehaviour
     {
         private enum AutoStart { In = 1, Out = 2, False = 0}
@@ -38,16 +40,16 @@ namespace Accelib.Effect
             }
         }
 
-        private DG.Tweening.Tween EffectIn()
+        public DG.Tweening.Tween EffectIn()
         {
-            return _rt.DOAnchorPos(endPos.anchoredPosition, config.duration)
+            return _rt?.DOAnchorPos(endPos.anchoredPosition, config.duration)
                 .SetEase(config.easeA)
                 .SetDelay(config.delay);
         }
 
-        private DG.Tweening.Tween EffectOut()
+        public DG.Tweening.Tween EffectOut()
         {
-            return _rt.DOAnchorPos(startPos.anchoredPosition, config.duration)
+            return _rt?.DOAnchorPos(startPos.anchoredPosition, config.duration)
                 .SetEase(config.easeB)
                 .SetDelay(config.delay);
         }

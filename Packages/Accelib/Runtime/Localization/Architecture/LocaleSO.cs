@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using Accelib.SerializableDictionary;
 using NaughtyAttributes;
-using TMPro;
 using UnityEngine;
 
 namespace Accelib.Localization.Architecture
@@ -19,6 +18,7 @@ namespace Accelib.Localization.Architecture
         [field: Header("딕셔너리")]
         [field: SerializeField, HideInInspector] public StringStringDictionary TextDict { get; private set; }
 
+        #if UNITY_EDITOR
         public void FromDictionary(Dictionary<string, string> dict)
         {
             if(dict is not { Count: > 0 }) return;
@@ -29,5 +29,6 @@ namespace Accelib.Localization.Architecture
             UnityEditor.EditorUtility.SetDirty(this);
             UnityEditor.AssetDatabase.SaveAssetIfDirty(this);
         }
+        #endif
     }
 }

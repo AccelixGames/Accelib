@@ -14,12 +14,9 @@ namespace Accelib.Extensions
             totalSecond -= min * 60;
             var sec = totalSecond;
 
-            return $"{hour}:{min}:{sec}";
+            return $"{hour:00}:{min:00}:{sec:00}";
         }
         
-        public static long UtcTotalSec()
-        {
-            return (long)(DateTime.UtcNow - DateTime.UnixEpoch).TotalSeconds;
-        }
+        public static long UtcTotalSec() => (long)(DateTime.UtcNow - DateTime.UnixEpoch).TotalSeconds;
     }
 }

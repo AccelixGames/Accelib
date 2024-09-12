@@ -7,18 +7,26 @@ namespace Accelib.Utility
 {
     public class SimpleSceneChanger : MonoBehaviour
     {
-        [SerializeField, Scene] private string targetScene;
+        private enum SceneType
+        {
+            Name = 0,
+            Index
+        }
+
+        [Header("LoadScn")]
+        [SerializeField]  private SceneType sceneType = SceneType.Name;
+        [ShowIf(nameof(sceneType), SceneType.Name), SerializeField, Scene] private string targetScene;
+        [ShowIf(nameof(sceneType), SceneType.Index), SerializeField, Scene] private int targetIndex;
+        
+        [Header("LoadMode")]
         [SerializeField] private LoadSceneMode loadMode = LoadSceneMode.Single;
 
         private void OnEnable()
         {
-#if UNITY_EDITOR
-            //if(SceneManager.loadedSceneCount == 1)
-                SceneManager.LoadScene(targetScene,loadMode);
-#else
-
-                SceneManager.LoadScene(targetScene,loadMode);
-#endif
+            if(sceneType == SceneType.Name)
+                SceneManager.LoadScene(targetScene, loadMode);
+            else
+                SceneManager.LoadScene(targetIndex, loadMode);
         }
     }
 }

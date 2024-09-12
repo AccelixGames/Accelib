@@ -3,6 +3,7 @@ using UnityEditor;
 
 namespace Editor.SerializableDictionary
 {
+    [CustomPropertyDrawer(typeof(StringColorDictionary))]
     [CustomPropertyDrawer(typeof(StringStringDictionary))]
     [CustomPropertyDrawer(typeof(ObjectColorDictionary))]
     [CustomPropertyDrawer(typeof(StringColorArrayDictionary))]

@@ -5,6 +5,9 @@ namespace Accelib.SerializableDictionary
 {
     [Serializable]
     public class StringStringDictionary : SerializableDictionary<string, string> {}
+    
+    [Serializable]
+    public class StringColorDictionary : SerializableDictionary<string, Color> {}
 
     [Serializable]
     public class ObjectColorDictionary : SerializableDictionary<UnityEngine.Object, Color> {}

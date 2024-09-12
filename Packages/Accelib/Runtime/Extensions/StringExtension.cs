@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using Accelib.Logging;
 using TMPro;
 
@@ -6,6 +8,14 @@ namespace Accelib.Extensions
 {
     public static class StringExtension
     {
+        public static string ReplaceFirst(this string text, string search, string replace)
+        {
+            var index = text.IndexOf(search, StringComparison.Ordinal);
+            if (index < 0) return text;
+            
+            return text[..index] + replace + text[(index + search.Length)..];
+        }
+        
         public static TMP_Text Omit(this TMP_Text target, int maxLength)
         {
             var text = target.text;
@@ -97,7 +107,8 @@ namespace Accelib.Extensions
         }
 
 
-        private static string symbols = "KMGT";
+        private const string Symbols = "KMGT";
+
         /// <summary>
         /// 숫자(문자열)를 KMGT 단위로 변환하는 함수
         /// 1000 -> 1K, 123456 -> 123.4K
@@ -121,7 +132,7 @@ namespace Accelib.Extensions
                     return "0";
                 
                 // 0이 아닌 수가 입력된 경우
-                var symbolIdx = (strNum.Length - 1) / 3 < symbols.Length ? (strNum.Length - 1) / 3 : symbols.Length;
+                var symbolIdx = (strNum.Length - 1) / 3 < Symbols.Length ? (strNum.Length - 1) / 3 : Symbols.Length;
                 var strLen = strNum.Length - symbolIdx * 3;
                 
                 if (symbolIdx < 1)
@@ -129,9 +140,9 @@ namespace Accelib.Extensions
 
                 // 소숫점 뒤가 0일 경우 소숫점과 0을 출력하지 않음
                 if (strNum[^(symbolIdx * 3)].Equals('0'))
-                    return $"{strNum.Substring(0,strLen)}{symbols[symbolIdx - 1].ToString()}";
+                    return $"{strNum.Substring(0,strLen)}{Symbols[symbolIdx - 1].ToString()}";
                 
-                return $"{strNum.Substring(0,strLen)}.{strNum[strLen]}{symbols[symbolIdx - 1].ToString()}";
+                return $"{strNum.Substring(0,strLen)}.{strNum[strLen]}{Symbols[symbolIdx - 1].ToString()}";
             }
             catch (Exception e)
             {
@@ -155,7 +166,6 @@ namespace Accelib.Extensions
                 return "";
             }
         }
-        
         
         public static string FormatComma(this string text)
         {
