@@ -4,7 +4,11 @@ namespace Accelib.Extensions
 {
     public static class VectorExtension
     {
-      
+        public static int CompareTo(this Vector2Int a, Vector2Int b)
+        {
+            var compY = a.y.CompareTo(b.y);
+            return compY == 0 ? a.x.CompareTo(b.x) : compY;
+        }
         
         public static Vector3 Clamp(this Vector3 v, int min, int max)
         {

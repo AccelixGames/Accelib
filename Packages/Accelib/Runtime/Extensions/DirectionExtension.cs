@@ -23,7 +23,6 @@ namespace Accelib.Extensions
         
         public static Direction ToDirection(this Vector2Int vector) => Vector2.SignedAngle(RefVec, vector) switch
         {
-            0 => Direction.None,
             >= -45f and <= 45f => Direction.Left,
             >= 45f and <= 135f => Direction.Down,
             >= 135f or <= -135f => Direction.Right,
@@ -32,7 +31,6 @@ namespace Accelib.Extensions
 
         public static Direction ToDirection(this Vector2 vector) => Vector2.SignedAngle(RefVec, vector) switch
             {
-                0 => Direction.None,
                 >= -45f and <= 45f => Direction.Left,
                 >= 45f and <= 135f => Direction.Down,
                 >= 135f or <= -135f => Direction.Right,

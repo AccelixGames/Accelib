@@ -6,6 +6,13 @@ namespace Accelib.Extensions
 {
     public static class ListExtension
     {
+        public static void AddRangeNullCheck<T>(this List<T> list, IEnumerable<T> collection)
+        {
+            if(collection == null) return;
+
+            list.AddRange(collection);
+        }
+        
         public static List<T> Shuffle<T>(this List<T> list)
         {
             for (var i = 0; i < list.Count; ++i)

@@ -10,6 +10,9 @@ namespace Accelib.Editor
     /// </summary>
     public static class InspectorLockToggle
     {
+        [MenuItem("Tools/Toggle Lock Alt %l")]
+        public static void ToggleWindowLock_Alt() => ToggleWindowLock();
+        
         [MenuItem("Tools/Toggle Lock %q")]
         public static void ToggleWindowLock() // Inspector must be inspecting something to be locked
         {
