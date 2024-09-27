@@ -1,8 +1,6 @@
-﻿using Cysharp.Threading.Tasks;
-using DG.Tweening;
+﻿using DG.Tweening;
 using NaughtyAttributes;
 using UnityEngine;
-using UnityEngine.UI;
 
 namespace Accelib.Transition.Effect
 {
@@ -16,21 +14,21 @@ namespace Accelib.Transition.Effect
         [SerializeField] private float durationOut;
         
         [Button]
-        public override async UniTask StartTransition()
+        public override Sequence StartTransition()
         {
             canvas.gameObject.SetActive(true);
 
             group.alpha = 0f;
-            await group.DOFade(1f, duration)
-                .SetEase(easeStart);
+            return DOTween.Sequence().Append(
+                group.DOFade(1f, duration).SetEase(easeStart));
         }
 
         [Button]
-        public override async UniTask EndTransition()
+        public override Sequence EndTransition()
         {
-            await group.DOFade(0f, durationOut)
-                .SetEase(easeEnd)
-                .OnComplete(() => canvas.gameObject.SetActive(false));
+            return DOTween.Sequence().Append(
+                group.DOFade(0f, durationOut).SetEase(easeEnd)
+                    .OnComplete(() => canvas.gameObject.SetActive(false)));
         }
     }
 }

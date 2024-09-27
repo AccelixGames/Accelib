@@ -1,5 +1,4 @@
-﻿using Cysharp.Threading.Tasks;
-using DG.Tweening;
+﻿using DG.Tweening;
 using UnityEngine;
 
 namespace Accelib.Transition.Effect
@@ -12,8 +11,8 @@ namespace Accelib.Transition.Effect
         [SerializeField] protected Ease easeEnd = Ease.Linear;
         [SerializeField, Range(0.01f, 5f)] protected float duration = 0.2f;
         
-        public abstract UniTask StartTransition();
+        public abstract Sequence StartTransition();
         
-        public abstract UniTask EndTransition(); 
+        public abstract Sequence EndTransition(); 
     }
 }

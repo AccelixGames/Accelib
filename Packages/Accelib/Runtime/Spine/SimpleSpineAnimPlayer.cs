@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace Accelib.Spine
 {
-    [RequireComponent(typeof(SkeletonAnimation))]
+    //[RequireComponent(typeof(SkeletonAnimation))]
     public class SimpleSpineAnimPlayer : MonoBehaviour
     {
         [SerializeField] private int trackId = 0;
@@ -12,11 +12,13 @@ namespace Accelib.Spine
         [SerializeField] private bool loop = true;
 
         private SkeletonAnimation _anim;
+        private SkeletonGraphic _graphic;
 
         private void Awake()
         {
             _anim = GetComponent<SkeletonAnimation>();
-            if (_anim == null)
+            _graphic = GetComponent<SkeletonGraphic>();
+            if (_anim == null && _graphic == null)
             {
                 Debug.LogError("SkeletonAnimation이 없습니다.", this);
                 Destroy(this);
@@ -25,7 +27,8 @@ namespace Accelib.Spine
 
         private void OnEnable()
         {
-            _anim.AnimationState.SetAnimation(trackId, animName, loop);
+            _anim?.AnimationState.SetAnimation(trackId, animName, loop);
+            _graphic?.AnimationState.SetAnimation(trackId, animName, loop);
         }
     }
 }

@@ -1,5 +1,4 @@
-﻿using Cysharp.Threading.Tasks;
-using DG.Tweening;
+﻿using DG.Tweening;
 using NaughtyAttributes;
 using UnityEngine;
 
@@ -14,8 +13,10 @@ namespace Accelib.Transition.Effect
         [SerializeField] private RectTransform target;
         [SerializeField] private CanvasGroup loadingGroup;
 
+        private Sequence _seq;
+        
         [Button]
-        public override async UniTask StartTransition()
+        public override Sequence StartTransition()
         {
             canvas.gameObject.SetActive(true);
             target.sizeDelta = Vector2.one * radius;
@@ -26,30 +27,32 @@ namespace Accelib.Transition.Effect
                 loadingGroup.alpha = 0f;
             }
 
-            var seq = DOTween.Sequence().SetLink(gameObject)
+            _seq?.Kill();
+            _seq = DOTween.Sequence().SetLink(gameObject)
             .Append(target.DOSizeDelta(Vector2.zero, duration).SetEase(easeStart));
             
             if(loadingGroup)
-                seq.Append(loadingGroup.DOFade(1f, canvasGroupDuration));
+                _seq.Append(loadingGroup.DOFade(1f, canvasGroupDuration));
 
-            await seq;
+            return _seq;
         }
 
         [Button]
-        public override async UniTask EndTransition()
+        public override Sequence EndTransition()
         {
-            var seq = DOTween.Sequence().SetLink(gameObject)
+            _seq?.Kill();
+            _seq = DOTween.Sequence().SetLink(gameObject)
                 .Append(target.DOSizeDelta(Vector2.one * radius, duration).SetEase(easeEnd));
             if (loadingGroup)
-                seq.Join(loadingGroup.DOFade(0f, canvasGroupDuration));
-            seq.OnComplete(() =>
+                _seq.Join(loadingGroup.DOFade(0f, canvasGroupDuration));
+            _seq.OnComplete(() =>
             {
                 canvas.gameObject.SetActive(false);
                 if (loadingGroup)
                     loadingGroup.gameObject.SetActive(false);
             });
 
-            await seq;
+            return _seq;
         }
     }
 }

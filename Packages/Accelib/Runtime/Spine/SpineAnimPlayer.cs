@@ -7,7 +7,7 @@ using UnityEngine;
 
 namespace Accelib.Spine
 {
-    [RequireComponent(typeof(SkeletonAnimation))]
+    //[RequireComponent(typeof(SkeletonAnimation))]
     public class SpineAnimPlayer : MonoBehaviour
     {
         [SerializeField] private List<AnimationGroup> animations;

@@ -1,6 +1,6 @@
 ﻿using Accelib.Core;
 using Accelib.Transition.Effect;
-using Cysharp.Threading.Tasks;
+using DG.Tweening;
 using NaughtyAttributes;
 using UnityEngine;
 
@@ -12,15 +12,36 @@ namespace Accelib.Transition
         [SerializeField] private TransitionEffect targetEffect;
         [SerializeField, ReadOnly] private bool isMoving;
 
-        public static UniTask StartTransition() => Instance.targetEffect.StartTransition();
-        public static UniTask EndTransition() => Instance.targetEffect.EndTransition();
+        private Sequence _seq;
+        
+        public static Sequence StartTransition()
+        {
+            if (Instance == null) return null;
+
+            return Instance.Transition(true);
+        }
+
+        public static Sequence EndTransition()
+        {
+            if (Instance == null) return null;
+            
+            return Instance.Transition(false);
+        }
+
+        private Sequence Transition(bool start)
+        {
+            _seq?.Kill();
+            _seq = start ? targetEffect.StartTransition() : targetEffect.EndTransition();
+            
+            return _seq;
+        }
 
 #if UNITY_EDITOR
         [Button]
-        public void TrStart() => targetEffect.StartTransition().Forget();
-        
+        public void TrStart() => Transition(true);
+
         [Button]
-        public void TrEnd() => targetEffect.EndTransition().Forget();
+        public void TrEnd() => Transition(false);
 #endif
     }
 }
