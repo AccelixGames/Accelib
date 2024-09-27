@@ -1,6 +1,6 @@
 {
     "name": "Accelib.Spine",
-    "rootNamespace": "Accelib",
+    "rootNamespace": "Accelib.Spine",
     "references": [
         "Accelib.Runtime",
         "spine-csharp",

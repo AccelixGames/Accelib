@@ -7,30 +7,31 @@ using UnityEngine;
 
 namespace Accelib.Spine
 {
+    [RequireComponent(typeof(SkeletonAnimation))]
     public class SpineAnimPlayer : MonoBehaviour
     {
         [SerializeField] private List<AnimationGroup> animations;
 
-        private SkeletonAnimation skeletonAnimation;
-        
+        private SkeletonAnimation _anim;
+
         private void Awake()
         {
-            skeletonAnimation = GetComponent<SkeletonAnimation>();
-            if (skeletonAnimation == null)
+            _anim = GetComponent<SkeletonAnimation>();
+            if (_anim == null)
             {
                 Debug.LogError("SkeletonAnimation이 없습니다.", this);
                 Destroy(this);
             }
         }
-
-        private void OnEnable()
+        
+        private  void OnEnable()
         {
             foreach (var anim in animations)
             {
                 if (anim.method == AnimationGroup.Method.Add)
-                    skeletonAnimation.AnimationState.AddAnimation(anim.trackId, anim.animName, anim.loop, anim.delay);
+                    _anim.AnimationState.AddAnimation(anim.trackId, anim.animName, anim.loop, anim.delay);
                 else
-                    skeletonAnimation.AnimationState.SetAnimation(anim.trackId, anim.animName, anim.loop);
+                    _anim.AnimationState.SetAnimation(anim.trackId, anim.animName, anim.loop);
             }
         }
 

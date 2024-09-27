@@ -1,6 +1,6 @@
 {
     "name": "Accelib.Editor",
-    "rootNamespace": "Accelib",
+    "rootNamespace": "Accelib.Editor",
     "references": [
         "NaughtyAttributes.Core",
         "UniTask",
