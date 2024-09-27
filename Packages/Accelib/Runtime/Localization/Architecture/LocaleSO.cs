@@ -16,7 +16,9 @@ namespace Accelib.Localization.Architecture
         [field: SerializeField, ReadOnly] public int Count { get; private set; }
         
         [field: Header("딕셔너리")]
-        [field: SerializeField, HideInInspector] public StringStringDictionary TextDict { get; private set; }
+        [field: SerializeField]
+        [field: HideInInspector]
+        public StringStringDictionary TextDict { get; private set; }
 
         #if UNITY_EDITOR
         public void FromDictionary(Dictionary<string, string> dict)

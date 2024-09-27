@@ -1,4 +1,5 @@
 ﻿using System;
+using Accelib.Data;
 using UnityEngine;
 
 namespace Accelib.SerializableDictionary
@@ -8,6 +9,9 @@ namespace Accelib.SerializableDictionary
     
     [Serializable]
     public class StringColorDictionary : SerializableDictionary<string, Color> {}
+    
+    [Serializable]
+    public class StringColorGroupDictionary : SerializableDictionary<string, ColorGroup> {}
 
     [Serializable]
     public class ObjectColorDictionary : SerializableDictionary<UnityEngine.Object, Color> {}

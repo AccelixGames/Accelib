@@ -1,4 +1,5 @@
-﻿using DG.Tweening;
+﻿using Accelib.Data;
+using DG.Tweening;
 using NaughtyAttributes;
 using UnityEngine;
 
@@ -8,8 +9,9 @@ namespace Accelib.Effect
     {
         [Header("타겟")] 
         [SerializeField] private Transform target;
+        [SerializeField] private ShakeTweenConfig tweenConfig;
         
-        [Header("수치")]
+        [Header("(old)수치")]
         [SerializeField] private float duration = 1f;
         [SerializeField] private float strength = 1f;
         [SerializeField] private int vibrato = 30;
@@ -20,7 +22,8 @@ namespace Accelib.Effect
 
         [Button(enabledMode: EButtonEnableMode.Playmode)]
         public DG.Tweening.Tween DoShake() => 
-            target.DOShakePosition(duration, strength, vibrato, randomness, snapping, fadeOut, randomnessMode);
+            target.DOShakePosition(tweenConfig.duration, tweenConfig.strength, tweenConfig.vibrato, tweenConfig.randomness, 
+                tweenConfig.snapping, tweenConfig.fadeOut, tweenConfig.randomnessMode);
 
         private void Reset()
         {

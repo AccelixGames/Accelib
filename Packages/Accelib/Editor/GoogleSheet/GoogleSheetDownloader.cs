@@ -2,7 +2,7 @@
 using UnityEngine;
 using UnityEngine.Networking;
 
-namespace Accelix.Dialogue.Editor.GoogleSheet
+namespace Accelib.Editor.GoogleSheet
 {
     [CreateAssetMenu(fileName = "googleSheetDownloader", menuName = "Accelix-GoogleSheetDownloader", order = 0)]
     public class GoogleSheetDownloader : ScriptableObject
@@ -51,7 +51,7 @@ namespace Accelix.Dialogue.Editor.GoogleSheet
                 return null;
             }
             
-            //Debug.Log("[구글시트] 데이터 다운로드 성공!\n" + www.downloadHandler.text, this);
+            Debug.Log("[구글시트] 데이터 다운로드 성공!\n" + www.downloadHandler.text, this);
             return www.downloadHandler.text;
         }
     }

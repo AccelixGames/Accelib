@@ -4,7 +4,7 @@ using UnityEditor;
 using UnityEditor.Animations;
 using UnityEngine;
 
-namespace Accelix.Animation
+namespace Accelib.Animation
 {
     public static class AnimationEditorUtility
     {

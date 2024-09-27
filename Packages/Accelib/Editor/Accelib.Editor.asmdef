@@ -1,0 +1,26 @@
+{
+    "name": "Accelib.Editor",
+    "rootNamespace": "Accelib",
+    "references": [
+        "NaughtyAttributes.Core",
+        "UniTask",
+        "UniTask.DOTween",
+        "Unity.TextMeshPro",
+        "UniTask.TextMeshPro",
+        "DOTween.Modules",
+        "Accelib.Runtime"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [
+        "UNITASK_DOTWEEN_SUPPORT"
+    ],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

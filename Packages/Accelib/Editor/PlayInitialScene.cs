@@ -4,7 +4,7 @@ using UnityEditor.SceneManagement;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-namespace Editor
+namespace Accelib.Editor
 {
     /// <summary>
     /// 게임을 Initialize 씬부터 플레이한다.

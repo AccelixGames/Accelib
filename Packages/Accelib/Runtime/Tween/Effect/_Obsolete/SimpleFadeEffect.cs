@@ -18,7 +18,7 @@ namespace Accelib.Effect
         [Header("설정")] 
         [SerializeField] private FadeMode startFadeMode = FadeMode.None;
 
-        private DG.Tweening.Tween tween;
+        private Tweener _tween;
 
         private void OnEnable()
         {
@@ -28,7 +28,7 @@ namespace Accelib.Effect
                 FadeOut();
         }
 
-        private void OnDisable() => tween?.Kill();
+        private void OnDisable() => _tween?.Kill();
 
         public void ToggleFadeEffect(bool fadeIn)
         {
@@ -36,7 +36,7 @@ namespace Accelib.Effect
             else FadeOut(false);
         }
 
-        public DG.Tweening.Tween FadeIn(bool clearOnStart = true)
+        public Tweener FadeIn(bool clearOnStart = true)
         {
             group = GetComponent<CanvasGroup>();
             
@@ -46,15 +46,15 @@ namespace Accelib.Effect
                 group.alpha = 0f;
             }
             
-            tween?.Kill();
-            tween = group.DOFade(1f, config.duration)
+            _tween?.Kill();
+            _tween = group.DOFade(1f, config.duration)
                 .SetEase(config.easeA)
                 .SetDelay(config.delay);
 
-            return tween;
+            return _tween;
         }
 
-        public DG.Tweening.Tween FadeOut(bool clearOnStart = true)
+        public Tweener FadeOut(bool clearOnStart = true)
         {
             group = GetComponent<CanvasGroup>();
             
@@ -64,13 +64,13 @@ namespace Accelib.Effect
                 group.alpha = 1f;
             }
             
-            tween?.Kill();
-            tween = group.DOFade(0f, config.duration)
+            _tween?.Kill();
+            _tween = group.DOFade(0f, config.duration)
                 .SetEase(config.easeB)
                 .SetDelay(config.delay)
                 .OnComplete(() => gameObject.SetActive(false));
 
-            return tween;
+            return _tween;
         }
     }
 }

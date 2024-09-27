@@ -4,7 +4,7 @@ using System.Reflection;
 using UnityEditor;
 using UnityEngine;
 
-namespace Editor.SerializableDictionary
+namespace Accelib.Editor.SerializableDictionary
 {
 	public class SerializableDictionaryPropertyDrawer : PropertyDrawer
 	{
