@@ -16,6 +16,8 @@ namespace Accelib.Localization.Helper
         [SerializeField] private int fontMaterialId;
         public string LocaleKey => key;
 
+        public bool IsEnabled => enabled;
+
         // TMP
         private TMP_Text _tmp;
 

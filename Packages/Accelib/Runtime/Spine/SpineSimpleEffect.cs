@@ -1,5 +1,4 @@
 ﻿#if ACCELIX_SPINE
-using System;
 using Spine;
 using Spine.Unity;
 using UnityEngine;

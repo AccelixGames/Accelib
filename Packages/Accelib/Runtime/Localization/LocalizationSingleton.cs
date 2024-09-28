@@ -77,7 +77,7 @@ namespace Accelib.Localization
         public static LocaleFontData GetFontAssetStatic() => Instance?.currLocale?.FontData;
 
         /// <summary>키값에 알맞는 로컬라이징 문자열을 가져온다.</summary>
-        public string GetLocalizedString(string key)
+        public string GetLocalizedString(string key, Object ctx = null)
         {
             if(currLocale == null)
                 return NullString;
@@ -86,7 +86,7 @@ namespace Accelib.Localization
             if (!currLocale.TextDict.TryGetValue(key, out var result))
             {
                 // NULL 리턴
-                Deb.LogWarning($"키({key})의 로컬라이징 값을 가져올 수 없습니다. 현재 언어({currLanguage})");
+                Deb.LogWarning($"키({key})의 로컬라이징 값을 가져올 수 없습니다. 현재 언어({currLanguage})", ctx);
                 result = NullString;
             }
             
@@ -102,8 +102,15 @@ namespace Accelib.Localization
             // 변경 이벤트 발생
             foreach (var monoBehaviour in FindObjectsByType<MonoBehaviour>(FindObjectsSortMode.None))
             {
-                if(monoBehaviour.TryGetComponent<ILocaleChangedEventListener>(out var listener))
-                    listener.OnLocaleUpdated(GetLocalizedString(listener.LocaleKey), currLocale?.FontData);    
+                // 로케일 변경 이벤트 리스너 가져오기. 없다면 넘기기
+                if (!monoBehaviour.TryGetComponent<ILocaleChangedEventListener>(out var listener)) continue;
+                // 리스너가 비활 상태라면, 넘기기
+                if (!listener.IsEnabled) continue;
+                
+                // 로케일 문자열 가져와서,
+                var localizedString = GetLocalizedString(listener.LocaleKey, monoBehaviour);
+                // 업데이트 해주기
+                listener.OnLocaleUpdated(localizedString, currLocale?.FontData);
             } 
         }
         
