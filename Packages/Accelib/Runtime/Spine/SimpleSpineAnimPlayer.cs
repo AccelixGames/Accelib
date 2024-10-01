@@ -1,4 +1,4 @@
-﻿#if ACCELIX_SPINE
+#if ACCELIX_SPINE
 using Spine.Unity;
 using UnityEngine;
 
@@ -7,6 +7,10 @@ namespace Accelib.Spine
     //[RequireComponent(typeof(SkeletonAnimation))]
     public class SimpleSpineAnimPlayer : MonoBehaviour
     {
+        [Header("Play")]
+        [SerializeField] private bool playOnEnable = true;
+        
+        [Header("Option")]
         [SerializeField] private int trackId = 0;
         [SerializeField, SpineAnimation] private string animName;
         [SerializeField] private bool loop = true;
@@ -25,10 +29,16 @@ namespace Accelib.Spine
             }
         }
 
-        private void OnEnable()
+        public void SetAnimation()
         {
             _anim?.AnimationState.SetAnimation(trackId, animName, loop);
             _graphic?.AnimationState.SetAnimation(trackId, animName, loop);
+        }
+
+        private void OnEnable()
+        {
+            if (playOnEnable)
+                SetAnimation();
         }
     }
 }
