@@ -12,7 +12,7 @@ namespace Accelib.Effect
 
         private static readonly Vector3 Small = Vector3.one * 0.0001f;
 
-        private DG.Tweening.Tween _tween;
+        private Tweener _tween;
         
         private void OnEnable()
         {
@@ -31,9 +31,9 @@ namespace Accelib.Effect
         }
 
         [Button]
-        public void SetDisable()
+        public Tweener SetDisable()
         {
-            if(!gameObject.activeSelf) return;
+            if(!gameObject.activeSelf) return null;
             
             _tween?.Kill();
             
@@ -42,6 +42,8 @@ namespace Accelib.Effect
                 .SetDelay(config.delay)
                 .OnComplete(() => gameObject.SetActive(false))
                 .SetLink(gameObject);
+
+            return _tween;
         }
     }
 }
