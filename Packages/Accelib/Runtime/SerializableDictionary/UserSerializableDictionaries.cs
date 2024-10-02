@@ -12,6 +12,9 @@ namespace Accelib.SerializableDictionary
     
     [Serializable]
     public class StringColorGroupDictionary : SerializableDictionary<string, ColorGroup> {}
+    
+    [Serializable]
+    public class StringMaterialGroupDictionary : SerializableDictionary<string, Material> {}
 
     [Serializable]
     public class ObjectColorDictionary : SerializableDictionary<UnityEngine.Object, Color> {}

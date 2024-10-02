@@ -13,11 +13,13 @@ namespace Accelib.Spine
         [SerializeField] private List<AnimationGroup> animations;
 
         private SkeletonAnimation _anim;
+        private SkeletonGraphic _graphic;
 
         private void Awake()
         {
             _anim = GetComponent<SkeletonAnimation>();
-            if (_anim == null)
+            _graphic = GetComponent<SkeletonGraphic>();
+            if (_anim == null && _graphic == null)
             {
                 Debug.LogError("SkeletonAnimation이 없습니다.", this);
                 Destroy(this);
@@ -29,9 +31,15 @@ namespace Accelib.Spine
             foreach (var anim in animations)
             {
                 if (anim.method == AnimationGroup.Method.Add)
-                    _anim.AnimationState.AddAnimation(anim.trackId, anim.animName, anim.loop, anim.delay);
+                {
+                    _anim?.AnimationState.AddAnimation(anim.trackId, anim.animName, anim.loop, anim.delay);
+                    _graphic?.AnimationState.AddAnimation(anim.trackId, anim.animName, anim.loop, anim.delay);
+                }
                 else
-                    _anim.AnimationState.SetAnimation(anim.trackId, anim.animName, anim.loop);
+                {
+                    _anim?.AnimationState.SetAnimation(anim.trackId, anim.animName, anim.loop);
+                    _graphic?.AnimationState.SetAnimation(anim.trackId, anim.animName, anim.loop);
+                }
             }
         }
 
