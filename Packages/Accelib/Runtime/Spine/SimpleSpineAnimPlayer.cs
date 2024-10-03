@@ -28,17 +28,17 @@ namespace Accelib.Spine
                 Destroy(this);
             }
         }
+        
+        protected virtual void OnEnable()
+        {
+            if (playOnEnable)
+                SetAnimation();
+        }
 
         public void SetAnimation()
         {
             _anim?.AnimationState.SetAnimation(trackId, animName, loop);
             _graphic?.AnimationState.SetAnimation(trackId, animName, loop);
-        }
-
-        private void OnEnable()
-        {
-            if (playOnEnable)
-                SetAnimation();
         }
     }
 }

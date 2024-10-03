@@ -8,9 +8,9 @@ namespace Accelib.Editor.Audio
     [CanEditMultipleObjects]
     public class AudioRefSO_Editor : UnityEditor.Editor
     {
-        public override bool HasPreviewGUI() => ((AudioRefSO)target)?.Clip != null;
-
         private UnityEditor.Editor _editor;
+        
+        public override bool HasPreviewGUI() => ((AudioRefSO)target)?.Clip != null;
 
         public override void OnPreviewSettings()
         {
