@@ -1,12 +1,12 @@
 ﻿using System;
+using Accelib.Audio.Data._Base;
 using Accelib.Logging;
-using NaughtyAttributes;
 using UnityEngine;
 
 namespace Accelib.Audio.Data
 {
     [CreateAssetMenu(fileName = "(AudioRef) Name", menuName = "Accelib/AudioRef", order = 0)]
-    public class AudioRefSO : ScriptableObject
+    public class AudioRefSO_Default : ScriptableObject, IAudioRef
     {
         [field: Header("Clip")]
         [field: SerializeField] public AudioChannel Channel { get; private set; }
@@ -22,7 +22,6 @@ namespace Accelib.Audio.Data
 
         private bool Validate() => Clip != null;
         
-        [Button(enabledMode: EButtonEnableMode.Playmode)]
         public void Play()
         {
             if (!Validate())
@@ -34,7 +33,6 @@ namespace Accelib.Audio.Data
             AudioSingleton.Play(this);
         }
 
-        [Button(enabledMode: EButtonEnableMode.Playmode)]
         public void PlayOneShot()
         {
             if (!Validate())
@@ -47,13 +45,13 @@ namespace Accelib.Audio.Data
         }
 
 #if UNITY_EDITOR
-        public static AudioRefSO CreateAssetFromClip(AudioClip clip, string folderPath, bool autoSave = false)
+        public static AudioRefSO_Default CreateAssetFromClip(AudioClip clip, string folderPath, bool autoSave = false)
         {
             if (clip == null) return null;
 
             try
             {
-                var audioRef = CreateInstance<AudioRefSO>();
+                var audioRef = CreateInstance<AudioRefSO_Default>();
                 var name = clip.name.ToLowerInvariant();
 
                 audioRef.Clip = clip;

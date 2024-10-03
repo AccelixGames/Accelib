@@ -33,7 +33,7 @@ namespace Accelib.Editor.Audio
                 // 파일이 AudioClip인지 확인
                 var audioClip = AssetDatabase.LoadAssetAtPath<AudioClip>(filePath);
                 if (audioClip != null) 
-                    AudioRefSO.CreateAssetFromClip(audioClip, folderPath, false);
+                    AudioRefSO_Default.CreateAssetFromClip(audioClip, folderPath, false);
             }
             
             // 저장

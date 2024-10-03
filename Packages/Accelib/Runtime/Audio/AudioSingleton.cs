@@ -1,5 +1,6 @@
 ﻿using Accelib.Audio.Component;
 using Accelib.Audio.Data;
+using Accelib.Audio.Data._Base;
 using Accelib.Core;
 using Accelib.Logging;
 using AYellowpaper.SerializedCollections;
@@ -12,21 +13,23 @@ namespace Accelib.Audio
         [SerializeField, SerializedDictionary("채널", "유닛")]
         private SerializedDictionary<AudioChannel, AudioPlayerUnit> players;
 
-        internal static void Play(in AudioRefSO audioRef)
+        internal static void Play(in IAudioRef audioRef)
         {
+            if (audioRef?.Clip == null) return;
             if (!TryGetInstance(out var instance)) return;
             
             instance.GetPlayer(in audioRef)?.Play(in audioRef);
         }
 
-        internal static void PlayOneShot(in AudioRefSO audioRef)
+        internal static void PlayOneShot(in IAudioRef audioRef)
         {
+            if (audioRef?.Clip == null) return;
             if (!TryGetInstance(out var instance)) return;
             
             instance.GetPlayer(in audioRef)?.PlayOneShot(in audioRef);
         }
 
-        private AudioPlayerUnit GetPlayer(in AudioRefSO audioRef)
+        private AudioPlayerUnit GetPlayer(in IAudioRef audioRef)
         {
             // 가져오기 실패했다면,
             if (!players.TryGetValue(audioRef.Channel, out var player))
