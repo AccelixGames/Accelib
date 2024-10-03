@@ -15,7 +15,7 @@ namespace Accelib.Audio.Helper
         }
 
         [SerializeField] private Mode onEnableMode = Mode.None;
-        [SerializeField] private AudioRefSO_Default audioRef;
+        [SerializeField] private AudioRefSO audioRef;
 
         [Button(enabledMode: EButtonEnableMode.Playmode)] public void Play() => audioRef?.Play();
         [Button(enabledMode: EButtonEnableMode.Playmode)] public void PlayOneShot() => audioRef?.PlayOneShot();

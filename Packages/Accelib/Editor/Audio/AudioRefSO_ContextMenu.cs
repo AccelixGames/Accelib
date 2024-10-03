@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace Accelib.Editor.Audio
 {
-    public class AudioClipContextMenu : UnityEditor.Editor
+    public class AudioRefSO_ContextMenu : UnityEditor.Editor
     {
         private const string Path = "Assets/Accelib/AudioRef 생성";
         
@@ -33,7 +33,7 @@ namespace Accelib.Editor.Audio
                 // 파일이 AudioClip인지 확인
                 var audioClip = AssetDatabase.LoadAssetAtPath<AudioClip>(filePath);
                 if (audioClip != null) 
-                    AudioRefSO_Default.CreateAssetFromClip(audioClip, folderPath, false);
+                    AudioRefSO.CreateAssetFromClip(audioClip, folderPath, false);
             }
             
             // 저장

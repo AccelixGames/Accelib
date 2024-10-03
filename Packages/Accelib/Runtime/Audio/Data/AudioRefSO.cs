@@ -6,7 +6,7 @@ using UnityEngine;
 namespace Accelib.Audio.Data
 {
     [CreateAssetMenu(fileName = "(AudioRef) Name", menuName = "Accelib/AudioRef", order = 0)]
-    public class AudioRefSO_Default : ScriptableObject, IAudioRef
+    public class AudioRefSO : ScriptableObject, IAudioRef
     {
         [field: Header("Clip")]
         [field: SerializeField] public AudioChannel Channel { get; private set; }
@@ -45,13 +45,13 @@ namespace Accelib.Audio.Data
         }
 
 #if UNITY_EDITOR
-        public static AudioRefSO_Default CreateAssetFromClip(AudioClip clip, string folderPath, bool autoSave = false)
+        public static AudioRefSO CreateAssetFromClip(AudioClip clip, string folderPath, bool autoSave = false)
         {
             if (clip == null) return null;
 
             try
             {
-                var audioRef = CreateInstance<AudioRefSO_Default>();
+                var audioRef = CreateInstance<AudioRefSO>();
                 var name = clip.name.ToLowerInvariant();
 
                 audioRef.Clip = clip;

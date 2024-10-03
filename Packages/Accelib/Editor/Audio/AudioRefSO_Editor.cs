@@ -1,22 +1,20 @@
 ﻿using Accelib.Audio.Data;
-using Accelib.Logging;
 using UnityEditor;
 using UnityEngine;
-using UnityEngine.UIElements;
 
 namespace Accelib.Editor.Audio
 {
-    [CustomEditor(typeof(AudioRefSO_Default))]
+    [CustomEditor(typeof(AudioRefSO))]
     [CanEditMultipleObjects]
-    public class AudioRefSOEditor : UnityEditor.Editor
+    public class AudioRefSO_Editor : UnityEditor.Editor
     {
-        public override bool HasPreviewGUI() => ((AudioRefSO_Default)target)?.Clip != null;
+        public override bool HasPreviewGUI() => ((AudioRefSO)target)?.Clip != null;
 
         private UnityEditor.Editor _editor;
 
         public override void OnPreviewSettings()
         {
-            var clip = ((AudioRefSO_Default)target)?.Clip;
+            var clip = ((AudioRefSO)target)?.Clip;
             if (!clip) return;
 
             _editor ??= CreateEditor(clip);
@@ -25,7 +23,7 @@ namespace Accelib.Editor.Audio
 
         public override void OnPreviewGUI(Rect r, GUIStyle background)
         {
-            var clip = ((AudioRefSO_Default)target)?.Clip;
+            var clip = ((AudioRefSO)target)?.Clip;
             if (!clip) return;
             
             _editor ??= CreateEditor(clip);
