@@ -1,4 +1,5 @@
-﻿using DG.Tweening;
+﻿using Accelib.Audio.Data;
+using DG.Tweening;
 using NaughtyAttributes;
 using UnityEngine;
 
@@ -12,6 +13,10 @@ namespace Accelib.Transition.Effect
         [SerializeField] private float radius = 652f;
         [SerializeField] private RectTransform target;
         [SerializeField] private CanvasGroup loadingGroup;
+
+        [Header("Audio")]
+        [SerializeField] private AudioRefSO fadeStartSfx;
+        [SerializeField] private AudioRefSO fadeEndSfx;
 
         private Sequence _seq;
         
@@ -29,7 +34,8 @@ namespace Accelib.Transition.Effect
 
             _seq?.Kill();
             _seq = DOTween.Sequence().SetLink(gameObject)
-            .Append(target.DOSizeDelta(Vector2.zero, duration).SetEase(easeStart));
+                .Append(target.DOSizeDelta(Vector2.zero, duration).SetEase(easeStart))
+                .JoinCallback(() => fadeStartSfx?.PlayOneShot());
             
             if(loadingGroup)
                 _seq.Append(loadingGroup.DOFade(1f, canvasGroupDuration));
@@ -42,7 +48,9 @@ namespace Accelib.Transition.Effect
         {
             _seq?.Kill();
             _seq = DOTween.Sequence().SetLink(gameObject)
-                .Append(target.DOSizeDelta(Vector2.one * radius, duration).SetEase(easeEnd));
+                .Append(target.DOSizeDelta(Vector2.one * radius, duration).SetEase(easeEnd))
+                .JoinCallback(() => fadeEndSfx?.PlayOneShot());
+                
             if (loadingGroup)
                 _seq.Join(loadingGroup.DOFade(0f, canvasGroupDuration));
             _seq.OnComplete(() =>

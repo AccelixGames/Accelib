@@ -19,6 +19,11 @@ namespace Accelib.Audio.Data
 
         [field: SerializeField]
         public bool Loop { get; private set; } = false;
+        
+#if UNITY_EDITOR
+        [Header("Debug")]
+        [SerializeField] private bool showLog = false;
+#endif
 
         private bool Validate() => Clip != null;
         
@@ -31,6 +36,9 @@ namespace Accelib.Audio.Data
             }
 
             AudioSingleton.Play(this);
+#if UNITY_EDITOR
+            if(showLog) Deb.Log($"AudioRef.Play: {name}", this);
+#endif
         }
 
         public void PlayOneShot()
@@ -42,6 +50,9 @@ namespace Accelib.Audio.Data
             }
 
             AudioSingleton.PlayOneShot(this);
+#if UNITY_EDITOR
+            if(showLog) Deb.Log($"AudioRef.PlayOneShot: {name}", this);
+#endif
         }
 
 #if UNITY_EDITOR

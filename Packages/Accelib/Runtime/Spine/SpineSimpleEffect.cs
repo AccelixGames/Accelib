@@ -1,7 +1,9 @@
 ﻿#if ACCELIX_SPINE
+using System;
 using Spine;
 using Spine.Unity;
 using UnityEngine;
+using Event = Spine.Event;
 
 namespace Accelib.Spine
 {
@@ -17,11 +19,6 @@ namespace Accelib.Spine
         {
             if (endMode != EndMode.Loop) 
                 skeletonAnim.AnimationState.Complete += OnEnd;
-        }
-
-        private void OnEnable()
-        {
-            skeletonAnim.AnimationState.SetAnimation(0, defaultAnim, endMode == EndMode.Loop);
         }
 
         private void OnEnd(TrackEntry trackEntry)

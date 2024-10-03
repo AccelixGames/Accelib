@@ -17,7 +17,7 @@ namespace Accelib.Audio
         {
             if (audioRef?.Clip == null) return;
             if (!TryGetInstance(out var instance)) return;
-            
+
             instance.GetPlayer(in audioRef)?.Play(in audioRef);
         }
 
@@ -25,7 +25,7 @@ namespace Accelib.Audio
         {
             if (audioRef?.Clip == null) return;
             if (!TryGetInstance(out var instance)) return;
-            
+
             instance.GetPlayer(in audioRef)?.PlayOneShot(in audioRef);
         }
 
@@ -36,26 +36,26 @@ namespace Accelib.Audio
             {
                 // 생성
                 player = AudioPlayerUnit.CreateInstance(transform, $"(AudioPlayerUnit) {audioRef.Channel}");
-                
+
                 // 에러 체크
                 if (player == null)
                 {
                     Deb.LogError("AudioPlayerUnit 생성에 실패했습니다.", this);
                     return null;
                 }
-                
+
                 players.TryAdd(audioRef.Channel, player);
             }
 
             // 반환
             return player;
         }
-        
+
 #if UNITY_EDITOR
-        private void Reset()
-        {
-            gameObject.name = "(Singleton) Audio";
-        }
+        private void Reset() => gameObject.name = "(Singleton) Audio";
+
+        [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
+        private static void Init() => Initialize();
 #endif
     }
 }
