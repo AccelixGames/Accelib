@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using Accelib.Logging;
+using UnityEngine;
 
 namespace Accelib.Core
 {
@@ -8,6 +9,19 @@ namespace Accelib.Core
         [SerializeField] private bool dontDestroyOnLoad = false;
         
         public static T Instance { get; protected set; }
+
+        protected static bool TryGetInstance(out T instance)
+        {
+            if (Instance == null)
+            {
+                Deb.LogError($"MonoSingleton<{typeof(T).Name}> 의 instance 가 없습니다.");
+                instance = null;
+                return false;
+            }
+            
+            instance = Instance;
+            return true;
+        }
         
         protected virtual void Awake()
         {
