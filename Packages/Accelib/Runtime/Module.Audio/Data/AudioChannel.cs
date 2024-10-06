@@ -1,5 +1,5 @@
 ﻿// ReSharper disable InconsistentNaming
-namespace Accelib.Audio.Data
+namespace Accelib.Module.Audio.Data
 {
     public enum AudioChannel
     {

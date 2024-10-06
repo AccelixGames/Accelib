@@ -1,12 +1,12 @@
 ﻿using Accelib.Core;
-using Accelib.Transition.Effect;
+using Accelib.Module.Transition.Effect;
 using DG.Tweening;
 using NaughtyAttributes;
 using UnityEngine;
 
-namespace Accelib.Transition
+namespace Accelib.Module.Transition
 {
-    public class TransitionHandler : MonoSingleton<TransitionHandler>
+    public class TransitionSingleton : MonoSingleton<TransitionSingleton>
     {
         [Header("상태")]
         [SerializeField] private TransitionEffect targetEffect;

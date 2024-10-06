@@ -1,7 +1,7 @@
 ﻿using NaughtyAttributes;
 using UnityEngine;
 
-namespace Accelib.Localization.Helper
+namespace Accelib.Module.Localization.Helper
 {
     /// <summary>
     /// 언어를 변경해주는 심플한 도구.

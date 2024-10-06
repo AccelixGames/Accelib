@@ -1,10 +1,9 @@
-﻿using System;
-using System.Linq;
-using Accelib.Localization.Architecture;
+﻿using System.Linq;
+using Accelib.Module.Localization.Architecture;
 using TMPro;
 using UnityEngine;
 
-namespace Accelib.Localization._Test
+namespace Accelib.Module.Localization._Test
 {
     public class Test_TMPFontAsset : MonoBehaviour
     {

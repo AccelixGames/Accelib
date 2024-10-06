@@ -1,9 +1,9 @@
-﻿using Accelib.Localization.Architecture;
+﻿using Accelib.Module.Localization.Architecture;
 using NaughtyAttributes;
 using TMPro;
 using UnityEngine;
 
-namespace Accelib.Localization.Helper
+namespace Accelib.Module.Localization.Helper
 {
     /// <summary>
     /// 언어 변경에 대응하는 TMP

@@ -1,10 +1,9 @@
 ﻿using System;
-using Accelib.Audio.Data;
-using Accelib.Audio.Data._Base;
 using Accelib.Logging;
+using Accelib.Module.Audio.Data._Base;
 using UnityEngine;
 
-namespace Accelib.Audio.Component
+namespace Accelib.Module.Audio.Component
 {
     [RequireComponent(typeof(AudioSource))]
     internal class AudioPlayerUnit : MonoBehaviour

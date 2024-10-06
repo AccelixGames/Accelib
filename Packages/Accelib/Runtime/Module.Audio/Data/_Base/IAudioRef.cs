@@ -1,7 +1,6 @@
-﻿using NaughtyAttributes;
-using UnityEngine;
+﻿using UnityEngine;
 
-namespace Accelib.Audio.Data._Base
+namespace Accelib.Module.Audio.Data._Base
 {
     public interface IAudioRef
     {

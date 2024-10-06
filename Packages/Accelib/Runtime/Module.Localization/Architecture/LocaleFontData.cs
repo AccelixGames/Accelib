@@ -2,7 +2,7 @@
 using TMPro;
 using UnityEngine;
 
-namespace Accelib.Localization.Architecture
+namespace Accelib.Module.Localization.Architecture
 {
     [System.Serializable]
     public class LocaleFontData

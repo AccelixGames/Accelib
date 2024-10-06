@@ -18,5 +18,7 @@ namespace Accelib.Extensions
         }
         
         public static long UtcTotalSec() => (long)(DateTime.UtcNow - DateTime.UnixEpoch).TotalSeconds;
+        
+        public static long TotalSec(this DateTime dateTime) => (long)(dateTime - DateTime.UnixEpoch).TotalSeconds;
     }
 }

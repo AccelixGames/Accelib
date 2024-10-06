@@ -1,14 +1,12 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using Accelib.Core;
-using Accelib.Localization.Architecture;
 using Accelib.Logging;
+using Accelib.Module.Localization.Architecture;
 using NaughtyAttributes;
-using TMPro;
 using UnityEngine;
-using UnityEngine.TextCore.Text;
 
-namespace Accelib.Localization
+namespace Accelib.Module.Localization
 {
     public class LocalizationSingleton : MonoSingleton<LocalizationSingleton>
     {

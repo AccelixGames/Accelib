@@ -1,9 +1,9 @@
 ﻿using System;
-using Accelib.Audio.Data._Base;
 using Accelib.Logging;
+using Accelib.Module.Audio.Data._Base;
 using UnityEngine;
 
-namespace Accelib.Audio.Data
+namespace Accelib.Module.Audio.Data
 {
     [CreateAssetMenu(fileName = "(AudioRef) Name", menuName = "Accelib/AudioRef", order = 0)]
     public class AudioRefSO : ScriptableObject, IAudioRef

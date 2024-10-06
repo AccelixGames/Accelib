@@ -1,6 +1,4 @@
-﻿using TMPro;
-
-namespace Accelib.Localization.Architecture
+﻿namespace Accelib.Module.Localization.Architecture
 {
     /// <summary>
     /// 언어 변경 이벤트 수신자

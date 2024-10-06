@@ -1,9 +1,8 @@
-﻿using System;
-using Accelib.Audio.Data;
+﻿using Accelib.Module.Audio.Data;
 using NaughtyAttributes;
 using UnityEngine;
 
-namespace Accelib.Audio.Helper
+namespace Accelib.Module.Audio.Helper
 {
     public class SimpleAudioPlayer : MonoBehaviour
     {

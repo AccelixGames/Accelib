@@ -2,7 +2,7 @@
 using NaughtyAttributes;
 using UnityEngine;
 
-namespace Accelib.Transition.Effect
+namespace Accelib.Module.Transition.Effect
 {
     internal  class TransitionEffect_Pop : TransitionEffect
     {

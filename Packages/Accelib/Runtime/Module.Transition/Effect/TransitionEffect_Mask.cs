@@ -1,9 +1,9 @@
-﻿using Accelib.Audio.Data;
+﻿using Accelib.Module.Audio.Data;
 using DG.Tweening;
 using NaughtyAttributes;
 using UnityEngine;
 
-namespace Accelib.Transition.Effect
+namespace Accelib.Module.Transition.Effect
 {
     public class TransitionEffect_Mask : TransitionEffect
     {

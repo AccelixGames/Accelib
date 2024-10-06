@@ -4,7 +4,7 @@ using AYellowpaper.SerializedCollections;
 using NaughtyAttributes;
 using UnityEngine;
 
-namespace Accelib.Localization.Architecture
+namespace Accelib.Module.Localization.Architecture
 {
     [CreateAssetMenu(fileName = "Locale-", menuName = "Meow/LocaleSO")]
     public class LocaleSO : ScriptableObject

@@ -2,7 +2,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace Accelib.Transition.Effect
+namespace Accelib.Module.Transition.Effect
 {
     internal class TransitionEffect_Door : TransitionEffect
     {

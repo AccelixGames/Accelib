@@ -1,12 +1,12 @@
-﻿using Accelib.Audio.Component;
-using Accelib.Audio.Data;
-using Accelib.Audio.Data._Base;
-using Accelib.Core;
+﻿using Accelib.Core;
 using Accelib.Logging;
+using Accelib.Module.Audio.Component;
+using Accelib.Module.Audio.Data;
+using Accelib.Module.Audio.Data._Base;
 using AYellowpaper.SerializedCollections;
 using UnityEngine;
 
-namespace Accelib.Audio
+namespace Accelib.Module.Audio
 {
     public class AudioSingleton : MonoSingleton<AudioSingleton>
     {

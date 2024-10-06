@@ -1,11 +1,11 @@
-﻿using System;
+﻿#if ACCELIX_SPINE
+using System;
 using Accelib.Extensions;
 using Accelib.Helper;
 using NaughtyAttributes;
 using Spine.Unity;
 using UnityEngine;
 
-#if ACCELIX_SPINE
 namespace Accelib.Spine
 {
     public class SimpleSpineAnimPlayer_Random : SimpleSpineAnimPlayer

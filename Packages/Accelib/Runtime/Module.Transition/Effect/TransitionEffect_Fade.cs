@@ -2,7 +2,7 @@
 using NaughtyAttributes;
 using UnityEngine;
 
-namespace Accelib.Transition.Effect
+namespace Accelib.Module.Transition.Effect
 {
     /// <summary>
     /// 페이드 이펙트

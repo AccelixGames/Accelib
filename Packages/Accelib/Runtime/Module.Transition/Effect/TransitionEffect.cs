@@ -1,7 +1,7 @@
 ﻿using DG.Tweening;
 using UnityEngine;
 
-namespace Accelib.Transition.Effect
+namespace Accelib.Module.Transition.Effect
 {
     public abstract class TransitionEffect : MonoBehaviour
     {
