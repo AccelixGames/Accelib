@@ -7,7 +7,7 @@ using UnityEngine;
 namespace Accelib.Effect
 {
     [RequireComponent(typeof(CanvasGroup))]
-    [Obsolete("대신 "+nameof(SimpleEffectTween_Fade)+"을 사용하세요.")]
+    // [Obsolete("대신 "+nameof(SimpleEffectTween_Fade)+"을 사용하세요.")]
     public class SimpleFadeEffect : MonoBehaviour
     {
         private enum FadeMode { In, Out, None }

@@ -7,7 +7,7 @@ using UnityEngine;
 namespace Accelib.Effect
 {
     [RequireComponent(typeof(RectTransform))]
-    [Obsolete("대신 "+nameof(SimpleEffectTween_MoveRectTransform)+"을 사용하세요.")]
+    // [Obsolete("대신 "+nameof(SimpleEffectTween_MoveRectTransform)+"을 사용하세요.")]
     public class SimpleMoveEffect : MonoBehaviour
     {
         private enum AutoStart { In = 1, Out = 2, False = 0}
