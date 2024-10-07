@@ -5,11 +5,12 @@ using UnityEngine;
 namespace Accelib.Spine.Architecture
 {
     [System.Serializable]
-    public class SpineAnimationGroup
+    public class SpineAnimationRefGroup
     {
+            
         public SpineAnimMethod method = SpineAnimMethod.Set;
         [Range(0, 5)] public int trackId = 0;
-        [SpineAnimation(dataField = "skeletonDataAsset")] public string animName;
+        public AnimationReferenceAsset animRef;
         public bool loop = false;
         [ShowIf(nameof(method), SpineAnimMethod.Add), Range(0f, 5f)]
         public float delay = 0f;

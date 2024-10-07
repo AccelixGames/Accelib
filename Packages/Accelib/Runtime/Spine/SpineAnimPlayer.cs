@@ -31,7 +31,7 @@ namespace Accelib.Spine
         {
             foreach (var anim in animations)
             {
-                if (anim.method == SpineAnimationGroup.Method.Add)
+                if (anim.method == SpineAnimMethod.Add)
                 {
                     _anim?.AnimationState.AddAnimation(anim.trackId, anim.animName, anim.loop, anim.delay);
                     _graphic?.AnimationState.AddAnimation(anim.trackId, anim.animName, anim.loop, anim.delay);
