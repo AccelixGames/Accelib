@@ -27,7 +27,7 @@ namespace Accelib.Module.Audio.Helper
 
         private void Reset()
         {
-            gameObject.name = "(SimpleAudioPlayer) Default";
+            // gameObject.name = "(SimpleAudioPlayer) Default";
         }
     }
 }

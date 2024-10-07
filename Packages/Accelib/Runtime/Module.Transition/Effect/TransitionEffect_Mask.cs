@@ -7,12 +7,14 @@ namespace Accelib.Module.Transition.Effect
 {
     public class TransitionEffect_Mask : TransitionEffect
     {
-        [SerializeField, Range(0.01f, 5f)] private float canvasGroupDuration = 0.1f;
         
         [Header("Effect")]
         [SerializeField] private float radius = 652f;
         [SerializeField] private RectTransform target;
+        
+        [Header("Loading Group")]
         [SerializeField] private CanvasGroup loadingGroup;
+        [SerializeField, Range(0.01f, 5f)] private float canvasGroupDuration = 0.2f;
 
         [Header("Audio")]
         [SerializeField] private AudioRefSO fadeStartSfx;
