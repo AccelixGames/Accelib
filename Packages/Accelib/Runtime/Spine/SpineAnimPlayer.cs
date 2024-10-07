@@ -1,6 +1,7 @@
 ﻿#if ACCELIX_SPINE
 using System;
 using System.Collections.Generic;
+using Accelib.Spine.Architecture;
 using NaughtyAttributes;
 using Spine.Unity;
 using UnityEngine;
@@ -10,7 +11,7 @@ namespace Accelib.Spine
     //[RequireComponent(typeof(SkeletonAnimation))]
     public class SpineAnimPlayer : MonoBehaviour
     {
-        [SerializeField] private List<AnimationGroup> animations;
+        [SerializeField] private List<SpineAnimationGroup> animations;
 
         private SkeletonAnimation _anim;
         private SkeletonGraphic _graphic;
@@ -30,7 +31,7 @@ namespace Accelib.Spine
         {
             foreach (var anim in animations)
             {
-                if (anim.method == AnimationGroup.Method.Add)
+                if (anim.method == SpineAnimationGroup.Method.Add)
                 {
                     _anim?.AnimationState.AddAnimation(anim.trackId, anim.animName, anim.loop, anim.delay);
                     _graphic?.AnimationState.AddAnimation(anim.trackId, anim.animName, anim.loop, anim.delay);
@@ -41,19 +42,6 @@ namespace Accelib.Spine
                     _graphic?.AnimationState.SetAnimation(anim.trackId, anim.animName, anim.loop);
                 }
             }
-        }
-
-        [Serializable]
-        private class AnimationGroup
-        {
-            public enum Method {Set, Add}
-            
-            public Method method = Method.Set;
-            [Range(0, 5)] public int trackId = 0;
-            [SpineAnimation] public string animName;
-            public bool loop = false;
-            [ShowIf(nameof(method), Method.Add), Range(0f, 5f)]
-            public float delay = 0f;
         }
     }
 }
