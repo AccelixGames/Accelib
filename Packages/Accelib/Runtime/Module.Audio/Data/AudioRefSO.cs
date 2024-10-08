@@ -27,7 +27,7 @@ namespace Accelib.Module.Audio.Data
 
         private bool Validate() => Clip != null;
         
-        public void Play()
+        public void Play(bool fade = false)
         {
             if (!Validate())
             {
@@ -35,7 +35,7 @@ namespace Accelib.Module.Audio.Data
                 return;
             }
 
-            AudioSingleton.Play(this);
+            AudioSingleton.Play(this, fade);
 #if UNITY_EDITOR
             if(showLog) Deb.Log($"AudioRef.Play: {name}", this);
 #endif
@@ -54,6 +54,35 @@ namespace Accelib.Module.Audio.Data
             if(showLog) Deb.Log($"AudioRef.PlayOneShot: {name}", this);
 #endif
         }
+        
+        public void SwitchFade()
+        {
+            if (!Validate())
+            {
+                Deb.LogWarning($"Invalid AudioRef: {name}", this);
+                return;
+            }
+            
+            AudioSingleton.SwitchFade(this);
+#if UNITY_EDITOR
+            if(showLog) Deb.Log($"AudioRef.SwitchFade: {name}", this);
+#endif
+        }
+
+        public void Stop(bool fade = false)
+        {
+            if (!Validate())
+            {
+                Deb.LogWarning($"Invalid AudioRef: {name}", this);
+                return;
+            }
+
+            AudioSingleton.Stop(this, fade);
+#if UNITY_EDITOR
+            if(showLog) Deb.Log($"AudioRef.Play: {name}", this);
+#endif
+        }
+        
 
 #if UNITY_EDITOR
         public static AudioRefSO CreateAssetFromClip(AudioClip clip, string folderPath, bool autoSave = false)

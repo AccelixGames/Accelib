@@ -1,32 +1,51 @@
 ﻿using Accelib.Core;
+using Accelib.Data;
 using Accelib.Logging;
 using Accelib.Module.Audio.Component;
 using Accelib.Module.Audio.Data;
 using Accelib.Module.Audio.Data._Base;
 using AYellowpaper.SerializedCollections;
 using UnityEngine;
+// ReSharper disable Unity.PerformanceCriticalCodeInvocation
 
 namespace Accelib.Module.Audio
 {
     public class AudioSingleton : MonoSingleton<AudioSingleton>
     {
+        [SerializeField] private EasePairTweenConfig fadeTweenConfig;
+        
         [SerializeField, SerializedDictionary("채널", "유닛")]
         private SerializedDictionary<AudioChannel, AudioPlayerUnit> players;
 
-        internal static void Play(in IAudioRef audioRef)
+        internal static void Play(in IAudioRef audioRef, bool fade)
         {
-            if (audioRef?.Clip == null) return;
+            if (!audioRef?.Clip) return;
             if (!TryGetInstance(out var instance)) return;
 
-            instance.GetPlayer(in audioRef)?.Play(in audioRef);
+            instance.GetPlayer(in audioRef)?.Play(audioRef, fade);
         }
 
         internal static void PlayOneShot(in IAudioRef audioRef)
         {
-            if (audioRef?.Clip == null) return;
+            if (!audioRef?.Clip) return;
             if (!TryGetInstance(out var instance)) return;
 
-            instance.GetPlayer(in audioRef)?.PlayOneShot(in audioRef);
+            instance.GetPlayer(in audioRef)?.PlayOneShot(audioRef);
+        }
+
+        internal static void Stop(in IAudioRef audioRef, bool fade)
+        {
+            if (!TryGetInstance(out var instance)) return;
+            
+            instance.GetPlayer(in audioRef)?.Stop(fade);
+        }
+
+        internal static void SwitchFade(in IAudioRef audioRef)
+        {
+            if (audioRef?.Clip == null) return;
+            if (!TryGetInstance(out var instance)) return;
+            
+            instance.GetPlayer(in audioRef)?.SwitchFade(audioRef);
         }
 
         private AudioPlayerUnit GetPlayer(in IAudioRef audioRef)
@@ -35,7 +54,7 @@ namespace Accelib.Module.Audio
             if (!players.TryGetValue(audioRef.Channel, out var player))
             {
                 // 생성
-                player = AudioPlayerUnit.CreateInstance(transform, $"(AudioPlayerUnit) {audioRef.Channel}");
+                player = AudioPlayerUnit.CreateInstance(transform, $"(AudioPlayerUnit) {audioRef.Channel}", fadeTweenConfig);
 
                 // 에러 체크
                 if (player == null)

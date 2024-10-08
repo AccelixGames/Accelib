@@ -45,5 +45,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   dontDestroyOnLoad: 1
+  fadeTweenConfig: {fileID: 11400000, guid: 55b815ef59ed6274ca163273ab58f785, type: 2}
   players:
     _serializedList: []
