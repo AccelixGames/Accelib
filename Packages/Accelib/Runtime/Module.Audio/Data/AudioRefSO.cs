@@ -55,7 +55,7 @@ namespace Accelib.Module.Audio.Data
 #endif
         }
         
-        public void SwitchFade()
+        public void SwitchFade(bool skipOnSame = true)
         {
             if (!Validate())
             {
@@ -63,7 +63,7 @@ namespace Accelib.Module.Audio.Data
                 return;
             }
             
-            AudioSingleton.SwitchFade(this);
+            AudioSingleton.SwitchFade(this, skipOnSame);
 #if UNITY_EDITOR
             if(showLog) Deb.Log($"AudioRef.SwitchFade: {name}", this);
 #endif

@@ -96,7 +96,7 @@ namespace Accelib.Module.Audio.Component
             }
         }
 
-        internal Sequence SwitchFade(IAudioRef audioRef)
+        internal void SwitchFade(IAudioRef audioRef, bool skipOnSame)
         {
             _seq?.Kill();
             _seq = DOTween.Sequence();
@@ -104,6 +104,10 @@ namespace Accelib.Module.Audio.Component
             // 현재 재생중이라면,
             if (source.isPlaying)
             {
+                // 동일한 것 재생시 스킵
+                if (skipOnSame && audioRef.Clip == source.clip)
+                    return;
+                
                 // 볼륨 줄이며 멈추는 트윈 추가
                 _seq.Append(StopFadeOut());
             }
@@ -123,8 +127,6 @@ namespace Accelib.Module.Audio.Component
             
             // 볼륨 키우며 재생하는 트윈 추가
             _seq.Append(PlayFadeIn(audioRef));
-
-            return _seq;
         }
 
         private Tweener PlayFadeIn(IAudioRef audioRef) => DOTween

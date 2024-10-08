@@ -40,12 +40,12 @@ namespace Accelib.Module.Audio
             instance.GetPlayer(in audioRef)?.Stop(fade);
         }
 
-        internal static void SwitchFade(in IAudioRef audioRef)
+        internal static void SwitchFade(in IAudioRef audioRef, bool skipOnSame)
         {
             if (audioRef?.Clip == null) return;
             if (!TryGetInstance(out var instance)) return;
             
-            instance.GetPlayer(in audioRef)?.SwitchFade(audioRef);
+            instance.GetPlayer(in audioRef)?.SwitchFade(audioRef, skipOnSame);
         }
 
         private AudioPlayerUnit GetPlayer(in IAudioRef audioRef)
