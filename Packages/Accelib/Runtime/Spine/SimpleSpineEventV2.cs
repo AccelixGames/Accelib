@@ -5,29 +5,31 @@ using Spine;
 using Spine.Unity;
 using UnityEngine;
 using UnityEngine.Events;
-using AnimationState = UnityEngine.AnimationState;
+using AnimationState = Spine.AnimationState;
 using Event = Spine.Event;
 
 namespace Accelib.Spine
 {
-    public class SimpleSpineEvent : MonoBehaviour
+    public class SimpleSpineEventV2 : MonoBehaviour
     {
         [System.Serializable]
         private class EventGroup
         {
-            [SpineEvent(dataField = nameof(animator))] public string name;
+            [SpineEvent(dataField = nameof(dataAsset))] public string name;
             public UnityEvent onEvent;
         }
         
         [System.Serializable]
         private class AnimGroup
         {
-            [SpineAnimation(dataField = nameof(animator))] public string name;
+            [SpineAnimation(dataField = nameof(dataAsset))] public string name;
             public UnityEvent onEvent;
         }
-        
+
         [Header("Target")]
+        [SerializeField] private SkeletonDataAsset dataAsset;
         [SerializeField] private SkeletonAnimation animator;
+        [SerializeField] private SkeletonGraphic graphic;
 
         [Header("Event")]
         [Tooltip("애니메이션 재생이 시작될 때 (캔슬 포함)")]
@@ -39,23 +41,31 @@ namespace Accelib.Spine
         [Tooltip("커스텀 이벤트 발생 시")]
         [SerializeField] private EventGroup[] onEvent;
 
+        private AnimationState _animState;
+
+        private void Awake()
+        {
+            _animState = animator?.AnimationState ?? graphic?.AnimationState;
+        }
+
         private void OnEnable()
         {
-            if (animator == null) return;
-            animator.AnimationState.Start += OnStart; 
-            animator.AnimationState.End += OnEnd;
-            animator.AnimationState.Complete += OnComplete;
-            animator.AnimationState.Event += OnSpineEvent;
+            if (_animState == null) return;
+            
+            _animState.Start += OnStart; 
+            _animState.End += OnEnd;
+            _animState.Complete += OnComplete;
+            _animState.Event += OnSpineEvent;
         }
         
         private void OnDisable()
         {
-            if (animator == null) return;
+            if (_animState == null) return;
             
-            animator.AnimationState.Start -= OnStart; 
-            animator.AnimationState.End -= OnEnd;
-            animator.AnimationState.Complete -= OnComplete;
-            animator.AnimationState.Event -= OnSpineEvent;
+            _animState.Start -= OnStart; 
+            _animState.End -= OnEnd;
+            _animState.Complete -= OnComplete;
+            _animState.Event -= OnSpineEvent;
         }
 
         private void OnStart(TrackEntry trackEntry) => InvokeAll(onStart, trackEntry.Animation.Name);
@@ -73,7 +83,13 @@ namespace Accelib.Spine
             }
         }
         
-        private void Reset() => animator ??= GetComponent<SkeletonAnimation>();
+        private void Reset()
+        {
+            animator ??= GetComponent<SkeletonAnimation>();
+            graphic ??= GetComponent<SkeletonGraphic>();
+
+            dataAsset = animator?.SkeletonDataAsset ?? graphic?.SkeletonDataAsset;
+        }
 
         private void InvokeAll(AnimGroup[] groups, string key)
         {
