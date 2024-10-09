@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using Accelib.Core;
 using Accelib.Module.Transition.Effect;
 using DG.Tweening;
@@ -15,6 +16,7 @@ namespace Accelib.Module.Transition
         [SerializeField, ReadOnly] private int currIndex;
 
         private Sequence _seq;
+        public static bool IsActive => Instance?.targetEffects.Any(x => x.IsActive) ?? false;
 
         private void Start()
         {

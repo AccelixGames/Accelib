@@ -10,6 +10,8 @@ namespace Accelib.Module.Transition.Effect
         [SerializeField] protected Ease easeStart = Ease.Linear;
         [SerializeField] protected Ease easeEnd = Ease.Linear;
         [SerializeField, Range(0.01f, 5f)] protected float duration = 0.2f;
+
+        public bool IsActive => canvas.gameObject.activeSelf;
         
         public abstract Sequence StartTransition();
         
