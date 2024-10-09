@@ -1,8 +1,5 @@
-﻿using System;
-using Accelib.Tween;
-using NaughtyAttributes;
+﻿using NaughtyAttributes;
 using UnityEngine;
-using UnityEngine.Serialization;
 
 namespace Accelib.Effect
 {
@@ -10,6 +7,7 @@ namespace Accelib.Effect
     {
         [SerializeField] private float height;
         [SerializeField] private float duration;
+        [SerializeField, Range(0f, 1f)] private float offset = 0f;
         [SerializeField] private AnimationCurve curve;
 
         [Header("")]
@@ -47,7 +45,7 @@ namespace Accelib.Effect
                 timer -= duration * 2f;
 
             var normal = timer / duration;
-            var eval = curve.Evaluate(normal);
+            var eval = curve.Evaluate(normal + offset);
 
             localPos.y = eval * height;
             if (_rt == null)
