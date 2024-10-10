@@ -5,6 +5,7 @@ using Accelib.Module.Audio.Component;
 using Accelib.Module.Audio.Data;
 using Accelib.Module.Audio.Data._Base;
 using AYellowpaper.SerializedCollections;
+using Cysharp.Threading.Tasks;
 using UnityEngine;
 // ReSharper disable Unity.PerformanceCriticalCodeInvocation
 
@@ -40,6 +41,13 @@ namespace Accelib.Module.Audio
             instance.GetPlayer(in audioRef)?.Stop(fade);
         }
 
+        public static void StopChannel(AudioChannel channel, bool fade)
+        {
+            if (!TryGetInstance(out var instance)) return;
+
+            instance.GetPlayer(channel)?.Stop(fade);
+        }
+
         internal static void SwitchFade(in IAudioRef audioRef, bool skipOnSame)
         {
             if (audioRef?.Clip == null) return;
@@ -48,13 +56,16 @@ namespace Accelib.Module.Audio
             instance.GetPlayer(in audioRef)?.SwitchFade(audioRef, skipOnSame);
         }
 
-        private AudioPlayerUnit GetPlayer(in IAudioRef audioRef)
+        private AudioPlayerUnit GetPlayer(in IAudioRef audioRef) => 
+            audioRef != null ? GetPlayer(audioRef.Channel) : null;
+
+        private AudioPlayerUnit GetPlayer(AudioChannel channel)
         {
             // 가져오기 실패했다면,
-            if (!players.TryGetValue(audioRef.Channel, out var player))
+            if (!players.TryGetValue(channel, out var player))
             {
                 // 생성
-                player = AudioPlayerUnit.CreateInstance(transform, $"(AudioPlayerUnit) {audioRef.Channel}", fadeTweenConfig);
+                player = AudioPlayerUnit.CreateInstance(transform, $"(AudioPlayerUnit) {channel}", fadeTweenConfig);
 
                 // 에러 체크
                 if (player == null)
@@ -63,7 +74,7 @@ namespace Accelib.Module.Audio
                     return null;
                 }
 
-                players.TryAdd(audioRef.Channel, player);
+                players.TryAdd(channel, player);
             }
 
             // 반환
