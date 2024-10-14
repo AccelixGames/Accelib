@@ -18,7 +18,7 @@ namespace Accelib.Module.Audio
         [SerializeField, SerializedDictionary("채널", "유닛")]
         private SerializedDictionary<AudioChannel, AudioPlayerUnit> players;
 
-        internal static void Play(in IAudioRef audioRef, bool fade)
+        internal static void Play(in AudioRefBase audioRef, bool fade)
         {
             if (!audioRef?.Clip) return;
             if (!TryGetInstance(out var instance)) return;
@@ -26,7 +26,7 @@ namespace Accelib.Module.Audio
             instance.GetPlayer(in audioRef)?.Play(audioRef, fade);
         }
 
-        internal static void PlayOneShot(in IAudioRef audioRef)
+        internal static void PlayOneShot(in AudioRefBase audioRef)
         {
             if (!audioRef?.Clip) return;
             if (!TryGetInstance(out var instance)) return;
@@ -34,7 +34,7 @@ namespace Accelib.Module.Audio
             instance.GetPlayer(in audioRef)?.PlayOneShot(audioRef);
         }
 
-        internal static void Stop(in IAudioRef audioRef, bool fade)
+        internal static void Stop(in AudioRefBase audioRef, bool fade)
         {
             if (!TryGetInstance(out var instance)) return;
             
@@ -48,7 +48,7 @@ namespace Accelib.Module.Audio
             instance.GetPlayer(channel)?.Stop(fade);
         }
 
-        internal static void SwitchFade(in IAudioRef audioRef, bool skipOnSame)
+        internal static void SwitchFade(in AudioRefBase audioRef, bool skipOnSame)
         {
             if (audioRef?.Clip == null) return;
             if (!TryGetInstance(out var instance)) return;
@@ -56,8 +56,8 @@ namespace Accelib.Module.Audio
             instance.GetPlayer(in audioRef)?.SwitchFade(audioRef, skipOnSame);
         }
 
-        private AudioPlayerUnit GetPlayer(in IAudioRef audioRef) => 
-            audioRef != null ? GetPlayer(audioRef.Channel) : null;
+        private AudioPlayerUnit GetPlayer(in AudioRefBase audioRef) => 
+            audioRef ? GetPlayer(audioRef.Channel) : null;
 
         private AudioPlayerUnit GetPlayer(AudioChannel channel)
         {

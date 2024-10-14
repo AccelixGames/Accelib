@@ -2,89 +2,42 @@
 using Accelib.Logging;
 using Accelib.Module.Audio.Data._Base;
 using UnityEngine;
+using UnityEngine.Audio;
+using UnityEngine.Serialization;
 
 namespace Accelib.Module.Audio.Data
 {
     [CreateAssetMenu(fileName = "(AudioRef) Name", menuName = "Accelib/AudioRef", order = 0)]
-    public class AudioRefSO : ScriptableObject, IAudioRef
+    public class AudioRefSO : AudioRefBase
     {
-        [field: Header("Clip")]
-        [field: SerializeField] public AudioChannel Channel { get; private set; }
+        [field: Header("Resource")][field:FormerlySerializedAs("<Channel>k__BackingField")]
+        [field: SerializeField] public new AudioChannel _Channel { get; private set; }
 
-        [field: SerializeField] public AudioClip Clip { get; private set; }
+        [field:FormerlySerializedAs("<Clip>k__BackingField")]
+        [field: SerializeField] public new AudioClip _Clip { get; private set; }
 
         [field: Header("Option")]
+        [field:FormerlySerializedAs("<Volume>k__BackingField")]
         [field: SerializeField] [field: Range(0f, 1f)]
-        public float Volume { get; private set; } = 1f;
+        public new float _Volume { get; private set; } = 1f;
 
         [field: SerializeField]
-        public bool Loop { get; private set; } = false;
+        [field:FormerlySerializedAs("<Loop>k__BackingField")]
+        public new bool _Loop { get; private set; } = false;
         
+        public override AudioChannel Channel => _Channel;
+        public override AudioClip Clip => _Clip;
+        public override float Volume => _Volume;
+        public override bool Loop => _Loop;
+        protected override bool Validate() => _Clip;
+        
+
 #if UNITY_EDITOR
+                
         [Header("Debug")]
         [SerializeField] private bool showLog = false;
-#endif
+        public override bool ShowLog => showLog;
 
-        private bool Validate() => Clip != null;
-        
-        public void Play(bool fade = false)
-        {
-            if (!Validate())
-            {
-                Deb.LogWarning($"Invalid AudioRef: {name}", this);
-                return;
-            }
-
-            AudioSingleton.Play(this, fade);
-#if UNITY_EDITOR
-            if(showLog) Deb.Log($"AudioRef.Play: {name}", this);
-#endif
-        }
-
-        public void PlayOneShot()
-        {
-            if (!Validate())
-            {
-                Deb.LogWarning($"Invalid AudioRef: {name}", this);
-                return;
-            }
-
-            AudioSingleton.PlayOneShot(this);
-#if UNITY_EDITOR
-            if(showLog) Deb.Log($"AudioRef.PlayOneShot: {name}", this);
-#endif
-        }
-        
-        public void SwitchFade(bool skipOnSame = true)
-        {
-            if (!Validate())
-            {
-                Deb.LogWarning($"Invalid AudioRef: {name}", this);
-                return;
-            }
-            
-            AudioSingleton.SwitchFade(this, skipOnSame);
-#if UNITY_EDITOR
-            if(showLog) Deb.Log($"AudioRef.SwitchFade: {name}", this);
-#endif
-        }
-
-        public void Stop(bool fade = false)
-        {
-            if (!Validate())
-            {
-                Deb.LogWarning($"Invalid AudioRef: {name}", this);
-                return;
-            }
-
-            AudioSingleton.Stop(this, fade);
-#if UNITY_EDITOR
-            if(showLog) Deb.Log($"AudioRef.Play: {name}", this);
-#endif
-        }
-        
-
-#if UNITY_EDITOR
         public static AudioRefSO CreateAssetFromClip(AudioClip clip, string folderPath, bool autoSave = false)
         {
             if (clip == null) return null;
@@ -94,20 +47,20 @@ namespace Accelib.Module.Audio.Data
                 var audioRef = CreateInstance<AudioRefSO>();
                 var name = clip.name.ToLowerInvariant();
 
-                audioRef.Clip = clip;
+                audioRef._Clip = clip;
                 audioRef.name = $"(AudioRef) {clip.name}";
                 var filePath = System.IO.Path.Combine(folderPath, audioRef.name + ".asset");
 
                 if (name.Contains("bgm"))
-                    audioRef.Channel = AudioChannel.Bgm;
+                    audioRef._Channel = AudioChannel.Bgm;
                 else if (name.Contains("ambient"))
-                    audioRef.Channel = AudioChannel.Ambient;
+                    audioRef._Channel = AudioChannel.Ambient;
                 else if (name.Contains("voice"))
-                    audioRef.Channel = AudioChannel.Sfx_Voice;
+                    audioRef._Channel = AudioChannel.Sfx_Voice;
                 else if (name.Contains("sfx_ui"))
-                    audioRef.Channel = AudioChannel.Sfx_UI;
+                    audioRef._Channel = AudioChannel.Sfx_UI;
                 else if (name.Contains("sfx"))
-                    audioRef.Channel = AudioChannel.Sfx_Effect;
+                    audioRef._Channel = AudioChannel.Sfx_Effect;
 
                 // 파일 생성
                 UnityEditor.AssetDatabase.CreateAsset(audioRef, filePath);
