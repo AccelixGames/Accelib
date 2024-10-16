@@ -2,16 +2,15 @@
 using DG.Tweening;
 using UnityEngine;
 
-namespace Accelib.Effect
+namespace Accelib.Tween.Effect
 {
     [RequireComponent(typeof(RectTransform))]
-    // [Obsolete("대신 "+nameof(SimpleEffectTween_MoveRectTransform)+"을 사용하세요.")]
-    public class SimpleMoveEffect : MonoBehaviour
+    public class SimpleMoveEffect_WithPos : MonoBehaviour
     {
         private enum AutoStart { In = 1, Out = 2, False = 0}
         
-        [SerializeField] private RectTransform startPos;
-        [SerializeField] private RectTransform endPos;
+        [SerializeField] private Vector2 startPos;
+        [SerializeField] private Vector2 endPos;
         [SerializeField] private EasePairTweenConfig config;
         
         [Header("")]
@@ -28,26 +27,26 @@ namespace Accelib.Effect
         {
             if (autoStartMode == AutoStart.In)
             {
-                _rt.anchoredPosition = startPos.anchoredPosition;
+                _rt.anchoredPosition = startPos;
                 EffectIn();
             }
             else if(autoStartMode == AutoStart.Out)
             {
-                _rt.anchoredPosition = endPos.anchoredPosition;
+                _rt.anchoredPosition = endPos;
                 EffectOut();
             }
         }
 
-        public Tweener EffectIn()
+        public void EffectIn()
         {
-            return _rt?.DOAnchorPos(endPos.anchoredPosition, config.duration)
+            _rt?.DOAnchorPos(endPos, config.duration)
                 .SetEase(config.easeA)
                 .SetDelay(config.delay);
         }
 
-        public Tweener EffectOut()
+        public void EffectOut()
         {
-            return _rt?.DOAnchorPos(startPos.anchoredPosition, config.duration)
+            _rt?.DOAnchorPos(startPos, config.duration)
                 .SetEase(config.easeB)
                 .SetDelay(config.delay);
         }
