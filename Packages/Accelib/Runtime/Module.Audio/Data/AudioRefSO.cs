@@ -11,19 +11,19 @@ namespace Accelib.Module.Audio.Data
     public class AudioRefSO : AudioRefBase
     {
         [field: Header("Resource")][field:FormerlySerializedAs("<Channel>k__BackingField")]
-        [field: SerializeField] public new AudioChannel _Channel { get; private set; }
+        [field: SerializeField] public AudioChannel _Channel { get; private set; }
 
         [field:FormerlySerializedAs("<Clip>k__BackingField")]
-        [field: SerializeField] public new AudioClip _Clip { get; private set; }
+        [field: SerializeField] public AudioClip _Clip { get; private set; }
 
         [field: Header("Option")]
         [field:FormerlySerializedAs("<Volume>k__BackingField")]
         [field: SerializeField] [field: Range(0f, 1f)]
-        public new float _Volume { get; private set; } = 1f;
+        public float _Volume { get; private set; } = 1f;
 
         [field: SerializeField]
         [field:FormerlySerializedAs("<Loop>k__BackingField")]
-        public new bool _Loop { get; private set; } = false;
+        public bool _Loop { get; private set; } = false;
         
         public override AudioChannel Channel => _Channel;
         public override AudioClip Clip => _Clip;

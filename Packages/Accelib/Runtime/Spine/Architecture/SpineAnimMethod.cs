@@ -1,4 +1,5 @@
-﻿namespace Accelib.Spine.Architecture
+﻿#if ACCELIX_SPINE
+namespace Accelib.Spine.Architecture
 {
     public enum SpineAnimMethod
     { 
@@ -7,3 +8,4 @@
         Clear
     }
 }
+#endif

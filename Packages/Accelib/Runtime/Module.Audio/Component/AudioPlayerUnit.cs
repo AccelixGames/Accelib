@@ -12,18 +12,19 @@ namespace Accelib.Module.Audio.Component
 {
     internal class AudioPlayerUnit : MonoBehaviour
     {
-        private const float MinDuplicateTime = 0.1f;
-        
-        [Header("Source")]
+        [Header("Option")]
+        [SerializeField] private EasePairTweenConfig fadeTweenConfig;
         [SerializeField, Range(1, 16)] private int maximumSourceCount = 1;
         [SerializeField, Range(0, 256)] private int priority = 128;
-        [SerializeField] private EasePairTweenConfig fadeTweenConfig;
-        [SerializeField] private List<AudioSource> sources;
+        [SerializeField, Range(0.01f, 1f)] private float minDuplicateTime = 0.1f;
 
         [Header("Volume")]
-        [SerializeField, Range(0f, 1f)] private float fadeVolume = 1f;
-        [SerializeField, Range(0f, 1f)] private float defaultClipVolume = 1f;
-        [SerializeField, Range(0f, 1f)] private float masterVolume = 1f;
+        [SerializeField, Range(0f, 1f), ReadOnly] private float fadeVolume = 1f;
+        [SerializeField, Range(0f, 1f), ReadOnly] private float defaultClipVolume = 1f;
+        [SerializeField, Range(0f, 1f), ReadOnly] private float masterVolume = 1f;
+        
+        [Header("Sources")]
+        [SerializeField, ReadOnly] private List<AudioSource> sources;
 
         private Sequence _seq;
 
@@ -60,10 +61,10 @@ namespace Accelib.Module.Audio.Component
                 unit.defaultClipVolume = 1f;
                 unit.masterVolume = 1f;
                 unit.fadeTweenConfig = fadeTweenConfig;
+                unit.sources = new List<AudioSource>();
                 
-                var source = CreateSource(go.transform, unit.priority);
-                unit.sources ??= new List<AudioSource>();
-                unit.sources.Add(source);
+                // var source = CreateSource(go.transform, unit.priority);
+                //unit.sources.Add(source);
 
                 return unit;
             }
@@ -73,30 +74,36 @@ namespace Accelib.Module.Audio.Component
                 return null;
             }
         }
-        
+
+        private void Awake()
+        {
+            sources = new List<AudioSource>();
+            for (var i = 0; i < maximumSourceCount; i++) 
+                sources.Add(CreateSource(transform, priority));
+        }
+
         internal void PlayOneShot(AudioRefBase audioRef)
         {
             if(!audioRef?.Clip) return;
 
-            var source = sources.FirstOrDefault(s => !s.isPlaying); // = sources.FirstOrDefault(x => x.isPlaying == false);
+            // 현재 동일한 소리가 플레이중이라면, 스킵
+            foreach (var s in sources.Where(x=>x.isPlaying && x.clip == audioRef.Clip))
+                if (s.time <= minDuplicateTime)
+                    return;
+            
+            // 소스를 찾지 못했다면, 스킵
+            var source = sources.FirstOrDefault(s => !s.isPlaying);
             if (!source)
             {
-                if (sources.Count >= maximumSourceCount)
-                {
-                    Deb.LogWarning($"동시 재생 가능한 최대 사운드를 초과하여, 사운드를 재생하지 않습니다. [Name: {audioRef.Clip.name} / Channel: {audioRef.Channel} / Max: {sources.Count}]", this);
-                    return;
-                }
-
-                source = CreateSource(transform, priority);
-                sources.Add(source);
+                Deb.LogWarning($"동시 재생 가능한 최대 사운드를 초과하여, 사운드를 재생하지 않습니다. [Name: {audioRef.Clip.name} / Channel: {audioRef.Channel} / Max: {sources.Count}]", this);
+                return;
             }
 
+            // 재생
             source.loop = false;
             source.resource = audioRef.Clip;
             UpdateVolume(source, audioRef.Volume);
             source.Play();
-            
-            // source.PlayOneShot(audioRef.Clip, audioRef.Volume);
         }
 
         internal void Play(AudioRefBase audioRef, bool fade)

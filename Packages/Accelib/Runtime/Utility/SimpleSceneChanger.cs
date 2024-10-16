@@ -1,4 +1,5 @@
 ﻿using System;
+using Cysharp.Threading.Tasks;
 using NaughtyAttributes;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -20,9 +21,14 @@ namespace Accelib.Utility
         
         [Header("LoadMode")]
         [SerializeField] private LoadSceneMode loadMode = LoadSceneMode.Single;
+        [SerializeField, Range(0, 128)] private int frameDelay = 0;
 
-        private void OnEnable()
+        private void Start() => Load().Forget();
+
+        private async UniTaskVoid Load()
         {
+            await UniTask.DelayFrame(frameDelay);
+            
             if(sceneType == SceneType.Name)
                 SceneManager.LoadScene(targetScene, loadMode);
             else

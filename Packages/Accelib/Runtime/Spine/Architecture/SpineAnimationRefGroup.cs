@@ -1,4 +1,5 @@
-﻿using NaughtyAttributes;
+﻿#if ACCELIX_SPINE
+using NaughtyAttributes;
 using Spine.Unity;
 using UnityEngine;
 
@@ -19,3 +20,4 @@ namespace Accelib.Spine.Architecture
         public float delay = 0f;
     }
 }
+#endif
