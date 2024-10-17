@@ -6,6 +6,7 @@ using Accelib.Module.Audio.Data;
 using Accelib.Module.Audio.Data._Base;
 using AYellowpaper.SerializedCollections;
 using Cysharp.Threading.Tasks;
+using DG.Tweening;
 using UnityEngine;
 // ReSharper disable Unity.PerformanceCriticalCodeInvocation
 
@@ -41,8 +42,8 @@ namespace Accelib.Module.Audio
             instance.GetPlayer(in audioRef)?.Stop(fade);
         }
 
-        internal static void SetControlVolume(AudioChannel channel, float volume) => 
-            Instance.GetPlayer(channel).ControlVolume = volume;
+        public static Tweener SetControlVolume(AudioChannel channel, float volume) =>
+            Instance.GetPlayer(channel).SetControlVolume(volume);
 
         public static void StopChannel(AudioChannel channel, bool fade)
         {

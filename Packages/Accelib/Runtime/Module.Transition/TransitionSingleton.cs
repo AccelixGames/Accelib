@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Linq;
 using Accelib.Core;
+using Accelib.Module.Audio;
+using Accelib.Module.Audio.Data;
 using Accelib.Module.Transition.Effect;
 using DG.Tweening;
 using NaughtyAttributes;
@@ -14,6 +16,9 @@ namespace Accelib.Module.Transition
         [SerializeField] private TransitionEffect[] targetEffects;
         [SerializeField, ReadOnly] private bool isMoving;
         [SerializeField, ReadOnly] private int currIndex;
+
+        [Header("오디오")]
+        [SerializeField, Range(0f, 1f)] private float transitionControlVolume = 1f;
 
         private Sequence _seq;
         public static bool IsActive => Instance?.targetEffects.Any(x => x.IsActive) ?? false;
@@ -36,7 +41,7 @@ namespace Accelib.Module.Transition
         {
             if (!Instance) 
                 return null;
-            
+
             return Instance.Transition(false);
         }
 
@@ -44,15 +49,18 @@ namespace Accelib.Module.Transition
         {
             _seq?.Kill();
             _seq = start ? targetEffects[currIndex].StartTransition() : targetEffects[currIndex].EndTransition();
+            var targetVolume = start ? transitionControlVolume : 1f;
+
+            _seq.AppendCallback(() => AudioSingleton.SetControlVolume(AudioChannel.Bgm, targetVolume));
             
             return _seq;
         }
 
 #if UNITY_EDITOR
-        [Button]
+        [Button(enabledMode: EButtonEnableMode.Playmode)]
         public void TrStart() => Transition(true);
 
-        [Button]
+        [Button(enabledMode: EButtonEnableMode.Playmode)]
         public void TrEnd() => Transition(false);
 #endif
     }

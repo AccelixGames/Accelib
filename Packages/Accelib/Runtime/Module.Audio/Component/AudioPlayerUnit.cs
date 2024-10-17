@@ -31,7 +31,7 @@ namespace Accelib.Module.Audio.Component
         }
 
         [SerializeField, Range(0f, 1f), ReadOnly] private float _controlVolume = 1f;
-        public float ControlVolume
+        private float ControlVolume
         {
             get => _controlVolume;
             set { _controlVolume = Mathf.Clamp01(value); UpdateVolumes(); }
@@ -183,5 +183,12 @@ namespace Accelib.Module.Audio.Component
             _fadeSeq.Append(PlayFadeIn(audioRef));
         }
 
+        public Tweener SetControlVolume(float value)
+        {
+            return DOTween
+                .To(() => ControlVolume, x => ControlVolume = x, value, fadeTweenConfig.duration)
+                .SetEase(fadeTweenConfig.easeA)
+                .SetLink(gameObject);
+        }
     }
 }
