@@ -7,6 +7,9 @@ using Accelib.Module.Audio.Data._Base;
 using DG.Tweening;
 using NaughtyAttributes;
 using UnityEngine;
+using UnityEngine.Serialization;
+
+// ReSharper disable InconsistentNaming
 
 namespace Accelib.Module.Audio.Component
 {
@@ -18,36 +21,43 @@ namespace Accelib.Module.Audio.Component
         [SerializeField, Range(0, 256)] private int priority = 128;
         [SerializeField, Range(0.01f, 1f)] private float minDuplicateTime = 0.1f;
 
+        #region Volume
         [Header("Volume")]
-        [SerializeField, Range(0f, 1f), ReadOnly] private float fadeVolume = 1f;
-        [SerializeField, Range(0f, 1f), ReadOnly] private float defaultClipVolume = 1f;
-        [SerializeField, Range(0f, 1f), ReadOnly] private float masterVolume = 1f;
-        
-        [Header("Sources")]
-        [SerializeField, ReadOnly] private List<AudioSource> sources;
-
-        private Sequence _seq;
-
-        private AudioSource DefaultSource => sources[0];
-
-        private static AudioSource CreateSource(Transform parent, int priority)
+        [SerializeField, Range(0f, 1f), ReadOnly] private float _fadeVolume = 1f;
+        private float FadeVolume
         {
-            var source = new GameObject("AudioSource", typeof(AudioSource)).GetComponent<AudioSource>();
-            source.transform.SetParent(parent);
-            source.transform.SetAsLastSibling();
-            source.name = $"AudioSource({source.transform.GetSiblingIndex()})";
-            source.mute = false;
-            source.priority = priority;
-            source.playOnAwake = false;
-            source.reverbZoneMix = 0f;
-            source.dopplerLevel = 0f;
-            source.rolloffMode = AudioRolloffMode.Linear;
-            source.minDistance = 0f;
-            source.maxDistance = 1f;
-            source.volume = 1f;
-
-            return source;
+            get => _fadeVolume;
+            set { _fadeVolume = Mathf.Clamp01(value); UpdateVolumes(); }
         }
+
+        [SerializeField, Range(0f, 1f), ReadOnly] private float _controlVolume = 1f;
+        public float ControlVolume
+        {
+            get => _controlVolume;
+            set { _controlVolume = Mathf.Clamp01(value); UpdateVolumes(); }
+        }
+
+        [SerializeField, Range(0f, 1f), ReadOnly] private float _masterVolume = 1f;
+        public float MasterVolume
+        {
+            get => _masterVolume;
+            private set { _masterVolume = Mathf.Clamp01(value); UpdateVolumes(); }
+        }
+        
+        public float TotalVolume => FadeVolume * MasterVolume * ControlVolume;
+        
+        private void UpdateVolumes()
+        {
+            foreach (var source in units) 
+                source.UpdateVolume(TotalVolume);
+        }
+        #endregion
+
+        [Header("Sources")][FormerlySerializedAs("sources")]
+        [SerializeField, ReadOnly] private List<AudioSourceUnit> units;
+        private AudioSourceUnit DefaultUnit => units[0];
+
+        private Sequence _fadeSeq;
         
         internal static AudioPlayerUnit CreateInstance(Transform parent, string name, EasePairTweenConfig fadeTweenConfig)
         {
@@ -57,14 +67,13 @@ namespace Accelib.Module.Audio.Component
                 go.transform.SetParent(parent);
                 
                 var unit = go.GetComponent<AudioPlayerUnit>();
-                unit.fadeVolume = 1f;
-                unit.defaultClipVolume = 1f;
-                unit.masterVolume = 1f;
-                unit.fadeTweenConfig = fadeTweenConfig;
-                unit.sources = new List<AudioSource>();
                 
-                // var source = CreateSource(go.transform, unit.priority);
-                //unit.sources.Add(source);
+                unit.FadeVolume = 1f;
+                unit.ControlVolume = 1f;
+                unit.MasterVolume = 1f;
+                
+                unit.fadeTweenConfig = fadeTweenConfig;
+                unit.units = new List<AudioSourceUnit>();
 
                 return unit;
             }
@@ -77,9 +86,9 @@ namespace Accelib.Module.Audio.Component
 
         private void Awake()
         {
-            sources = new List<AudioSource>();
+            units = new List<AudioSourceUnit>();
             for (var i = 0; i < maximumSourceCount; i++) 
-                sources.Add(CreateSource(transform, priority));
+                units.Add(AudioSourceUnit.Create(transform, priority));
         }
 
         internal void PlayOneShot(AudioRefBase audioRef)
@@ -87,28 +96,25 @@ namespace Accelib.Module.Audio.Component
             if(!audioRef?.Clip) return;
 
             // 현재 동일한 소리가 플레이중이라면, 스킵
-            foreach (var s in sources.Where(x=>x.isPlaying && x.clip == audioRef.Clip))
-                if (s.time <= minDuplicateTime)
+            foreach (var s in units.Where(x=>x.Source.isPlaying && x.Source.clip == audioRef.Clip))
+                if (s.Source.time <= minDuplicateTime)
                     return;
             
             // 소스를 찾지 못했다면, 스킵
-            var source = sources.FirstOrDefault(s => !s.isPlaying);
+            var source = units.FirstOrDefault(s => !s.Source.isPlaying);
             if (!source)
             {
-                Deb.LogWarning($"동시 재생 가능한 최대 사운드를 초과하여, 사운드를 재생하지 않습니다. [Name: {audioRef.Clip.name} / Channel: {audioRef.Channel} / Max: {sources.Count}]", this);
+                Deb.LogWarning($"동시 재생 가능한 최대 사운드를 초과하여, 사운드를 재생하지 않습니다. [Name: {audioRef.Clip.name} / Channel: {audioRef.Channel} / Max: {units.Count}]", this);
                 return;
             }
 
             // 재생
-            source.loop = false;
-            source.resource = audioRef.Clip;
-            UpdateVolume(source, audioRef.Volume);
-            source.Play();
+            source.Play(audioRef, TotalVolume, false);
         }
 
         internal void Play(AudioRefBase audioRef, bool fade)
         {
-            _seq?.Kill();
+            _fadeSeq?.Kill();
 
             if (fade)
             {
@@ -116,20 +122,14 @@ namespace Accelib.Module.Audio.Component
             }
             else
             {
-                DefaultSource.resource = audioRef.Clip;
-                DefaultSource.loop = audioRef.Loop;
-                
-                fadeVolume = 1f;
-                defaultClipVolume = audioRef.Volume;
-                UpdateVolume( DefaultSource, defaultClipVolume);
-                
-                DefaultSource.Play();
+                FadeVolume = 1f;
+                DefaultUnit.Play(audioRef, TotalVolume);
             }
         }
         
         internal void Stop(bool fade)
         {
-            _seq?.Kill();
+            _fadeSeq?.Kill();
 
             if (fade)
             {
@@ -137,77 +137,51 @@ namespace Accelib.Module.Audio.Component
             }
             else
             {
-                DefaultSource.Stop();
-                DefaultSource.clip = null;
-            
-                fadeVolume = 1f;
-                defaultClipVolume = 1f;
-                UpdateVolume( DefaultSource, defaultClipVolume);
+                FadeVolume = 1f;
+                DefaultUnit.Stop(TotalVolume);
             }
         }
 
+        private Tweener PlayFadeIn(AudioRefBase audioRef) => DOTween
+            .To(() => FadeVolume, x => FadeVolume = x, 1f, fadeTweenConfig.duration)
+            .SetEase(fadeTweenConfig.easeA)
+            .OnStart(() => DefaultUnit.Play(audioRef, TotalVolume))
+            .SetLink(gameObject);
+
+        private Tweener StopFadeOut() => DOTween
+            .To(() => FadeVolume, x => FadeVolume = x, 0f, fadeTweenConfig.duration)
+            .SetEase(fadeTweenConfig.easeB)
+            .OnComplete(() => DefaultUnit.Stop(TotalVolume))
+            .SetLink(gameObject);
+        
         internal void SwitchFade(AudioRefBase audioRef, bool skipOnSame)
         {
-            _seq?.Kill();
-            _seq = DOTween.Sequence();
+            _fadeSeq?.Kill();
+            _fadeSeq = DOTween.Sequence();
 
             // 현재 재생중이라면,
-            if (DefaultSource.isPlaying)
+            if (DefaultUnit.Source.isPlaying)
             {
                 // 동일한 것 재생시 스킵
-                if (skipOnSame && audioRef.Clip == DefaultSource.clip)
+                if (skipOnSame && audioRef.Clip == DefaultUnit.Source.clip)
                     return;
                 
                 // 볼륨 줄이며 멈추는 트윈 추가
-                _seq.Append(StopFadeOut());
+                _fadeSeq.Append(StopFadeOut());
             }
             else
             {
                 // 바로 볼륨 0으로 만들기
-                _seq.AppendCallback(() =>
+                _fadeSeq.AppendCallback(() =>
                 {
-                    DefaultSource.Stop();
-                    DefaultSource.clip = null;
-            
-                    fadeVolume = 0f;
-                    defaultClipVolume = 1f;
-                    UpdateVolume( DefaultSource, defaultClipVolume);
+                    FadeVolume = 0f;
+                    DefaultUnit.Stop(TotalVolume);
                 });
             }
             
             // 볼륨 키우며 재생하는 트윈 추가
-            _seq.Append(PlayFadeIn(audioRef));
+            _fadeSeq.Append(PlayFadeIn(audioRef));
         }
 
-        private Tweener PlayFadeIn(AudioRefBase audioRef) => DOTween
-            .To(() => fadeVolume, x => fadeVolume = x, 1f, fadeTweenConfig.duration)
-            .SetEase(fadeTweenConfig.easeA)
-            .OnUpdate(() => UpdateVolume( DefaultSource, defaultClipVolume))
-            .OnStart(() =>
-            {
-                DefaultSource.resource = audioRef.Clip;
-                DefaultSource.loop = audioRef.Loop;
-                defaultClipVolume = audioRef.Volume;
-                DefaultSource.Play();
-            })
-            .SetLink(gameObject);
-
-        private Tweener StopFadeOut() => DOTween
-            .To(() => fadeVolume, x => fadeVolume = x, 0f, fadeTweenConfig.duration)
-            .SetEase(fadeTweenConfig.easeB)
-            .OnUpdate(() => UpdateVolume( DefaultSource, defaultClipVolume))
-            .OnComplete(DefaultSource.Stop)
-            .SetLink(gameObject);
-        
-        private void UpdateVolume(AudioSource source, float clipVolume) => source.volume = Mathf.Clamp01(fadeVolume * clipVolume * masterVolume);
-
-        [Button]
-        private void DebSources()
-        {
-            foreach (var source in sources)
-            {
-                Deb.Log($"{source.name}: {source.clip}, {source.isPlaying}");
-            }
-        }
     }
 }

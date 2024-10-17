@@ -41,6 +41,9 @@ namespace Accelib.Module.Audio
             instance.GetPlayer(in audioRef)?.Stop(fade);
         }
 
+        internal static void SetControlVolume(AudioChannel channel, float volume) => 
+            Instance.GetPlayer(channel).ControlVolume = volume;
+
         public static void StopChannel(AudioChannel channel, bool fade)
         {
             if (!TryGetInstance(out var instance)) return;

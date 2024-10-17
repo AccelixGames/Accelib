@@ -52,5 +52,14 @@ namespace Accelib.Module.Localization.Helper
 
         [Button("다시 로드", EButtonEnableMode.Playmode)]
         public void Reload() => OnEnable();
+        
+        /// <summary>
+        /// 키 변경
+        /// </summary>
+        public void ChangeKey(string otherKey)
+        {
+            key = otherKey;
+            OnEnable();
+        }
     }
 }
