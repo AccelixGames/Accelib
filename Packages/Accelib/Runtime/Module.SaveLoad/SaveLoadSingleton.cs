@@ -13,9 +13,6 @@ namespace Accelib.Module.SaveLoad
 {
     public class SaveLoadSingleton : MonoSingleton<SaveLoadSingleton>, IAsyncInitRequired
     {
-        [Header("세이브 데이터들")]
-        [SerializedDictionary("타입", "오브젝트")]
-        [SerializeField] private SaveDataHolderBase[] holders;
         private Dictionary<Type, SaveDataHolderBase> _holderDict = new();
 
         public async UniTask<bool> InitAsync()
@@ -23,7 +20,7 @@ namespace Accelib.Module.SaveLoad
             var taskPool = new List<UniTask<bool>>();
             
             _holderDict = new Dictionary<Type, SaveDataHolderBase>();
-            foreach (var holder in holders)
+            foreach (var holder in GetComponentsInChildren<SaveDataHolderBase>())
             {
                 if (!_holderDict.TryAdd(holder.GetType(), holder))
                 {
@@ -54,11 +51,6 @@ namespace Accelib.Module.SaveLoad
         }
         
 #if UNITY_EDITOR
-        private void Reload()
-        {
-            holders = GetComponentsInChildren<SaveDataHolderBase>();
-        }
-
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
         private static void Init() => Initialize();
 #endif

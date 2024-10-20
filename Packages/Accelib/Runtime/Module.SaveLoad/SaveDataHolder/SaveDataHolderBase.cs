@@ -49,7 +49,7 @@ namespace Accelib.Module.SaveLoad.SaveDataHolder
                 if (!result.success)
                 {
                     // 경고
-                    Deb.LogWarning($"데이터 읽기({remoteStorageName})에 실패하여 로컬에 씁니다. 이유: {result.message}");
+                    Deb.LogWarning($"데이터 읽기({remoteStorageName}, {fileName})에 실패하여 로컬에 씁니다. 이유: {result.message}");
                     // 로컬에 쓰기
                     result = await _localStorage.ReadAsync(FilePath);
                 }
@@ -58,7 +58,7 @@ namespace Accelib.Module.SaveLoad.SaveDataHolder
                 if (!result.success)
                 {
                     // 에러
-                    Deb.LogError($"데이터 쓰기({remoteStorageName})에 실패하였습니다. 이유: {result.message}");
+                    Deb.LogError($"데이터 쓰기({remoteStorageName}, {fileName})에 실패하였습니다. 이유: {result.message}");
                     // 리턴
                     return false;
                 }
@@ -69,7 +69,7 @@ namespace Accelib.Module.SaveLoad.SaveDataHolder
                     
 #if UNITY_EDITOR
                     if (_config.PrintLog)
-                        Deb.Log($"신규 데이터 읽기에 성공했습니다({remoteStorageName}): {FilePath}", this);
+                        Deb.Log($"신규 데이터 읽기에 성공했습니다({remoteStorageName}, {fileName}): {FilePath}", this);
 #endif
                 }
                 else
@@ -81,7 +81,7 @@ namespace Accelib.Module.SaveLoad.SaveDataHolder
                 
 #if UNITY_EDITOR
                     if (_config.PrintLog)
-                        Deb.Log($"데이터 읽기에 성공했습니다({remoteStorageName}): {FilePath}", this);
+                        Deb.Log($"데이터 읽기에 성공했습니다({remoteStorageName}, {fileName}): {FilePath}", this);
 #endif
                 }
 
@@ -120,7 +120,7 @@ namespace Accelib.Module.SaveLoad.SaveDataHolder
                 if (!result.success)
                 {
                     // 경고
-                    Deb.LogWarning($"데이터 쓰기({remoteStorageName})에 실패하여 로컬에 씁니다. 이유: {result.message}");
+                    Deb.LogWarning($"데이터 쓰기({remoteStorageName}, {fileName})에 실패하여 로컬에 씁니다. 이유: {result.message}");
                     // 로컬에 쓰기
                     result = await _localStorage.WriteAsync(bytes, FilePath);
                 }
@@ -129,14 +129,14 @@ namespace Accelib.Module.SaveLoad.SaveDataHolder
                 if (!result.success)
                 {
                     // 에러
-                    Deb.LogError($"데이터 쓰기({remoteStorageName})에 실패하였습니다. 이유: {result.message}");
+                    Deb.LogError($"데이터 쓰기({remoteStorageName}, {fileName})에 실패하였습니다. 이유: {result.message}");
                     // 리턴
                     return false;
                 }
 
 #if UNITY_EDITOR
                 if (_config.PrintLog)
-                    Deb.Log($"데이터 쓰기 성공했습니다({remoteStorageName}): {FilePath}", this);
+                    Deb.Log($"데이터 쓰기 성공했습니다({remoteStorageName}, {fileName}): {FilePath}", this);
 #endif
                 return true;
             }
