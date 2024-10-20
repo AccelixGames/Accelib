@@ -13,52 +13,45 @@ namespace Accelib.Module.SaveLoad.SaveDataHolder
 {
     public abstract class SaveDataHolderBase : MonoBehaviour
     {
-        private const string FOption = "저장 옵션";
-        [Foldout(FOption)][SerializeField] private bool enableEncryption = true;
-        [Foldout(FOption)][SerializeField] private string fileName;
-        [Foldout(FOption)][SerializeField][ReadOnly] private string fileNameHash;
-        [Foldout(FOption)][SerializeField][ReadOnly] private string remoteStorageName;
+        [Header("공통 옵션")]
+        [SerializeField] private bool enableEncryption = true;
+        [SerializeField] private string fileName;
+        [SerializeField][ReadOnly] private string fileNameHash;
+        [SerializeField][ReadOnly] private string remoteStorageName;
+        [SerializeField] [ReadOnly] private bool isDirty = false;
+        [SerializeField] [ReadOnly] private bool isBlocked = false;
 
         private static IRemoteStorage _remoteStorage;
-        private static IRemoteStorage _localStorage;
         private static SaveLoadConfig _config;
         
         protected abstract SaveDataBase SaveData { get; }
-        protected string FilePath => $"SaveData/{fileNameHash}";
-
-        // private void Awake() => TryInitialize();
+        private string FilePath => $"SaveData/{fileNameHash}";
 
         public async UniTask<bool> ReadAsync()
         {
+            // 저장 데이터가 없을 경우,
+            if (SaveData == null) return Error("세이브 데이터가 없습니다.");
+            // 초기화에 실패할 경우,
+            if (!TryInitialize()) return Error("초기화에 실패했습니다.");
+            // 잠긴 경우,
+            if (isBlocked) return Error("현재 사용중입니다.");
+#if UNITY_EDITOR
+            if (_config.ForceNoRead)
+                return true;
+#endif
+
             try
             {
-                if (SaveData == null)
-                    return Error("빈 데이터를 쓰려고 했습니다.");
-
-                if (!TryInitialize())
-                    return Error("초기화에 실패했습니다.");
-                
-#if UNITY_EDITOR
-                if (_config.ForceNoRead)
-                    return true;
-#endif
+                // 잠그기
+                isBlocked = true;
 
                 // 원격에서 읽기
                 var result = await _remoteStorage.ReadAsync(FilePath);
                 // 실패할 경우,
                 if (!result.success)
                 {
-                    // 경고
-                    Deb.LogWarning($"데이터 읽기({remoteStorageName}, {fileName})에 실패하여 로컬에 씁니다. 이유: {result.message}");
-                    // 로컬에 쓰기
-                    result = await _localStorage.ReadAsync(FilePath);
-                }
-
-                // 이것도 실패할 경우,
-                if (!result.success)
-                {
                     // 에러
-                    Deb.LogError($"데이터 쓰기({remoteStorageName}, {fileName})에 실패하였습니다. 이유: {result.message}");
+                    Deb.LogError($"데이터 읽기({remoteStorageName}, {fileName})에 실패하였습니다. 이유: {result.message}");
                     // 리턴
                     return false;
                 }
@@ -66,7 +59,7 @@ namespace Accelib.Module.SaveLoad.SaveDataHolder
                 if (result.data == null)
                 {
                     SaveData.New();
-                    
+
 #if UNITY_EDITOR
                     if (_config.PrintLog)
                         Deb.Log($"신규 데이터 읽기에 성공했습니다({remoteStorageName}, {fileName}): {FilePath}", this);
@@ -75,10 +68,12 @@ namespace Accelib.Module.SaveLoad.SaveDataHolder
                 else
                 {
                     // 복호화
-                    var json = enableEncryption ? Crypto.DecryptFromBytes(result.data, _config.Secret) : Encoding.UTF8.GetString(result.data);
+                    var json = enableEncryption
+                        ? Crypto.DecryptFromBytes(result.data, _config.Secret)
+                        : Encoding.UTF8.GetString(result.data);
                     // 데이터 복구
                     SaveData.FromJson(json);
-                
+
 #if UNITY_EDITOR
                     if (_config.PrintLog)
                         Deb.Log($"데이터 읽기에 성공했습니다({remoteStorageName}, {fileName}): {FilePath}", this);
@@ -93,21 +88,29 @@ namespace Accelib.Module.SaveLoad.SaveDataHolder
                 Deb.LogException(e);
                 return false;
             }
+            finally
+            {
+                isBlocked = false;
+            }
         }
 
         public async UniTask<bool> WriteAsync()
         {
+            // 저장 데이터가 없을 경우,
+            if (SaveData == null) return Error("세이브 데이터가 없습니다.");
+            // 초기화에 실패할 경우,
+            if (!TryInitialize()) return Error("초기화에 실패했습니다.");
+            // 잠긴 경우,
+            if (isBlocked) return Error("현재 사용중입니다.");
+#if UNITY_EDITOR
+            if (_config.ForceNoWrite)
+                return true;
+#endif
+            
             try
             {
-                // 저장 데이터가 없을 경우,
-                if (SaveData == null) return Error("빈 데이터를 쓰려고 했습니다.");
-                // 초기화에 실패할 경우,
-                if (!TryInitialize()) return Error("초기화에 실패했습니다.");
-                
-#if UNITY_EDITOR
-                if (_config.ForceNoWrite)
-                    return true;
-#endif
+                // 잠그기
+                isBlocked = true;
                 
                 // json화
                 var json = SaveData.ToJson();
@@ -116,16 +119,8 @@ namespace Accelib.Module.SaveLoad.SaveDataHolder
                 
                 // 원격 저장소에 쓰기
                 var result = await _remoteStorage.WriteAsync(bytes, FilePath);
+                
                 // 실패할 경우,
-                if (!result.success)
-                {
-                    // 경고
-                    Deb.LogWarning($"데이터 쓰기({remoteStorageName}, {fileName})에 실패하여 로컬에 씁니다. 이유: {result.message}");
-                    // 로컬에 쓰기
-                    result = await _localStorage.WriteAsync(bytes, FilePath);
-                }
-
-                // 이것도 실패할 경우,
                 if (!result.success)
                 {
                     // 에러
@@ -136,7 +131,7 @@ namespace Accelib.Module.SaveLoad.SaveDataHolder
 
 #if UNITY_EDITOR
                 if (_config.PrintLog)
-                    Deb.Log($"데이터 쓰기 성공했습니다({remoteStorageName}, {fileName}): {FilePath}", this);
+                    Deb.Log($"데이터 쓰기에 성공했습니다({remoteStorageName}, {fileName}): {FilePath}", this);
 #endif
                 return true;
             }
@@ -144,6 +139,10 @@ namespace Accelib.Module.SaveLoad.SaveDataHolder
             {
                 Deb.LogException(e);
                 return false;
+            }
+            finally
+            {
+                isBlocked = false;
             }
         }
         
@@ -156,20 +155,37 @@ namespace Accelib.Module.SaveLoad.SaveDataHolder
         private bool TryInitialize()
         {
             _config ??= SaveLoadConfig.Load();
-            if (_config == null)
+            if (!_config)
             {
                 Deb.LogError("DataHandlerConfig 파일이 없습니다.", this);
                 return false;
             }
             
             _remoteStorage ??= RemoteStorageSelector.GetRemoteStorage(_config.ForceLocalStorage);
-            _localStorage ??= RemoteStorageSelector.GetLocalStorage();
+            if (_remoteStorage == null)
+            {
+                Deb.LogError("RemoteStorage 를 불러올 수 없습니다.", this);
+                return false;
+            }
             
-            remoteStorageName = _remoteStorage?.Name;
-            
-            return _remoteStorage != null && _localStorage != null && _config != null;
+            remoteStorageName = _remoteStorage?.Name ?? "NULL";
+            return true;
         }
-        
+
+        private void LateUpdate()
+        {
+            // 더티 플레그가 켜져있다면,
+            if (isDirty && !isBlocked)
+            {
+                // 더티 플래그 꺼주기
+                isDirty = false;
+                // 데이터 쓰기
+                WriteAsync().Forget();
+            }
+        }
+
+        protected void SetDirty() => isDirty = true;
+
 #if UNITY_EDITOR
         private void OnValidate()
         {
@@ -184,7 +200,6 @@ namespace Accelib.Module.SaveLoad.SaveDataHolder
         private static void Init()
         {
             _remoteStorage = null;
-            _localStorage = null;
             _config = null;
         }
 
