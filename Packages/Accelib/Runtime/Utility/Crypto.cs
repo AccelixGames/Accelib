@@ -35,11 +35,11 @@ namespace Accelib.Utility
         private static RijndaelManaged CreateRijndaelManaged(string key)
         {
             var keyArray = System.Text.Encoding.UTF8.GetBytes(key);
+            if (keyArray.Length >= 16) keyArray = keyArray[..16];
+            var newKeysArray = new byte[keyArray.Length];
+            System.Array.Copy(keyArray, 0, newKeysArray, 0, keyArray.Length);
+ 
             var result = new RijndaelManaged();
- 
-            var newKeysArray = new byte[16];
-            System.Array.Copy(keyArray, 0, newKeysArray, 0, 16);
- 
             result.Key = newKeysArray;
             result.Mode = CipherMode.ECB;
             result.Padding = PaddingMode.PKCS7;

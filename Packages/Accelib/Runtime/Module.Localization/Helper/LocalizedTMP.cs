@@ -27,7 +27,7 @@ namespace Accelib.Module.Localization.Helper
         private void OnEnable()
         {
             // 현지화된 텍스트 가져오기
-            var localizedString = LocalizationSingleton.GetLocalizedStringStatic(LocaleKey);
+            var localizedString = LocalizationSingleton.GetLocalizedStringStatic(LocaleKey, this);
             var fontAsset = LocalizationSingleton.GetFontAssetStatic();
             
             // 업데이트 이벤트 호출

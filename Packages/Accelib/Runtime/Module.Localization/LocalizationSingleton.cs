@@ -70,7 +70,7 @@ namespace Accelib.Module.Localization
             UpdateLocale();
         }
 
-        public static string GetLocalizedStringStatic(string key) => Instance?.GetLocalizedString(key) ?? NullString;
+        public static string GetLocalizedStringStatic(string key, Object ctx = null) => Instance?.GetLocalizedString(key, ctx) ?? NullString;
 
         public static LocaleFontData GetFontAssetStatic() => Instance?.currLocale?.FontData;
 
