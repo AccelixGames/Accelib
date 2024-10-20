@@ -1,5 +1,4 @@
-﻿using System.Data;
-using Accelib.Module.SaveLoad.SaveData;
+﻿using Accelib.Module.SaveLoad.SaveData;
 using UnityEngine;
 
 namespace Accelib.Module.SaveLoad.SaveDataHolder

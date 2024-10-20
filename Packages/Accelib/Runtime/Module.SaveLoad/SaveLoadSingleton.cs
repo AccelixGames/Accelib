@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using Accelib.Core;
 using Accelib.Logging;
-using Accelib.Module.Initialization;
 using Accelib.Module.Initialization.Base;
 using Accelib.Module.SaveLoad.SaveDataHolder;
 using AYellowpaper.SerializedCollections;
@@ -18,9 +17,6 @@ namespace Accelib.Module.SaveLoad
         [SerializedDictionary("타입", "오브젝트")]
         [SerializeField] private SaveDataHolderBase[] holders;
         private Dictionary<Type, SaveDataHolderBase> _holderDict = new();
-
-        [Header("옵션")]
-        [SerializeField] private bool initOnStart = true;
 
         public async UniTask<bool> InitAsync()
         {
@@ -42,11 +38,18 @@ namespace Accelib.Module.SaveLoad
             return result.All(isTrue => isTrue);
         }
         
-        public T Get<T>() where T : SaveDataHolderBase
+        public static T Get<T>() where T : SaveDataHolderBase
         {
-            if (_holderDict.TryGetValue(typeof(T), out var holder))
+            if (Instance == null)
+            {
+                Deb.LogError("Instance is null");
+                return null;
+            }
+            
+            if (Instance._holderDict.TryGetValue(typeof(T), out var holder))
                 return holder as T;
 
+            Deb.LogError($"{typeof(T)}를 찾을 수 없습니다.", Instance);
             return null;
         }
         

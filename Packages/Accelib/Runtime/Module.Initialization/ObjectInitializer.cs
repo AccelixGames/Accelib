@@ -1,18 +1,23 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using Accelib.Core;
 using Accelib.Module.Initialization.Base;
 using Cysharp.Threading.Tasks;
+using NaughtyAttributes;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 namespace Accelib.Module.Initialization
 {
-    public class InitSingleton : MonoSingleton<InitSingleton>
+    public class ObjectInitializer : MonoBehaviour
     {
         public enum State {None, Success, Failed}
+
+        [Header("LoadScn")]
+        [SerializeField] private bool loadScnAfterInit = true; 
+        [SerializeField, Scene] private string targetScene;
         
-        [field: SerializeField] public State InitState { get; private set; }
+        [field: Header("State")]
+        [field: SerializeField, ReadOnly] public State InitState { get; private set; }
 
         private async void Start()
         {
@@ -32,11 +37,9 @@ namespace Accelib.Module.Initialization
 
             var results = await UniTask.WhenAll(tasks);
             InitState = results.All(isTrue => isTrue) ? State.Success : State.Failed;
-        }
 
-#if UNITY_EDITOR
-        [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
-        private static void Init() => Initialize();
-#endif
+            if (loadScnAfterInit)
+                SceneManager.LoadScene(targetScene, LoadSceneMode.Single);
+        }
     }
 }

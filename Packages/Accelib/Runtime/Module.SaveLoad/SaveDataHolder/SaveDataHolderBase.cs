@@ -13,11 +13,11 @@ namespace Accelib.Module.SaveLoad.SaveDataHolder
 {
     public abstract class SaveDataHolderBase : MonoBehaviour
     {
-        [Header("[설정]")]
-        [SerializeField] private bool enableEncryption = true;
-        [SerializeField] private string fileName;
-        [SerializeField, ReadOnly] private string fileNameHash;
-        [SerializeField, ReadOnly] private string remoteStorageName;
+        private const string FOption = "저장 옵션";
+        [Foldout(FOption)][SerializeField] private bool enableEncryption = true;
+        [Foldout(FOption)][SerializeField] private string fileName;
+        [Foldout(FOption)][SerializeField][ReadOnly] private string fileNameHash;
+        [Foldout(FOption)][SerializeField][ReadOnly] private string remoteStorageName;
 
         private static IRemoteStorage _remoteStorage;
         private static IRemoteStorage _localStorage;
@@ -171,7 +171,14 @@ namespace Accelib.Module.SaveLoad.SaveDataHolder
         }
         
 #if UNITY_EDITOR
-        private void OnValidate() => fileNameHash = $"f{Mathf.Abs(fileName.GetHashCode())}.save";
+        private void OnValidate()
+        {
+            if (!string.IsNullOrEmpty(fileName))
+            {
+                fileNameHash = $"f{Mathf.Abs(fileName.GetHashCode())}.save";
+                gameObject.name = $"(SaveData) {fileName}";
+            }
+        }
 
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
         private static void Init()
