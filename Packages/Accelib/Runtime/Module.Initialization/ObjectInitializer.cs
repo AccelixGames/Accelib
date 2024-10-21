@@ -29,7 +29,7 @@ namespace Accelib.Module.Initialization
                 if (go == null) continue;
 
                 if (go.TryGetComponent<IInitRequired>(out var initRequired))
-                    initRequired.Initialize();
+                    initRequired.Init();
 
                 if (go.TryGetComponent<IAsyncInitRequired>(out var asyncInitRequired))
                     tasks.Add(asyncInitRequired.InitAsync());

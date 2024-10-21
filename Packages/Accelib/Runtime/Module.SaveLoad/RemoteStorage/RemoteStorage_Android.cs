@@ -5,7 +5,7 @@ using Cysharp.Threading.Tasks;
 
 namespace Accelib.Module.SaveLoad.RemoteStorage
 {
-    internal class RemoteStorage_Android : IRemoteStorage
+    public class RemoteStorage_Android : IRemoteStorage
     {
         public string Name => "Android";
 

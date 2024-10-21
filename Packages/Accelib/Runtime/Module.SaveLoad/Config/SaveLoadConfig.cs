@@ -4,11 +4,9 @@ using UnityEngine;
 
 namespace Accelib.Module.SaveLoad.Config
 {
-    [CreateAssetMenu(fileName = FileName, menuName = "Accelib/Configs/" + nameof(SaveLoadConfig), order = 0)]
-    public class SaveLoadConfig : ScriptableObject
+    [CreateAssetMenu(fileName = nameof(SaveLoadConfig), menuName = "Accelib/Configs/" + nameof(SaveLoadConfig), order = 0)]
+    public sealed class SaveLoadConfig : ScriptableObject
     {
-        private const string FileName = "(Config)SaveLoad";
-        
         [field: Header("암호화 옵션")]
         [field: SerializeField] public string Secret { get; private set; } = "di@94n)fglwi2l#K";
         [SerializeField, ReadOnly] private byte[] secretBytes;
@@ -22,9 +20,9 @@ namespace Accelib.Module.SaveLoad.Config
         [field: SerializeField] public bool PrintLog { get; private set; } = false;
 
         public static SaveLoadConfig Load() =>
-            Resources.Load<SaveLoadConfig>(nameof(Accelib) + "/" + FileName);
+            Resources.Load<SaveLoadConfig>(nameof(Accelib) + "/" + nameof(SaveLoadConfig));
         
-        #if UNITY_EDITOR
+#if UNITY_EDITOR
         private void OnValidate()
         {
             var keyArray = System.Text.Encoding.UTF8.GetBytes(Secret);

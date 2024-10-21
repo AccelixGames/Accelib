@@ -8,7 +8,9 @@
         "Unity.TextMeshPro",
         "UniTask.TextMeshPro",
         "DOTween.Modules",
-        "AYellowpaper.SerializedCollections"
+        "AYellowpaper.SerializedCollections",
+        "Heathen.Steamworks",
+        "com.rlabrecque.steamworks.net"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

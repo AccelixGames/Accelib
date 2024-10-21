@@ -25,7 +25,6 @@ namespace Accelib.Module.SaveLoad.SaveDataHolder
         private static SaveLoadConfig _config;
         
         protected abstract SaveDataBase SaveData { get; }
-        private string FilePath => $"SaveData/{fileNameHash}";
 
         public async UniTask<bool> ReadAsync()
         {
@@ -46,7 +45,7 @@ namespace Accelib.Module.SaveLoad.SaveDataHolder
                 isBlocked = true;
 
                 // 원격에서 읽기
-                var result = await _remoteStorage.ReadAsync(FilePath);
+                var result = await _remoteStorage.ReadAsync(fileNameHash);
                 // 실패할 경우,
                 if (!result.success)
                 {
@@ -62,7 +61,7 @@ namespace Accelib.Module.SaveLoad.SaveDataHolder
 
 #if UNITY_EDITOR
                     if (_config.PrintLog)
-                        Deb.Log($"신규 데이터 읽기에 성공했습니다({remoteStorageName}, {fileName}): {FilePath}", this);
+                        Deb.Log($"신규 데이터 읽기에 성공했습니다({remoteStorageName}, {fileName}): {_remoteStorage.GetFilePath(fileNameHash)}", this);
 #endif
                 }
                 else
@@ -76,7 +75,7 @@ namespace Accelib.Module.SaveLoad.SaveDataHolder
 
 #if UNITY_EDITOR
                     if (_config.PrintLog)
-                        Deb.Log($"데이터 읽기에 성공했습니다({remoteStorageName}, {fileName}): {FilePath}", this);
+                        Deb.Log($"데이터 읽기에 성공했습니다({remoteStorageName}, {fileName}): {_remoteStorage.GetFilePath(fileNameHash)}", this);
 #endif
                 }
 
@@ -118,7 +117,7 @@ namespace Accelib.Module.SaveLoad.SaveDataHolder
                 var bytes = enableEncryption ? Crypto.EncryptToBytes(json, _config.Secret) : Encoding.UTF8.GetBytes(json);
                 
                 // 원격 저장소에 쓰기
-                var result = await _remoteStorage.WriteAsync(bytes, FilePath);
+                var result = await _remoteStorage.WriteAsync(bytes, fileNameHash);
                 
                 // 실패할 경우,
                 if (!result.success)
@@ -131,7 +130,7 @@ namespace Accelib.Module.SaveLoad.SaveDataHolder
 
 #if UNITY_EDITOR
                 if (_config.PrintLog)
-                    Deb.Log($"데이터 쓰기에 성공했습니다({remoteStorageName}, {fileName}): {FilePath}", this);
+                    Deb.Log($"데이터 쓰기에 성공했습니다({remoteStorageName}, {fileName}): {_remoteStorage.GetFilePath(fileNameHash)}", this);
 #endif
                 return true;
             }
@@ -148,7 +147,7 @@ namespace Accelib.Module.SaveLoad.SaveDataHolder
         
         private bool Error(string msg)
         {
-            Deb.LogError($"{msg} : File({fileName}) Path({FilePath}) RemoteStorage({remoteStorageName})");
+            Deb.LogError($"{msg} : File({fileName}) Path({_remoteStorage.GetFilePath(fileNameHash)}) RemoteStorage({remoteStorageName})");
             return false;
         }
 
@@ -191,7 +190,7 @@ namespace Accelib.Module.SaveLoad.SaveDataHolder
         {
             if (!string.IsNullOrEmpty(fileName))
             {
-                fileNameHash = $"f{Mathf.Abs(fileName.GetHashCode())}.save";
+                fileNameHash = $"f{Mathf.Abs(fileName.GetHashCode())}.sav";
                 gameObject.name = $"(SaveData) {fileName}";
             }
         }
