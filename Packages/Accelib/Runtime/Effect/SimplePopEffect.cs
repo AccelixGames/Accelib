@@ -30,7 +30,6 @@ namespace Accelib.Effect
             _tween?.Kill();
         }
 
-        [Button]
         public Tweener SetDisable()
         {
             if(!gameObject.activeSelf) return null;
@@ -45,5 +44,8 @@ namespace Accelib.Effect
 
             return _tween;
         }
+
+        [Button(enabledMode: EButtonEnableMode.Playmode)]
+        public void OnSetDisable() => SetDisable();
     }
 }
