@@ -34,9 +34,10 @@ namespace Accelib.Module.SaveLoad.SaveDataHolder
             if (!TryInitialize()) return Error("초기화에 실패했습니다.");
             // 잠긴 경우,
             if (isBlocked) return Error("현재 사용중입니다.");
-#if UNITY_EDITOR
-            if (_config.ForceNoRead)
-                return true;
+            
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+            // 읽기 강제 무시
+            if (_config.ForceNoRead) return true;
 #endif
 
             try
@@ -101,9 +102,10 @@ namespace Accelib.Module.SaveLoad.SaveDataHolder
             if (!TryInitialize()) return Error("초기화에 실패했습니다.");
             // 잠긴 경우,
             if (isBlocked) return Error("현재 사용중입니다.");
-#if UNITY_EDITOR
-            if (_config.ForceNoWrite)
-                return true;
+            
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+            // 쓰기 강제 무시
+            if (_config.ForceNoWrite) return true;
 #endif
             
             try
