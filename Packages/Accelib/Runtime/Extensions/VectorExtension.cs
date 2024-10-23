@@ -40,6 +40,9 @@ namespace Accelib.Extensions
 
         public static Vector2 ToVec2(this in Vector3 v) => new(v.x, v.y);
         
+        public static float ToAngle(this Vector2 dir) => Vector2.SignedAngle(DirectionExtension.RefVec, dir);
+        public static Vector2 ToVector2(this float angle) => new Vector2(Mathf.Sin(angle), Mathf.Cos(angle));
+        
         public static Vector2 ToCardinal(this in Vector2 v, float minMagnitude = 0.01f)
         {
             if (v.sqrMagnitude <= minMagnitude) return Vector2.zero;

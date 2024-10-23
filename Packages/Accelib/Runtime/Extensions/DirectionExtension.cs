@@ -6,7 +6,7 @@ namespace Accelib.Extensions
 {
     public static class DirectionExtension
     {
-        private static readonly Vector2 RefVec = new(-1, 0);
+        public static readonly Vector2 RefVec = new(-1, 0);
 
         public static Direction Abs(this Direction dir) => (dir.ToVector() * -Vector2Int.one).ToDirection();
         
