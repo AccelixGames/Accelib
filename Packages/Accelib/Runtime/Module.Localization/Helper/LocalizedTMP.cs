@@ -30,6 +30,8 @@ namespace Accelib.Module.Localization.Helper
 
         private void OnEnable()
         {
+            if (!loadOnEnable) return;
+            
             // 현지화된 텍스트 가져오기
             var localizedString = LocalizationSingleton.GetLocalizedStringStatic(LocaleKey, this);
             var fontAsset = LocalizationSingleton.GetFontAssetStatic();

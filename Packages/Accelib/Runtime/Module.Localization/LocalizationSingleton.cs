@@ -77,7 +77,7 @@ namespace Accelib.Module.Localization
         /// <summary>키값에 알맞는 로컬라이징 문자열을 가져온다.</summary>
         public string GetLocalizedString(string key, Object ctx = null)
         {
-            if(currLocale == null)
+            if(!currLocale || string.IsNullOrEmpty(key))
                 return NullString;
             
             // 값 가져오기 실패할 경우,
