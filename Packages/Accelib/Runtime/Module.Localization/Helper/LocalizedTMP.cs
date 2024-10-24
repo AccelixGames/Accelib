@@ -14,6 +14,10 @@ namespace Accelib.Module.Localization.Helper
         // 언어 키
         [SerializeField] private string key;
         [SerializeField] private int fontMaterialId;
+
+        [Header("Option")]
+        [SerializeField] private bool loadOnEnable = true;
+        
         public string LocaleKey => key;
 
         public bool IsEnabled => enabled;

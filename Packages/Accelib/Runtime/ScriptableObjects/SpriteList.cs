@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace Accelib.ScriptableObjects
 {
-    [CreateAssetMenu(fileName = "SpriteList", menuName = "Accelix/SpriteList", order = 0)]
+    [CreateAssetMenu(fileName = "SpriteList", menuName = "Accelib/ListSO/SpriteList", order = 0)]
     public class SpriteList : ScriptableObject
     {
         [SerializeField] private List<Sprite> sprites;

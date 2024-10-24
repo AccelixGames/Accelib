@@ -9,8 +9,11 @@
         "UniTask.TextMeshPro",
         "DOTween.Modules",
         "AYellowpaper.SerializedCollections",
+        "UnityAtoms.UnityAtomsCore.Runtime",
+        "UnityAtoms.UnityAtomsBaseAtoms.Runtime",
         "Heathen.Steamworks",
-        "com.rlabrecque.steamworks.net"
+        "com.rlabrecque.steamworks.net",
+        "Unity.VisibleEnum.Runtime"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],
