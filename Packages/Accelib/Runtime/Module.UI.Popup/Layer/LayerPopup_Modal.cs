@@ -1,4 +1,5 @@
 ﻿using Accelib.Module.Localization.Helper;
+using Accelib.Module.UI.Popup.Data;
 using Accelib.Module.UI.Popup.Layer.Base;
 using Cysharp.Threading.Tasks;
 using TMPro;
@@ -19,12 +20,12 @@ namespace Accelib.Module.UI.Popup.Layer
         
         private void OnDisable() => _ucs?.TrySetResult(Result.Exception);
         
-        internal UniTask<Result> Open(string title, string desc, string okText, string ngText, bool useLocale)
+        internal UniTask<Result> Open(ModalOpenOption option)
         {
-            SetText(titleTMP, title, useLocale);
-            SetText(descTMP, desc, useLocale);
-            SetText(okButton, okText, useLocale);
-            SetText(ngButton, ngText, useLocale);
+            SetText(titleTMP, option.title, option.useLocale);
+            SetText(descTMP, option.desc, option.useLocale);
+            SetText(okButton, option.ok, option.useLocale);
+            SetText(ngButton, option.ng, option.useLocale);
             
             gameObject.SetActive(true);
             
@@ -46,7 +47,7 @@ namespace Accelib.Module.UI.Popup.Layer
         public void OnClickResult(int result)
         {
             _ucs?.TrySetResult((Result)result);
-            gameObject.SetActive(false);
+            PopupSingleton.Instance.CloseModal();
         }
     }
 }

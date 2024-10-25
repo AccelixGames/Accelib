@@ -1,4 +1,5 @@
-﻿using Accelib.Module.UI.Popup.Layer;
+﻿using Accelib.Module.UI.Popup.Data;
+using Accelib.Module.UI.Popup.Layer;
 using NaughtyAttributes;
 using UnityEngine;
 using UnityEngine.Events;
@@ -8,12 +9,8 @@ namespace Accelib.Module.UI.Popup.Utility
     public class PopupOpener_Modal : MonoBehaviour
     {
         [Header("Text(Or Key)")]
-        [SerializeField] private bool useLocale;
-        [SerializeField] private string title;
-        [SerializeField] private string desc;
-        [SerializeField] private string okText = "네";
-        [SerializeField] private string ngText = "아니요";
-
+        [SerializeField] private ModalOpenOption option;
+        
         [Header("Events")]
         public UnityEvent onOK;
         public UnityEvent onNG;
@@ -21,7 +18,7 @@ namespace Accelib.Module.UI.Popup.Utility
         [Button]
         public async void Open()
         {
-            var result = await PopupSingleton.Instance.OpenModal(title, desc, okText, ngText, useLocale);
+            var result = await PopupSingleton.Instance.OpenModal(option);
             
             if (result == LayerPopup_Modal.Result.OK) 
                 onOK?.Invoke();

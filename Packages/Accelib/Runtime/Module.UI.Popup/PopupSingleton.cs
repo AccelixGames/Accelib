@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Accelib.Core;
 using Accelib.Logging;
+using Accelib.Module.UI.Popup.Data;
 using Accelib.Module.UI.Popup.Layer;
 using Accelib.Module.UI.Popup.Layer.Base;
 using Cysharp.Threading.Tasks;
@@ -31,24 +32,8 @@ namespace Accelib.Module.UI.Popup
             canvas.gameObject.SetActive(false);
             modalPopup.gameObject.SetActive(false);
         }
-
-        /// <summary>
-        /// 모달 팝업을 연다.
-        /// </summary>
-        public async UniTask<LayerPopup_Modal.Result> OpenModal(string title, string desc, string ok, string ng, bool useLocale)
-        {
-            if (modalPopup.gameObject.activeSelf)
-            {
-                Deb.LogError("이미 모달이 열린 상태입니다.");
-                return LayerPopup_Modal.Result.Exception;
-            }
-         
-            canvas.gameObject.SetActive(true);
-            dim.SetAsLastSibling();
-            
-            return await modalPopup.Open(title, desc, ok, ng, useLocale);
-        }
-
+        
+        #region **** Open ****
         /// <summary>
         /// 레이어 팝업을 연다.
         /// </summary>
@@ -87,6 +72,26 @@ namespace Accelib.Module.UI.Popup
         }
         
         /// <summary>
+        /// 모달 팝업을 연다.
+        /// </summary>
+        public async UniTask<LayerPopup_Modal.Result> OpenModal(ModalOpenOption option)
+        {
+            if (modalPopup.gameObject.activeSelf)
+            {
+                Deb.LogError("이미 모달이 열린 상태입니다.");
+                return LayerPopup_Modal.Result.Exception;
+            }
+         
+            canvas.gameObject.SetActive(true);
+            dim.SetAsLastSibling();
+            modalPopup.transform.SetAsLastSibling();
+            
+            return await modalPopup.Open(option);
+        }
+        #endregion
+        
+        #region **** Close ***
+        /// <summary>
         /// 레이어 팝업을 닫는다.
         /// </summary>
         public bool CloseLayer(LayerPopupBase target)
@@ -99,7 +104,32 @@ namespace Accelib.Module.UI.Popup
             layerPopups.Remove(layer);
             layer.OnClose();
             Destroy(layer.gameObject);
+
+            return true;
+        }
+        
+        /// <summary>
+        /// 마지막 레이어 팝업을 닫는다.
+        /// </summary>
+        [Button(enabledMode: EButtonEnableMode.Playmode)]
+        public bool CloseLastLayer()
+        {
+            if (layerPopups.Count > 0)
+                return CloseLayer(layerPopups[^1]);
             
+            return false;
+        }
+        
+        // 모달을 닫는다.
+        internal void CloseModal()
+        {
+            modalPopup.gameObject.SetActive(false);
+            OnLayerPopupClosed();
+        }
+
+        // 레이어 팝업 닫힌 후 후처리
+        private void OnLayerPopupClosed()
+        {
             // 열린게 아직 있다면,
             if (layerPopups.Count > 0)
             {
@@ -119,40 +149,9 @@ namespace Accelib.Module.UI.Popup
                 // 일시정지 해제
                 isPaused.SetValue(false);
             }
-
-            return true;
         }
+        #endregion
         
-        /// <summary>
-        /// 마지막 레이어 팝업을 닫는다.
-        /// </summary>
-        [Button(enabledMode: EButtonEnableMode.Playmode)]
-        public bool CloseLastLayer()
-        {
-            if (layerPopups.Count > 0)
-                return CloseLayer(layerPopups[^1]);
-            
-            return false;
-        }
-        
-        // private void LateUpdate()
-        // {
-        //     var layerEnabled = layerPopup?.IsEnabled() ?? false; 
-        //     var modalEnabled = modalPopup?.IsEnabled() ?? false;
-        //     currIsOpen = layerEnabled || modalEnabled;
-        //     
-        //     // 모달이 켜져있으면, 레이어 팝업 보이기/숨기기 처리 
-        //     if (layerEnabled) 
-        //         layerPopup.Show(!modalEnabled);
-        //     
-        //     if(currIsOpen == prevIsOpen) return;
-        //     prevIsOpen = currIsOpen;
-        //     
-        //     // 모달 또는 레이어가 활성화 된 상태면, 일시정지
-        //     if (isPaused.Value != currIsOpen) 
-        //         isPaused.SetValue(currIsOpen);
-        // }
-
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
         private static void Init() => Initialize();
     }

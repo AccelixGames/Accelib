@@ -24,6 +24,7 @@ namespace Accelib.Module.Localization.Helper
 
         // TMP
         private TMP_Text _tmp;
+        public TMP_Text TMP => _tmp;
 
         // TMP 캐싱 
         private void Awake() => _tmp = GetComponent<TMP_Text>();
@@ -31,7 +32,13 @@ namespace Accelib.Module.Localization.Helper
         private void OnEnable()
         {
             if (!loadOnEnable) return;
-            
+
+            Reload();
+        }
+        
+        [Button("다시 로드", EButtonEnableMode.Playmode)]
+        public void Reload()
+        {
             // 현지화된 텍스트 가져오기
             var localizedString = LocalizationSingleton.GetLocalizedStringStatic(LocaleKey, this);
             var fontAsset = LocalizationSingleton.GetFontAssetStatic();
@@ -56,16 +63,13 @@ namespace Accelib.Module.Localization.Helper
             _tmp.text = localizedString;
         }
 
-        [Button("다시 로드", EButtonEnableMode.Playmode)]
-        public void Reload() => OnEnable();
-        
         /// <summary>
         /// 키 변경
         /// </summary>
         public void ChangeKey(string otherKey)
         {
             key = otherKey;
-            OnEnable();
+            Reload();
         }
     }
 }

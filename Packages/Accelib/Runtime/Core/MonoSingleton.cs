@@ -10,9 +10,9 @@ namespace Accelib.Core
         
         public static T Instance { get; protected set; }
 
-        protected static bool TryGetInstance(out T instance)
+        public static bool TryGetInstance(out T instance)
         {
-            if (Instance == null)
+            if (!Instance)
             {
                 Deb.LogError($"MonoSingleton<{typeof(T).Name}> 의 instance 가 없습니다.");
                 instance = null;

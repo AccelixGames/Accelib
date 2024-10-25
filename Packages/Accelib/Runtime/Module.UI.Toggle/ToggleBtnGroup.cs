@@ -11,8 +11,9 @@ namespace Accelib.Module.UI.Toggle
         public UnityEvent<int> onToggle;
         
         [Header("토글 버튼들")]
-        [SerializeField, ReadOnly] private ToggleBtn[] toggles = null;
+        [SerializeField, ReadOnly] private int currIndex;
         [SerializeField, ReadOnly] private ToggleBtn currToggle = null;
+        [SerializeField, ReadOnly] private ToggleBtn[] toggles = null;
         
         private void Awake()
         {
@@ -25,18 +26,20 @@ namespace Accelib.Module.UI.Toggle
 
             if(initialIndex >= toggles.Length || initialIndex < 0) 
                 initialIndex = 0;
+            currIndex = initialIndex;
             
             for (var i = 0; i < toggles.Length; i++)
-                toggles[i].Initialize(this, i == initialIndex);
+                toggles[i].Initialize(this, i == currIndex);
 
-            currToggle = toggles[initialIndex];
-            onToggle?.Invoke(initialIndex);
+            currToggle = toggles[currIndex];
+            onToggle?.Invoke(currIndex);
         }
 
         internal void Toggle(ToggleBtn target)
         {
             if (toggles is not { Length: > 0 }) return;
             if (target == null) return;
+            if (currToggle == target) return;
 
             for (var i = 0; i < toggles.Length; i++)
             {
@@ -46,6 +49,7 @@ namespace Accelib.Module.UI.Toggle
                 currToggle.Toggle(false);
                 currToggle = toggle;
                 currToggle.Toggle(true);
+                currIndex = i;
                 onToggle?.Invoke(i);
                 return;
             }
