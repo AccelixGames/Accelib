@@ -19,7 +19,7 @@ namespace Accelib.Module.Initialization
         [field: Header("State")]
         [field: SerializeField, ReadOnly] public State InitState { get; private set; }
 
-        private async void Start()
+        private async void Awake()
         {
             InitState = State.None;
             

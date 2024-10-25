@@ -105,6 +105,8 @@ namespace Accelib.Module.UI.Popup
             layer.OnClose();
             Destroy(layer.gameObject);
 
+            // 후처리
+            OnLayerPopupClosed();
             return true;
         }
         

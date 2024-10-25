@@ -185,7 +185,7 @@ namespace Accelib.Module.SaveLoad.SaveDataHolder
             }
         }
 
-        protected void SetDirty() => isDirty = true;
+        public void SetDirty() => isDirty = true;
 
 #if UNITY_EDITOR
         private void OnValidate()
