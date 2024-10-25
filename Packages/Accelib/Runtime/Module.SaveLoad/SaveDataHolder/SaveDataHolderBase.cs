@@ -26,6 +26,8 @@ namespace Accelib.Module.SaveLoad.SaveDataHolder
         
         protected abstract SaveDataBase SaveData { get; }
 
+        private byte[] _lastWrittenBytes = null;
+
         public async UniTask<bool> ReadAsync()
         {
             // 저장 데이터가 없을 경우,
@@ -117,6 +119,9 @@ namespace Accelib.Module.SaveLoad.SaveDataHolder
                 var json = SaveData.ToJson();
                 // 암호화
                 var bytes = enableEncryption ? Crypto.EncryptToBytes(json, _config.Secret) : Encoding.UTF8.GetBytes(json);
+
+                // 이전에 쓴 데이터와 같다면, 종료
+                if (_lastWrittenBytes == bytes) return true;
                 
                 // 원격 저장소에 쓰기
                 var result = await _remoteStorage.WriteAsync(bytes, fileNameHash);
@@ -134,6 +139,10 @@ namespace Accelib.Module.SaveLoad.SaveDataHolder
                 if (_config.PrintLog)
                     Deb.Log($"데이터 쓰기에 성공했습니다({remoteStorageName}, {fileName}): {_remoteStorage.GetFilePath(fileNameHash)}", this);
 #endif
+                // 캐싱
+                _lastWrittenBytes = bytes;
+                
+                // 성공
                 return true;
             }
             catch (Exception e)
