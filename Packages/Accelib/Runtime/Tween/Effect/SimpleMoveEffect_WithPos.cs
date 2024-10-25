@@ -37,16 +37,19 @@ namespace Accelib.Tween.Effect
             }
         }
 
-        public void EffectIn()
+        public void EffectInVoid() => EffectIn();
+        public void EffectOutVoid() => EffectOut();
+        
+        public Tweener EffectIn()
         {
-            _rt?.DOAnchorPos(endPos, config.duration)
+            return _rt?.DOAnchorPos(endPos, config.duration)
                 .SetEase(config.easeA)
                 .SetDelay(config.delay);
         }
 
-        public void EffectOut()
+        public Tweener EffectOut()
         {
-            _rt?.DOAnchorPos(startPos, config.duration)
+            return _rt?.DOAnchorPos(startPos, config.duration)
                 .SetEase(config.easeB)
                 .SetDelay(config.delay);
         }
