@@ -48,8 +48,8 @@ namespace Accelib.Effect
 
             tween.SetEase(show ? config.easeA : config.easeB);
 
-            if (config.delay > 0f)
-                tween.SetDelay(config.delay);
+            if (config.delayA > 0f)
+                tween.SetDelay(config.delayA);
             if (!show)
                 tween.onComplete += () => gameObject.SetActive(false);
 

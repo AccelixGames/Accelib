@@ -8,44 +8,57 @@ namespace Accelib.Effect
 {
     public class SimplePopEffect : MonoBehaviour
     {
+        private enum FadeMode { In, Out, None }
+        
         [SerializeField] private EasePairTweenConfig config;
+        
+        [Header("설정")] 
+        [SerializeField] private FadeMode startMode = FadeMode.In;
+        [SerializeField] private Vector3 disabledScale = Vector3.one * 0.0001f;
 
-        private static readonly Vector3 Small = Vector3.one * 0.0001f;
-
-        private Tweener _tween;
+        private Sequence _seq;
         
         private void OnEnable()
         {
-            _tween?.Kill();
-            
-            transform.localScale = Small;
-            _tween = transform.DOScale(Vector3.one, config.duration)
+            if (startMode == FadeMode.In)
+                EffectIn();
+            else if (startMode == FadeMode.Out)
+                EffectOut();
+        }
+
+        private void OnDisable() => _seq?.Kill();
+
+        public Sequence EffectIn()
+        {
+            _seq?.Kill();
+            _seq = DOTween.Sequence().SetLink(gameObject);
+            _seq.AppendCallback(() =>
+            {
+                gameObject.SetActive(true);
+                transform.localScale = disabledScale;
+            });
+            _seq.Append(transform.DOScale(Vector3.one, config.duration)
                 .SetEase(config.easeA)
-                .SetDelay(config.delay)
-                .SetLink(gameObject);
+                .SetDelay(config.delayA));
+
+            return _seq;
         }
 
-        private void OnDisable()
+        public Sequence EffectOut()
         {
-            _tween?.Kill();
-        }
+            if (!gameObject.activeSelf) return null;
 
-        public Tweener SetDisable()
-        {
-            if(!gameObject.activeSelf) return null;
-            
-            _tween?.Kill();
-            
-            _tween = transform.DOScale(Small, config.duration)
+            _seq?.Kill();
+            _seq = DOTween.Sequence().SetLink(gameObject);
+            _seq.Append(transform.DOScale(disabledScale, config.duration)
                 .SetEase(config.easeB)
-                .SetDelay(config.delay)
-                .OnComplete(() => gameObject.SetActive(false))
-                .SetLink(gameObject);
+                .SetDelay(config.delayB));
+            _seq.OnComplete(() => gameObject.SetActive(false));
 
-            return _tween;
+            return _seq;
         }
 
         [Button(enabledMode: EButtonEnableMode.Playmode)]
-        public void OnSetDisable() => SetDisable();
+        public void OnSetDisable() => EffectOut();
     }
 }

@@ -1,13 +1,17 @@
 ﻿using DG.Tweening;
 using NaughtyAttributes;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace Accelib.Data
 {
     [CreateAssetMenu(fileName = "tween-", menuName = "Accelix/Tween/EasePair", order = 0)]
     public class EasePairTweenConfig : ScriptableObject
     {
-        [Range(0f, 10f)] public float delay = 0f;
+        [FormerlySerializedAs("delay")]
+        [Range(0f, 10f)] public float delayA = 0f;
+        [FormerlySerializedAs("delay")]
+        [Range(0f, 10f)] public float delayB = 0f;
         [Range(0.01f, 10f)] public float duration = 1f;
         public Ease easeA = Ease.OutBack;
         public Ease easeB = Ease.InBack;

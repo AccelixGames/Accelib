@@ -22,12 +22,12 @@ namespace Accelib.Module.UI.Popup.Layer
         
         internal UniTask<Result> Open(ModalOpenOption option)
         {
+            gameObject.SetActive(true);
+            
             SetText(titleTMP, option.title, option.useLocale);
             SetText(descTMP, option.desc, option.useLocale);
             SetText(okButton, option.ok, option.useLocale);
             SetText(ngButton, option.ng, option.useLocale);
-            
-            gameObject.SetActive(true);
             
             _ucs?.TrySetResult(Result.Exception);
             _ucs = new UniTaskCompletionSource<Result>();

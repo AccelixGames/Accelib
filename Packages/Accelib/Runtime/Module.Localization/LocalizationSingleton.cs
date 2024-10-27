@@ -20,6 +20,8 @@ namespace Accelib.Module.Localization
         [SerializeField, ReadOnly] private SystemLanguage currLanguage = SystemLanguage.Unknown;
         [SerializeField, ReadOnly] private LocaleSO currLocale = null;
 
+        public SystemLanguage CurrLanguage => currLanguage;
+
         private void Start()
         {
             // 저장된 언어 로드

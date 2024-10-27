@@ -44,14 +44,14 @@ namespace Accelib.Tween.Effect
         {
             return _rt?.DOAnchorPos(endPos, config.duration)
                 .SetEase(config.easeA)
-                .SetDelay(config.delay);
+                .SetDelay(config.delayA);
         }
 
         public Tweener EffectOut()
         {
             return _rt?.DOAnchorPos(startPos, config.duration)
                 .SetEase(config.easeB)
-                .SetDelay(config.delay);
+                .SetDelay(config.delayB);
         }
     }
 }

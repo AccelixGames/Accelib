@@ -34,7 +34,7 @@ namespace Accelib.Tween.Effect.Base
         {
             _tween?.Kill();
             _tween = Internal_EnableEffect(resetOnStart);
-            _tween.SetDelay(Config.delay);
+            _tween.SetDelay(Config.delayA);
             _tween.SetEase(Config.easeA);
             return _tween;
         }
@@ -43,7 +43,7 @@ namespace Accelib.Tween.Effect.Base
         {
             _tween?.Kill();
             _tween = Internal_DisableEffect(resetOnStart);
-            _tween.SetDelay(Config.delay);
+            _tween.SetDelay(Config.delayB);
             _tween.SetEase(Config.easeB);
             
             if(DisableMode == DisableModeType.Disable)

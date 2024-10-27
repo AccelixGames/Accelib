@@ -7,7 +7,8 @@ namespace Accelib.Module.UI.Toggle
     public sealed class ToggleBtnGroup : MonoBehaviour
     {
         [Header("옵션")]
-        [SerializeField] private int initialIndex = 0;
+        [SerializeField] private bool initOnStart = true;
+        [ShowIf(nameof(initOnStart)), SerializeField] private int initialIndex = 0;
         public UnityEvent<int> onToggle;
         
         [Header("토글 버튼들")]
@@ -19,20 +20,40 @@ namespace Accelib.Module.UI.Toggle
         {
             toggles = GetComponentsInChildren<ToggleBtn>();
         }
-
+        
         private void Start()
         {
-            if (toggles is not { Length: > 0 }) return;
+            if (initOnStart)
+            {
+                Initialize(initialIndex);
+                onToggle?.Invoke(currIndex);   
+            }
+        }
 
-            if(initialIndex >= toggles.Length || initialIndex < 0) 
-                initialIndex = 0;
-            currIndex = initialIndex;
+        public void Initialize(int index)
+        {
+            // 토글이 감지된게 없다면, 종료
+            if (toggles is not { Length: > 0 })
+            {
+                toggles ??= GetComponentsInChildren<ToggleBtn>();
+                if(toggles.Length <= 0)
+                    return;
+            }
             
+            // 인덱스가 토글 개수를 초과한다면,
+            if(index >= toggles.Length || index < 0)
+                // 0으로 돌리기
+                index = 0;
+            
+            // 현재 인덱스 초기화
+            currIndex = index;
+            
+            // 토글 초기화
             for (var i = 0; i < toggles.Length; i++)
                 toggles[i].Initialize(this, i == currIndex);
 
+            // 현재 토글 설정 
             currToggle = toggles[currIndex];
-            onToggle?.Invoke(currIndex);
         }
 
         internal void Toggle(ToggleBtn target)

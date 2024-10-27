@@ -50,6 +50,7 @@ namespace Accelib.Module.Localization.Helper
         public void OnLocaleUpdated(string localizedString, LocaleFontData fontAsset)
         {
             // TMP가 NULL 일 경우, 종료
+            _tmp ??= GetComponent<TMP_Text>();
             if (_tmp == null) return;
 
             if (fontAsset?.FontAsset != null)

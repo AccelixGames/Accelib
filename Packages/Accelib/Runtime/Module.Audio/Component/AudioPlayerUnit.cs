@@ -6,6 +6,7 @@ using Accelib.Logging;
 using Accelib.Module.Audio.Data._Base;
 using DG.Tweening;
 using NaughtyAttributes;
+using UnityAtoms.BaseAtoms;
 using UnityEngine;
 using UnityEngine.Serialization;
 
@@ -23,37 +24,40 @@ namespace Accelib.Module.Audio.Component
 
         #region Volume
         [Header("Volume")]
+        [SerializeField, ReadOnly, Range(0f, 1f)] private float _totalVolume = 1f;
         [SerializeField, Range(0f, 1f), ReadOnly] private float _fadeVolume = 1f;
+        [SerializeField, Range(0f, 1f), ReadOnly] private float _controlVolume = 1f;
+        [SerializeField] private FloatVariable masterVolume;
         private float FadeVolume
         {
             get => _fadeVolume;
             set { _fadeVolume = Mathf.Clamp01(value); UpdateVolumes(); }
         }
-
-        [SerializeField, Range(0f, 1f), ReadOnly] private float _controlVolume = 1f;
         private float ControlVolume
         {
             get => _controlVolume;
             set { _controlVolume = Mathf.Clamp01(value); UpdateVolumes(); }
         }
-
-        [SerializeField, Range(0f, 1f), ReadOnly] private float _masterVolume = 1f;
-        public float MasterVolume
-        {
-            get => _masterVolume;
-            private set { _masterVolume = Mathf.Clamp01(value); UpdateVolumes(); }
-        }
-        
-        public float TotalVolume => FadeVolume * MasterVolume * ControlVolume;
-        
         private void UpdateVolumes()
         {
+             var newVolume = FadeVolume * masterVolume.Value * ControlVolume;
+             if(Mathf.Abs(newVolume - _totalVolume) < 0.01f) return;
+             
+             _totalVolume = newVolume; 
             foreach (var source in units) 
-                source.UpdateVolume(TotalVolume);
+                source.UpdateVolume(_totalVolume);
+        }
+        
+        public Tweener SetControlVolume(float value)
+        {
+            return DOTween
+                .To(() => ControlVolume, x => ControlVolume = x, value, fadeTweenConfig.duration)
+                .SetEase(fadeTweenConfig.easeA)
+                .SetLink(gameObject);
         }
         #endregion
 
-        [Header("Sources")][FormerlySerializedAs("sources")]
+        [Header("Sources")]
         [SerializeField, ReadOnly] private List<AudioSourceUnit> units;
         private AudioSourceUnit DefaultUnit => units[0];
 
@@ -70,7 +74,6 @@ namespace Accelib.Module.Audio.Component
                 
                 unit.FadeVolume = 1f;
                 unit.ControlVolume = 1f;
-                unit.MasterVolume = 1f;
                 
                 unit.fadeTweenConfig = fadeTweenConfig;
                 unit.units = new List<AudioSourceUnit>();
@@ -91,6 +94,9 @@ namespace Accelib.Module.Audio.Component
                 units.Add(AudioSourceUnit.Create(transform, priority));
         }
 
+        private void OnEnable() => masterVolume.Changed.Register(UpdateVolumes);
+        private void OnDisable() => masterVolume.Changed.Register(UpdateVolumes);
+
         internal void PlayOneShot(AudioRefBase audioRef)
         {
             if(!audioRef?.Clip) return;
@@ -109,7 +115,7 @@ namespace Accelib.Module.Audio.Component
             }
 
             // 재생
-            source.Play(audioRef, TotalVolume, false);
+            source.Play(audioRef, _totalVolume, false);
         }
 
         internal void Play(AudioRefBase audioRef, bool fade)
@@ -123,7 +129,7 @@ namespace Accelib.Module.Audio.Component
             else
             {
                 FadeVolume = 1f;
-                DefaultUnit.Play(audioRef, TotalVolume);
+                DefaultUnit.Play(audioRef, _totalVolume);
             }
         }
         
@@ -138,20 +144,20 @@ namespace Accelib.Module.Audio.Component
             else
             {
                 FadeVolume = 1f;
-                DefaultUnit.Stop(TotalVolume);
+                DefaultUnit.Stop(_totalVolume);
             }
         }
 
         private Tweener PlayFadeIn(AudioRefBase audioRef) => DOTween
             .To(() => FadeVolume, x => FadeVolume = x, 1f, fadeTweenConfig.duration)
             .SetEase(fadeTweenConfig.easeA)
-            .OnStart(() => DefaultUnit.Play(audioRef, TotalVolume))
+            .OnStart(() => DefaultUnit.Play(audioRef, _totalVolume))
             .SetLink(gameObject);
 
         private Tweener StopFadeOut() => DOTween
             .To(() => FadeVolume, x => FadeVolume = x, 0f, fadeTweenConfig.duration)
             .SetEase(fadeTweenConfig.easeB)
-            .OnComplete(() => DefaultUnit.Stop(TotalVolume))
+            .OnComplete(() => DefaultUnit.Stop(_totalVolume))
             .SetLink(gameObject);
         
         internal void SwitchFade(AudioRefBase audioRef, bool skipOnSame)
@@ -175,20 +181,12 @@ namespace Accelib.Module.Audio.Component
                 _fadeSeq.AppendCallback(() =>
                 {
                     FadeVolume = 0f;
-                    DefaultUnit.Stop(TotalVolume);
+                    DefaultUnit.Stop(_totalVolume);
                 });
             }
             
             // 볼륨 키우며 재생하는 트윈 추가
             _fadeSeq.Append(PlayFadeIn(audioRef));
-        }
-
-        public Tweener SetControlVolume(float value)
-        {
-            return DOTween
-                .To(() => ControlVolume, x => ControlVolume = x, value, fadeTweenConfig.duration)
-                .SetEase(fadeTweenConfig.easeA)
-                .SetLink(gameObject);
         }
     }
 }
