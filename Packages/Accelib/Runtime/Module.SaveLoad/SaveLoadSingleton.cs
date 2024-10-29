@@ -7,6 +7,7 @@ using Accelib.Module.Initialization.Base;
 using Accelib.Module.SaveLoad.SaveDataHolder;
 using Cysharp.Threading.Tasks;
 using UnityEngine;
+using Object = UnityEngine.Object;
 
 namespace Accelib.Module.SaveLoad
 {
@@ -34,11 +35,11 @@ namespace Accelib.Module.SaveLoad
             return result.All(isTrue => isTrue);
         }
         
-        public static T Get<T>() where T : SaveDataHolderBase
+        public static T Get<T>(Object ctx = null) where T : SaveDataHolderBase
         {
             if (Instance == null)
             {
-                Deb.LogError("Instance is null");
+                Deb.LogError("Instance is null", ctx);
                 return null;
             }
             
