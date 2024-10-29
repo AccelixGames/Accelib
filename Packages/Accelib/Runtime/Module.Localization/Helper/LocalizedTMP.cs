@@ -37,7 +37,7 @@ namespace Accelib.Module.Localization.Helper
         }
         
         [Button("다시 로드", EButtonEnableMode.Playmode)]
-        public void Reload()
+        public string Reload()
         {
             // 현지화된 텍스트 가져오기
             var localizedString = LocalizationSingleton.GetLocalizedStringStatic(LocaleKey, this);
@@ -45,6 +45,9 @@ namespace Accelib.Module.Localization.Helper
             
             // 업데이트 이벤트 호출
             OnLocaleUpdated(localizedString, fontAsset);
+            
+            // 반환
+            return localizedString;
         }
 
         public void OnLocaleUpdated(string localizedString, LocaleFontData fontAsset)
@@ -67,10 +70,10 @@ namespace Accelib.Module.Localization.Helper
         /// <summary>
         /// 키 변경
         /// </summary>
-        public void ChangeKey(string otherKey)
+        public string ChangeKey(string otherKey)
         {
             key = otherKey;
-            Reload();
+            return Reload();
         }
     }
 }
