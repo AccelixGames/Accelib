@@ -53,6 +53,7 @@ namespace Accelib.Module.Audio.Component
             return DOTween
                 .To(() => ControlVolume, x => ControlVolume = x, value, fadeTweenConfig.duration)
                 .SetEase(fadeTweenConfig.easeA)
+                .OnComplete(() => ControlVolume = value)
                 .SetLink(gameObject);
         }
         #endregion
