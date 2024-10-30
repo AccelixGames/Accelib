@@ -10,6 +10,7 @@ using Cysharp.Threading.Tasks;
 using NaughtyAttributes;
 using UnityAtoms.BaseAtoms;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace Accelib.Module.UI.Popup
 {
@@ -25,6 +26,7 @@ namespace Accelib.Module.UI.Popup
         [Header("Current")]
         [SerializeField] private LayerPopup_Modal modalPopup;
         [SerializeField, ReadOnly] private List<LayerPopupBase> layerPopups;
+        [SerializeField, ReadOnly] private Color defaultDimColor;
 
         private void Start()
         {
@@ -60,7 +62,7 @@ namespace Accelib.Module.UI.Popup
             
             // 딤 위치 옮기기
             canvas.gameObject.SetActive(true);
-            dim.SetAsLastSibling();
+            dim.transform.SetAsLastSibling();
             
             // 레이어 생성 및 열기
             var layer = Instantiate(prefab, canvas.transform);
@@ -83,7 +85,6 @@ namespace Accelib.Module.UI.Popup
             }
          
             canvas.gameObject.SetActive(true);
-            dim.SetAsLastSibling();
             modalPopup.transform.SetAsLastSibling();
             
             return await modalPopup.Open(option);
