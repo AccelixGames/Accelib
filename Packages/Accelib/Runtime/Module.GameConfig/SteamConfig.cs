@@ -1,8 +1,9 @@
-﻿#if UNITY_STANDALONE && STEAMWORKS_NET && !DISABLESTEAMWORKS
+﻿
 using UnityEngine;
 
 namespace Accelib.Module.GameConfig
 {
+#if UNITY_STANDALONE && STEAMWORKS_NET && !DISABLESTEAMWORKS
     [CreateAssetMenu(fileName = nameof(SteamConfig), menuName = "Accelib/Configs/" + nameof(SteamConfig), order = 0)]
     public class SteamConfig : ScriptableObject
     {
@@ -18,5 +19,5 @@ namespace Accelib.Module.GameConfig
         
         public static SteamConfig Load() => Resources.Load<SteamConfig>(nameof(Accelib) + "/" + nameof(SteamConfig));
     }
-}
 #endif
+}
