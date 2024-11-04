@@ -28,6 +28,7 @@ namespace Accelib.Module.UI.Popup
         [SerializeField, ReadOnly] private List<LayerPopupBase> layerPopups;
 
         public bool IsModalActive => modalPopup.gameObject.activeSelf;
+        public int LayerCount => layerPopups.Count;
         
         private void Start()
         {

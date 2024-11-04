@@ -92,6 +92,8 @@ namespace Accelib.Utility
 
         public void ShortcutClick()
         {
+            if(!IsEnabled) return;
+            
             _seq?.Kill();
             _seq = DOTween.Sequence().SetLink(gameObject)
                 .Append(DownUpTween(true))
@@ -102,6 +104,8 @@ namespace Accelib.Utility
 
         public void OnSubmit(BaseEventData eventData)
         {
+            if(!IsEnabled) return;
+            
             _seq?.Kill();
             _seq = DOTween.Sequence().SetLink(gameObject)
                 .Append(DownUpTween(true))
