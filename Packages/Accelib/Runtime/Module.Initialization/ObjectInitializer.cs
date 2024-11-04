@@ -14,7 +14,7 @@ namespace Accelib.Module.Initialization
 
         [Header("LoadScn")]
         [SerializeField] private bool loadScnAfterInit = true; 
-        [SerializeField, Scene] private string targetScene;
+        [ShowIf(nameof(loadScnAfterInit)),SerializeField, Scene] private string targetScene;
         
         [field: Header("State")]
         [field: SerializeField, ReadOnly] public State InitState { get; private set; }

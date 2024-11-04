@@ -31,11 +31,11 @@ namespace Accelib.Module.SaveLoad.SaveDataHolder
         public async UniTask<bool> ReadAsync()
         {
             // 저장 데이터가 없을 경우,
-            if (SaveData == null) return Error("세이브 데이터가 없습니다.");
+            if (SaveData == null) throw ErrException("세이브 데이터가 없습니다.");
             // 초기화에 실패할 경우,
-            if (!TryInitialize()) return Error("초기화에 실패했습니다.");
+            if (!TryInitialize()) throw ErrException("초기화에 실패했습니다.");
             // 잠긴 경우,
-            if (isBlocked) return Error("현재 사용중입니다.");
+            if (isBlocked) throw ErrException("현재 사용중입니다.");
             
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
             // 읽기 강제 무시
@@ -55,7 +55,8 @@ namespace Accelib.Module.SaveLoad.SaveDataHolder
                     // 에러
                     Deb.LogError($"데이터 읽기({remoteStorageName}, {fileName})에 실패하였습니다. 이유: {result.message}");
                     // 리턴
-                    return false;
+                    SaveData.New();
+                    return true;
                 }
 
                 if (result.data == null)
@@ -88,7 +89,8 @@ namespace Accelib.Module.SaveLoad.SaveDataHolder
             catch (Exception e)
             {
                 Deb.LogException(e);
-                return false;
+                SaveData.New();
+                return true;
             }
             finally
             {
@@ -99,11 +101,11 @@ namespace Accelib.Module.SaveLoad.SaveDataHolder
         public async UniTask<bool> WriteAsync()
         {
             // 저장 데이터가 없을 경우,
-            if (SaveData == null) return Error("세이브 데이터가 없습니다.");
+            if (SaveData == null) throw ErrException("세이브 데이터가 없습니다.");
             // 초기화에 실패할 경우,
-            if (!TryInitialize()) return Error("초기화에 실패했습니다.");
+            if (!TryInitialize()) throw ErrException("초기화에 실패했습니다.");
             // 잠긴 경우,
-            if (isBlocked) return Error("현재 사용중입니다.");
+            if (isBlocked) throw ErrException("현재 사용중입니다.");
             
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
             // 쓰기 강제 무시
@@ -132,7 +134,7 @@ namespace Accelib.Module.SaveLoad.SaveDataHolder
                     // 에러
                     Deb.LogError($"데이터 쓰기({remoteStorageName}, {fileName})에 실패하였습니다. 이유: {result.message}");
                     // 리턴
-                    return false;
+                    return true;
                 }
 
 #if UNITY_EDITOR
@@ -156,11 +158,7 @@ namespace Accelib.Module.SaveLoad.SaveDataHolder
             }
         }
         
-        private bool Error(string msg)
-        {
-            Deb.LogError($"{msg} : File({fileName}) Path({_remoteStorage.GetFilePath(fileNameHash)}) RemoteStorage({remoteStorageName})");
-            return false;
-        }
+        private Exception ErrException(string msg) => new($"{msg} : File({fileName}) Path({_remoteStorage.GetFilePath(fileNameHash)}) RemoteStorage({remoteStorageName})");
 
         private bool TryInitialize()
         {

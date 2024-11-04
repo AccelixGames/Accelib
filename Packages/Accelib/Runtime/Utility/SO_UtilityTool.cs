@@ -3,10 +3,12 @@ using UnityEngine.SceneManagement;
 
 namespace Accelib.Utility
 {
-    [CreateAssetMenu(fileName = "ApplicationHandler", menuName = "Accelix/ApplicationHandler", order = 0)]
-    public class ApplicationHandler : ScriptableObject
+    [CreateAssetMenu(fileName = "UtilityTool", menuName = "Accelib/UtilityTool", order = 0)]
+    public class SO_UtilityTool : ScriptableObject
     {
-        public void Quit()
+        public void OpenURL(string url) => Application.OpenURL(url);
+
+        public void QuitGame()
         {
 #if UNITY_EDITOR
             UnityEditor.EditorApplication.isPlaying = false;

@@ -10,8 +10,8 @@ namespace Accelib.Module.GameConfig
         [SerializeField] private long appId;
         [SerializeField] private long appIdDemo;
 
-        public uint AppId =>
-#if !IS_DEMO
+        public uint AppId => 
+#if !DEMO_BUILD
             (uint)appId;
 #else
             (uint)appIdDemo;

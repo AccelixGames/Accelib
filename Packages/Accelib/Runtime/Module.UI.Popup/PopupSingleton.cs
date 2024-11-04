@@ -26,8 +26,9 @@ namespace Accelib.Module.UI.Popup
         [Header("Current")]
         [SerializeField] private LayerPopup_Modal modalPopup;
         [SerializeField, ReadOnly] private List<LayerPopupBase> layerPopups;
-        [SerializeField, ReadOnly] private Color defaultDimColor;
 
+        public bool IsModalActive => modalPopup.gameObject.activeSelf;
+        
         private void Start()
         {
             isPaused.SetValue(false);
@@ -85,6 +86,7 @@ namespace Accelib.Module.UI.Popup
             }
          
             canvas.gameObject.SetActive(true);
+            dim.SetAsLastSibling();
             modalPopup.transform.SetAsLastSibling();
             
             return await modalPopup.Open(option);

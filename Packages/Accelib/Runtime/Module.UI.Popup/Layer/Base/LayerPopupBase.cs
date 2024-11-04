@@ -23,14 +23,14 @@ namespace Accelib.Module.UI.Popup.Layer.Base
         internal virtual void OnRegainFocus() {}
 
         [Button(enabledMode: EButtonEnableMode.Playmode)]
-        public void Open()
+        public virtual void Open()
         {
             if(!(PopupSingleton.Instance?.OpenLayer(this) ?? false))
                 Deb.LogWarning($"팝업을 열지 못했습니다: {name}", this);
         }
 
         [Button(enabledMode: EButtonEnableMode.Playmode)]
-        public void Close()
+        public virtual void Close()
         {
             if(!(PopupSingleton.Instance?.CloseLayer(this) ?? false))
                 Deb.LogWarning($"팝업을 닫지 못했습니다: {name}", this);

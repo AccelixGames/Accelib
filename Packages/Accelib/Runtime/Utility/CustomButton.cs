@@ -1,5 +1,6 @@
 ﻿using System;
 using Accelib.Data;
+using Accelib.Logging;
 using DG.Tweening;
 using NaughtyAttributes;
 using UnityEngine;
@@ -8,7 +9,7 @@ using UnityEngine.EventSystems;
 
 namespace Accelib.Utility
 {
-    public class CustomButton : MonoBehaviour, IPointerClickHandler, IPointerDownHandler, IPointerUpHandler
+    public class CustomButton : MonoBehaviour, IPointerClickHandler, IPointerDownHandler, IPointerUpHandler, ISubmitHandler
     {
         [Header("상태")] 
         [SerializeField] private bool isEnabled = true;
@@ -28,7 +29,7 @@ namespace Accelib.Utility
         [SerializeField, ShowIf(nameof(useDown))] public UnityEvent onPointerDown = new();
         [SerializeField, ShowIf(nameof(useUp))] public UnityEvent onPointerUp = new();
 
-        private Tweener _tween;
+        private Sequence _seq;
 
         private void OnEnable()
         {
@@ -53,7 +54,7 @@ namespace Accelib.Utility
 
         public void OnPointerClick(PointerEventData eventData)
         {
-            if(!isEnabled) return;
+            if (!isEnabled) return;
             if (eventData.button != clickBtn) return;
             
             if(useClick) onPointerClick?.Invoke();
@@ -61,28 +62,52 @@ namespace Accelib.Utility
 
         public void OnPointerDown(PointerEventData eventData)
         {
-            if(!isEnabled) return;
-            
-            _tween?.Kill();
-            _tween = transform
-                .DOScale(config.DownAmount, config.DownDuration)
-                .SetEase(config.DownEase)
-                .SetLink(gameObject);
-            
-            if(useDown) onPointerDown?.Invoke();
+            if (!isEnabled) return;
+
+            _seq?.Kill();
+            _seq = DOTween.Sequence().SetLink(gameObject)
+                .Append(DownUpTween(true));
+
+            if (useDown) onPointerDown?.Invoke();
         }
 
         public void OnPointerUp(PointerEventData eventData)
         {
             if(!isEnabled) return;
-
-            _tween?.Kill();
-            _tween = transform
-                .DOScale(1f, config.UpDuration)
-                .SetEase(config.UpEase)
-                .SetLink(gameObject);
+            
+            _seq?.Kill();
+            _seq = DOTween.Sequence().SetLink(gameObject)
+                .Append(DownUpTween(false));
             
             if(useUp) onPointerUp?.Invoke();
+        }
+
+        private Tweener DownUpTween(bool isDown)
+        {
+            var amount = isDown ? config.DownAmount : Vector3.one;
+            var duration = isDown ? config.DownDuration : config.UpDuration;
+            var ease = isDown ? config.DownEase : config.UpEase;
+            return transform.DOScale(amount, duration).SetEase(ease);
+        }
+
+        public void ShortcutClick()
+        {
+            _seq?.Kill();
+            _seq = DOTween.Sequence().SetLink(gameObject)
+                .Append(DownUpTween(true))
+                .Append(DownUpTween(false));
+            
+            if(useClick) onPointerClick?.Invoke();
+        }
+
+        public void OnSubmit(BaseEventData eventData)
+        {
+            _seq?.Kill();
+            _seq = DOTween.Sequence().SetLink(gameObject)
+                .Append(DownUpTween(true))
+                .Append(DownUpTween(false));
+            
+            if(useClick) onPointerClick?.Invoke();
         }
     }
 }
