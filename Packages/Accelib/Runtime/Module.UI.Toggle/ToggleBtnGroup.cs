@@ -56,6 +56,17 @@ namespace Accelib.Module.UI.Toggle
             currToggle = toggles[currIndex];
         }
 
+        public void ToggleLeft() => ToggleIndex(-1);
+        public void ToggleRight() => ToggleIndex(1);
+
+        private void ToggleIndex(int index)
+        {
+            var count = toggles.Length;
+            var leftIndex = (currIndex + count + index) % count;
+            var toggle = toggles[leftIndex];
+            Toggle(toggle);
+        }
+        
         internal void Toggle(ToggleBtn target)
         {
             if (toggles is not { Length: > 0 }) return;
