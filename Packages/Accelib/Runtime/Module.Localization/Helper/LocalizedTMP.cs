@@ -1,4 +1,5 @@
 ﻿using Accelib.Module.Localization.Architecture;
+using Accelib.Module.Localization.Helper.Formatter;
 using NaughtyAttributes;
 using TMPro;
 using UnityEngine;
@@ -12,22 +13,28 @@ namespace Accelib.Module.Localization.Helper
     public class LocalizedTMP : MonoBehaviour, ILocaleChangedEventListener
     {
         // 언어 키
+        [Header("키")]
         [SerializeField] private string key;
         [SerializeField] private int fontMaterialId;
 
-        [Header("Option")]
+        [Header("옵션")]
         [SerializeField] private bool loadOnEnable = true;
+        [SerializeField] private bool useFormatter = false;
+        
+        private ILocalizedFormatter _formatter;
         
         public string LocaleKey => key;
-
         public bool IsEnabled => enabled;
 
         // TMP
-        private TMP_Text _tmp;
-        public TMP_Text TMP => _tmp;
+        public TMP_Text TMP { get; private set; }
 
         // TMP 캐싱 
-        private void Awake() => _tmp = GetComponent<TMP_Text>();
+        private void Awake()
+        {
+            TMP = GetComponent<TMP_Text>();
+            _formatter = GetComponent<ILocalizedFormatter>();
+        }
 
         private void OnEnable()
         {
@@ -47,24 +54,32 @@ namespace Accelib.Module.Localization.Helper
             OnLocaleUpdated(localizedString, fontAsset);
             
             // 반환
-            return localizedString;
+            return TMP.text;
         }
 
         public void OnLocaleUpdated(string localizedString, LocaleFontData fontAsset)
         {
             // TMP가 NULL 일 경우, 종료
-            _tmp ??= GetComponent<TMP_Text>();
-            if (_tmp == null) return;
+            TMP ??= GetComponent<TMP_Text>();
+            if (!TMP) return;
 
-            if (fontAsset?.FontAsset != null)
+            if (fontAsset?.FontAsset)
             {
-                _tmp.font = fontAsset.FontAsset;
+                TMP.font = fontAsset.FontAsset;
                 if (fontAsset.FontMaterials != null && fontAsset.FontMaterials.Count > fontMaterialId) 
-                    _tmp.fontMaterial = fontAsset.FontMaterials[fontMaterialId];
+                    TMP.fontMaterial = fontAsset.FontMaterials[fontMaterialId];
             }
             
+            // 포맷 적용
+            if (useFormatter)
+            {
+                var args = _formatter?.GetArgs();
+                if (args != null)
+                    localizedString = string.Format(localizedString, args);
+            }
+
             // 텍스트 변경
-            _tmp.text = localizedString;
+            TMP.text = localizedString;
         }
 
         /// <summary>

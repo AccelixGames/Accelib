@@ -1,3 +1,4 @@
+using System;
 using Accelib.Logging;
 using UnityEngine;
 // ReSharper disable Unity.PerformanceCriticalCodeInvocation
@@ -11,6 +12,7 @@ namespace Accelib.UI
     ///      This will allow the background image to stretch to the full extents of the screen behind the notch, which looks nicer.
     ///  (3) For other cases that use a mixture of full horizontal and vertical background stripes, use the Conform X & Y controls on separate elements as needed.
     /// </summary>
+    [Obsolete("이제 사용되지 않습니다.", true)]
     public class SafeArea : MonoBehaviour
     {
         private RectTransform _panel;
