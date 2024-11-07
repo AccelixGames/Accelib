@@ -2,13 +2,14 @@
 using System.Linq;
 using Accelib.Core;
 using Accelib.Logging;
+using Accelib.Module.Initialization.Base;
 using Accelib.Module.Localization.Architecture;
 using NaughtyAttributes;
 using UnityEngine;
 
 namespace Accelib.Module.Localization
 {
-    public class LocalizationSingleton : MonoSingleton<LocalizationSingleton>
+    public class LocalizationSingleton : MonoSingleton<LocalizationSingleton>, IInitRequired
     {
         public const string NullString = "@null@";
         private static readonly string LangKey = $"{nameof(LocalizationSingleton)}-{nameof(currLanguage)}";
@@ -21,9 +22,16 @@ namespace Accelib.Module.Localization
         [SerializeField, ReadOnly] private LocaleSO currLocale = null;
 
         public SystemLanguage CurrLanguage => currLanguage;
+        
+        public void Init()
+        {
+            if (currLocale == null) Start();
+        }
 
         private void Start()
         {
+            if (currLocale != null) return;
+            
             // 저장된 언어 로드
             var lang = PlayerPrefs.GetInt(LangKey, (int)SystemLanguage.Unknown);
             currLanguage = (SystemLanguage)lang;
@@ -116,7 +124,7 @@ namespace Accelib.Module.Localization
         
 #if UNITY_EDITOR
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
-        private static void Init() => Instance = null;
+        private static void InitSingleton() => Instance = null;
 #endif
     }
 }
