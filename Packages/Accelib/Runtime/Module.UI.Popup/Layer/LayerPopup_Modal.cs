@@ -37,6 +37,9 @@ namespace Accelib.Module.UI.Popup.Layer
 
         private void SetText(TMP_Text target, string text, bool useLocale)
         {
+            target.transform.parent.gameObject.SetActive(!string.IsNullOrEmpty(text));
+            if(!target.transform.parent.gameObject.activeSelf) return;
+            
             if(useLocale)
                 target.GetComponent<LocalizedTMP>()?.ChangeKey(text);
             else

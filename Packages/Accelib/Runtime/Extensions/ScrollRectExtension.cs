@@ -30,6 +30,8 @@ namespace Accelib.Extensions
 
 		public static Vector2 CalculateFocusedScrollPosition(this ScrollRect scrollView, RectTransform item)
 		{
+			if(scrollView == null || item == null) return Vector2.zero;
+			
 			Vector2 itemCenterPoint =
 				scrollView.content.InverseTransformPoint(item.transform.TransformPoint(item.rect.center));
 
@@ -45,17 +47,21 @@ namespace Accelib.Extensions
 		private static Tweener DoScrollPosition(this ScrollRect scrollView, Vector2 targetNormalizedPos,
 			float duration)
 		{
-			return scrollView.DONormalizedPos(targetNormalizedPos, duration).SetLink(scrollView.gameObject);
+			return scrollView?.DONormalizedPos(targetNormalizedPos, duration)?.SetLink(scrollView.gameObject);
 		}
 
 		public static Tweener DoFocusAtPoint(this ScrollRect scrollView, Vector2 focusPoint, float duration)
 		{
+			if (scrollView == null) return null;
+			
 			var pos = scrollView.CalculateFocusedScrollPosition(focusPoint);
 			return scrollView.DoScrollPosition(pos, duration);
 		}
 
 		public static Tweener DoFocusOnItem(this ScrollRect scrollView, RectTransform item, float duration)
 		{
+			if (scrollView == null) return null;
+			
 			var pos = scrollView.CalculateFocusedScrollPosition(item);
 			return scrollView.DoScrollPosition(pos, duration);
 		}

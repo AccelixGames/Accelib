@@ -43,6 +43,11 @@ namespace Accelib.Module.UI.Popup
         /// </summary>
         public bool OpenLayer(LayerPopupBase prefab, object param = null)
         {
+            // 모달이 이미 열려있다면,
+            if(modalPopup.gameObject.activeSelf)
+                // 실패
+                return false;
+            
             // 만약 동일한 창을 띄울 수 없다면,
             if (!prefab.AllowMultiInstance)
                 // 타입을 비교해서, 동일한 타입이 있다면,
