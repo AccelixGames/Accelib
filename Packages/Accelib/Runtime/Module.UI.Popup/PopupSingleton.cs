@@ -95,6 +95,7 @@ namespace Accelib.Module.UI.Popup
             dim.SetAsLastSibling();
             modalPopup.transform.SetAsLastSibling();
             
+            isPaused.SetValue(true);
             return await modalPopup.Open(option);
         }
         #endregion
@@ -158,8 +159,14 @@ namespace Accelib.Module.UI.Popup
                 // 캔버스 닫기
                 canvas.gameObject.SetActive(false);
                 // 일시정지 해제
-                isPaused.SetValue(false);
+                UnPause().Forget();
             }
+        }
+
+        private async UniTaskVoid UnPause()
+        {
+            await UniTask.DelayFrame(1);
+            isPaused.SetValue(false);
         }
         #endregion
         
