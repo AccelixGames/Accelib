@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using Accelib.Logging;
 using UnityEngine;
 
 namespace Accelib.Extensions
@@ -24,6 +25,18 @@ namespace Accelib.Extensions
             }
 
             return list;
+        }
+        
+        public static List<T> GetRandomElements<T>(this List<T> list, int n)
+        {
+            if (list == null) return null;
+            if (n < 0 || n > list.Count)
+            {
+                Deb.LogError("The number of elements to select must be between 0 and the size of the list.");
+                return null;
+            }
+
+            return list.OrderBy(x => UnityEngine.Random.value).Take(n).ToList();
         }
 
         public static T GetRandom<T>(this IEnumerable<T> enumerable)
