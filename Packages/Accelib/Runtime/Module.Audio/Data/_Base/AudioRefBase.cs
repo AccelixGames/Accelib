@@ -27,7 +27,9 @@ namespace Accelib.Module.Audio.Data._Base
             Log($"AudioRef.Play: {name}");
         }
 
-        public void PlayOneShot()
+        public void PlayOneShot() => PlayOneShot(0f);
+
+        public void PlayOneShot(float delay)
         {
             if (!Validate())
             {
@@ -35,8 +37,8 @@ namespace Accelib.Module.Audio.Data._Base
                 return;
             }
 
-            AudioSingleton.PlayOneShot(this);
-            Log($"AudioRef.PlayOneShot: {name}");
+            AudioSingleton.PlayOneShot(this, delay);
+            Log($"AudioRef.PlayOneShot Called: {name}");
         }
         
         public void SwitchFade(bool skipOnSame = true)

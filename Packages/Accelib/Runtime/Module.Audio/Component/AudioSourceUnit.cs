@@ -1,4 +1,5 @@
-﻿using Accelib.Module.Audio.Data;
+﻿using Accelib.Logging;
+using Accelib.Module.Audio.Data;
 using Accelib.Module.Audio.Data._Base;
 using NaughtyAttributes;
 using UnityEngine;
@@ -11,7 +12,8 @@ namespace Accelib.Module.Audio.Component
         [field: SerializeField] public AudioSource Source { get; private set; }
 
         [field: Header("Refs")]
-        [field: SerializeField] [field: ReadOnly] public AudioRefBase CurrRef { get; private set; }
+        [field: SerializeField, ReadOnly] public AudioRefBase CurrRef { get; private set; }
+        [field: SerializeField, ReadOnly] public int LastPlayFrame { get; private set; } = 0;
         
         public static AudioSourceUnit Create(Transform parent, int priority)
         {
@@ -34,14 +36,23 @@ namespace Accelib.Module.Audio.Component
             return unit;
         }
 
-        public void Play(AudioRefBase audioRef, float volume, bool loop = true)
+        public void Play(AudioRefBase audioRef, float volume, bool loop = true, float delay = 0)
         {
+            LastPlayFrame = Time.frameCount;
             CurrRef = audioRef;
             Source.loop = loop && audioRef.Loop;
             Source.clip = audioRef.Clip;
             
             UpdateVolume(volume);
-            Source.Play();
+            if(delay > 0)
+                Source.PlayDelayed(delay);
+            else
+                Source.Play();
+            
+            #if UNITY_EDITOR
+            if(audioRef.ShowLog)
+                Deb.Log($"Play {audioRef.name} on {name}", this);
+            #endif
         }
 
         public void Stop(float volume)

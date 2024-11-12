@@ -98,25 +98,34 @@ namespace Accelib.Module.Audio.Component
         private void OnEnable() => masterVolume.Changed.Register(UpdateVolumes);
         private void OnDisable() => masterVolume.Changed.Register(UpdateVolumes);
 
-        internal void PlayOneShot(AudioRefBase audioRef)
+        internal void PlayOneShot(AudioRefBase audioRef, float delay = 0f)
         {
-            if(!audioRef?.Clip) return;
+            if (audioRef?.Clip == null)
+            {
+                Deb.LogWarning($"클립이 없어 재생하지 않습니다. [Name: {audioRef.Clip.name} / Channel: {audioRef.Channel} / Max: {units.Count}]", this);
+                return;
+            }
 
             // 현재 동일한 소리가 플레이중이라면, 스킵
             foreach (var s in units.Where(x=>x.Source.isPlaying && x.Source.clip == audioRef.Clip))
                 if (s.Source.time <= minDuplicateTime)
+                {
+                    Deb.LogWarning($"현재 동일한 소리가 재생중입니다. 재생하지 않습니다. 재생중인 소스({s.Source}, {s.Source.clip}) [Name: {audioRef.Clip.name} / Channel: {audioRef.Channel} / Max: {units.Count}]", s);
                     return;
+                }
             
             // 소스를 찾지 못했다면, 스킵
-            var source = units.FirstOrDefault(s => !s.Source.isPlaying);
-            if (!source)
+            var currFrame = Time.frameCount;
+            foreach (var unit in units)
             {
-                Deb.LogWarning($"동시 재생 가능한 최대 사운드를 초과하여, 사운드를 재생하지 않습니다. [Name: {audioRef.Clip.name} / Channel: {audioRef.Channel} / Max: {units.Count}]", this);
+                if(unit.Source.isPlaying) continue;
+                if(unit.LastPlayFrame >= currFrame) continue;
+                
+                unit.Play(audioRef, _totalVolume, false, delay);
                 return;
             }
-
-            // 재생
-            source.Play(audioRef, _totalVolume, false);
+            
+            Deb.LogWarning($"동시 재생 가능한 최대 사운드를 초과하여, 사운드를 재생하지 않습니다. [Name: {audioRef.Clip.name} / Channel: {audioRef.Channel} / Max: {units.Count}]", this);
         }
 
         internal void Play(AudioRefBase audioRef, bool fade)

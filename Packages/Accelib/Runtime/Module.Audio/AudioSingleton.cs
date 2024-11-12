@@ -27,12 +27,15 @@ namespace Accelib.Module.Audio
             instance.GetPlayer(in audioRef)?.Play(audioRef, fade);
         }
 
-        internal static void PlayOneShot(in AudioRefBase audioRef)
+        internal static void PlayOneShot(in AudioRefBase audioRef, float delay = 0f)
         {
-            if (!audioRef?.Clip) return;
-            if (!TryGetInstance(out var instance)) return;
+            if (!TryGetInstance(out var instance))
+            {
+                Deb.LogError("AudioSingleton Instance is null", audioRef);
+                return;
+            }
 
-            instance.GetPlayer(in audioRef)?.PlayOneShot(audioRef);
+            instance?.GetPlayer(in audioRef)?.PlayOneShot(audioRef, delay);
         }
 
         internal static void Stop(in AudioRefBase audioRef, bool fade)
