@@ -12,7 +12,12 @@ namespace Accelib.Module.SaveLoad.Config
         [SerializeField, ReadOnly] private byte[] secretBytes;
 
         [field: Header("강제 옵션")]
-        [field: SerializeField] public bool ForceLocalStorage { get; private set; } = false;
+        [field: SerializeField] public bool ForceLocalStorage
+        #if UNITY_EDITOR || DEVELOPMENT_BUILD
+        { get; private set; } = false;
+        #else
+        => false;
+        #endif
         [field: SerializeField] public bool ForceNoWrite { get; private set; }
         [field: SerializeField] public bool ForceNoRead { get; private set; }
         
