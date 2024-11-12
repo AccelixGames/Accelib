@@ -100,9 +100,10 @@ namespace Accelib.Module.Audio.Component
 
         internal void PlayOneShot(AudioRefBase audioRef, float delay = 0f)
         {
-            if (audioRef?.Clip == null)
+            if (audioRef.Clip == null)
             {
-                Deb.LogWarning($"클립이 없어 재생하지 않습니다. [Name: {audioRef.Clip.name} / Channel: {audioRef.Channel} / Max: {units.Count}]", this);
+                if(audioRef.ShowLog)
+                    Deb.LogWarning($"클립이 없어 재생하지 않습니다. [Name: {audioRef.Clip.name} / Channel: {audioRef.Channel} / Max: {units.Count}]", this);
                 return;
             }
 
@@ -110,7 +111,8 @@ namespace Accelib.Module.Audio.Component
             foreach (var s in units.Where(x=>x.Source.isPlaying && x.Source.clip == audioRef.Clip))
                 if (s.Source.time <= minDuplicateTime)
                 {
-                    Deb.LogWarning($"현재 동일한 소리가 재생중입니다. 재생하지 않습니다. 재생중인 소스({s.Source}, {s.Source.clip}) [Name: {audioRef.Clip.name} / Channel: {audioRef.Channel} / Max: {units.Count}]", s);
+                    if(audioRef.ShowLog)
+                        Deb.LogWarning($"현재 동일한 소리가 재생중입니다. 재생하지 않습니다. 재생중인 소스({s.Source}, {s.Source.clip}) [Name: {audioRef.Clip.name} / Channel: {audioRef.Channel} / Max: {units.Count}]", s);
                     return;
                 }
             
@@ -125,7 +127,8 @@ namespace Accelib.Module.Audio.Component
                 return;
             }
             
-            Deb.LogWarning($"동시 재생 가능한 최대 사운드를 초과하여, 사운드를 재생하지 않습니다. [Name: {audioRef.Clip.name} / Channel: {audioRef.Channel} / Max: {units.Count}]", this);
+            if(audioRef.ShowLog)
+                Deb.LogWarning($"동시 재생 가능한 최대 사운드를 초과하여, 사운드를 재생하지 않습니다. [Name: {audioRef.Clip.name} / Channel: {audioRef.Channel} / Max: {units.Count}]", this);
         }
 
         internal void Play(AudioRefBase audioRef, bool fade)
