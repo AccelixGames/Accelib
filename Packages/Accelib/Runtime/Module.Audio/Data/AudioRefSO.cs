@@ -30,14 +30,12 @@ namespace Accelib.Module.Audio.Data
         public override float Volume => _Volume;
         public override bool Loop => _Loop;
         protected override bool Validate() => _Clip;
-        
-
-#if UNITY_EDITOR
-                
+                        
         [Header("Debug")]
         [SerializeField] private bool showLog = false;
         public override bool ShowLog => showLog;
 
+#if UNITY_EDITOR
         public static AudioRefSO CreateAssetFromClip(AudioClip clip, string folderPath, bool autoSave = false)
         {
             if (clip == null) return null;

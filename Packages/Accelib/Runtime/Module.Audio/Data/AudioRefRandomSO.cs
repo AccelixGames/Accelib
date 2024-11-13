@@ -19,11 +19,11 @@ namespace Accelib.Module.Audio.Data
         [SerializeField, Range(0f, 1f)] private float volume;
         [SerializeField] public bool loop = false;
 
-#if UNITY_EDITOR
+//#if UNITY_EDITOR
         [Header("Debug")]
         [SerializeField] private bool showLog = false;
         public override bool ShowLog => showLog;
-#endif
+//#endif
         
         public override AudioChannel Channel => channel;
         public override AudioClip Clip => clips is { Length: > 0 } ? clips[Random.Range(0, clips.Length)] : null;
