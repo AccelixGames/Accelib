@@ -18,10 +18,16 @@ namespace Accelib.Module.UI.Popup.Layer.Base
 
         protected virtual void OnPreOpen(object param) {}
         protected virtual void OnPostOpen(object param) {}
-        internal virtual void OnClose() {}
+        public virtual void OnClose() {}
         internal virtual void OnLostFocus() {}
         internal virtual void OnRegainFocus() {}
 
+        public virtual void Open(object param)
+        {
+            if(!(PopupSingleton.Instance?.OpenLayer(this, param) ?? false))
+                Deb.LogWarning($"팝업을 열지 못했습니다: {name}", this);
+        }
+        
         [Button(enabledMode: EButtonEnableMode.Playmode)]
         public virtual void Open()
         {

@@ -29,7 +29,7 @@ namespace Accelib.Module.UI.Utility
             version = Application.version;
             
             _target = GetComponent<TMP_Text>();
-            _target.text = demoStr + version + devStr;
+            _target.text = $"{demoStr}{version}-{devStr}";
         }
     }
 }

@@ -10,9 +10,10 @@ namespace Accelib.Module.UI.Toggle
         [SerializeField] private bool initOnStart = true;
         [ShowIf(nameof(initOnStart)), SerializeField] private int initialIndex = 0;
         public UnityEvent<int> onToggle;
-        
-        [Header("토글 버튼들")]
-        [SerializeField, ReadOnly] private int currIndex;
+
+        [field: Header("토글 버튼들")]
+        [field:SerializeField, ReadOnly] public int CurrIndex { get; private set; }
+
         [SerializeField, ReadOnly] private ToggleBtn currToggle = null;
         [SerializeField, ReadOnly] private ToggleBtn[] toggles = null;
         
@@ -26,8 +27,14 @@ namespace Accelib.Module.UI.Toggle
             if (initOnStart)
             {
                 Initialize(initialIndex);
-                onToggle?.Invoke(currIndex);   
+                onToggle?.Invoke(CurrIndex);   
             }
+        }
+
+        public void Refresh()
+        {
+            toggles = GetComponentsInChildren<ToggleBtn>();
+            Initialize(CurrIndex);
         }
 
         public void Initialize(int index)
@@ -46,14 +53,14 @@ namespace Accelib.Module.UI.Toggle
                 index = 0;
             
             // 현재 인덱스 초기화
-            currIndex = index;
+            CurrIndex = index;
             
             // 토글 초기화
             for (var i = 0; i < toggles.Length; i++)
-                toggles[i].Initialize(this, i == currIndex);
+                toggles[i].Initialize(this, i == CurrIndex);
 
             // 현재 토글 설정 
-            currToggle = toggles[currIndex];
+            currToggle = toggles[CurrIndex];
         }
 
         public void ToggleLeft() => ToggleIndex(-1);
@@ -62,7 +69,7 @@ namespace Accelib.Module.UI.Toggle
         private void ToggleIndex(int index)
         {
             var count = toggles.Length;
-            var leftIndex = (currIndex + count + index) % count;
+            var leftIndex = (CurrIndex + count + index) % count;
             var toggle = toggles[leftIndex];
             Toggle(toggle);
         }
@@ -81,7 +88,7 @@ namespace Accelib.Module.UI.Toggle
                 currToggle.Toggle(false);
                 currToggle = toggle;
                 currToggle.Toggle(true);
-                currIndex = i;
+                CurrIndex = i;
                 onToggle?.Invoke(i);
                 return;
             }
