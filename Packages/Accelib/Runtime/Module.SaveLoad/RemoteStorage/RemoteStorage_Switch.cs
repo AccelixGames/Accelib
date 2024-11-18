@@ -9,6 +9,11 @@ namespace Accelib.Module.SaveLoad.RemoteStorage
     {
         public string Name => "Switch";
 
+        public string GetFilePath(string fileName)
+        {
+            return "";
+        }
+
         public UniTask<RemoteTaskResult> WriteAsync(byte[] data, string path)
         {
             throw new System.NotImplementedException();
