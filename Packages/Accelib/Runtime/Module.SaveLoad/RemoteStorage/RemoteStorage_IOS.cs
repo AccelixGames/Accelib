@@ -1,23 +1,14 @@
 ﻿#if UNITY_IOS
-using Accelib.Module.SaveLoad.RemoteStorage.Base;
-using Accelib.Module.SaveLoad.RemoteStorage.Data;
-using Cysharp.Threading.Tasks;
+using System.IO;
+using UnityEngine;
 
 namespace Accelib.Module.SaveLoad.RemoteStorage
 {
-    public class RemoteStorage_IOS : IRemoteStorage
+    public class RemoteStorage_IOS : RemoteStorage_Local
     {
-        public string Name => "IOS";
+        public override string Name => "IOS";
 
-        public UniTask<RemoteTaskResult> WriteAsync(byte[] data, string path)
-        {
-            throw new System.NotImplementedException();
-        }
-
-        public UniTask<RemoteTaskResult> ReadAsync(string path)
-        {
-            throw new System.NotImplementedException();
-        }
+        public override string GetFilePath(string fileName) => Path.Combine(Application.dataPath, "..", "..", "Documents", fileName);
     }
 }
 #endif
