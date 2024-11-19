@@ -1,29 +1,34 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Collections.Generic;
 using Accelib.Core;
 using Accelib.Helper;
 using Accelib.Logging;
+using Accelib.Module.Initialization.Base;
 using Accelib.Module.Prefs.Data;
 using Accelib.Module.Prefs.Data.Base;
-using NaughtyAttributes;
+using Accelib.Module.SaveLoad;
 using UnityAtoms;
 using UnityAtoms.BaseAtoms;
 using UnityEngine;
 
 namespace Accelib.Module.Prefs
 {
-    public class PlayerPrefsSingleton : MonoSingleton<PlayerPrefsSingleton>
+    public class PlayerPrefsSingleton : MonoSingleton<PlayerPrefsSingleton>, ILateInitRequired
     {
         [SerializeField] private List<AtomBaseVariable> variables;
         [SerializeField] private Timer writeTimer;
         
+        [Header("Debug")]
         [SerializeReference, SerializeField] private List<PrefsVar> _prefsVars = new();
 
-        protected override void Awake()
+        public int Priority => 100;
+
+        public void Init()
         {
-            base.Awake();
+#if UNITY_SWITCH && !UNITY_EDITOR
+            SaveLoadSingleton.ReadPlayerPrefs();
+#endif
             
+            Deb.Log("PlayerPrefsSingleton init");
             _prefsVars = new List<PrefsVar>();
             foreach (var variable in variables)
             {
@@ -59,12 +64,21 @@ namespace Accelib.Module.Prefs
             if (writeTimer.OnTime())
             {
                 var isModified = false;
-                foreach (var prefsVar in _prefsVars) 
-                    isModified = isModified || prefsVar.Write();
-                
-                if (isModified) PlayerPrefs.Save();
+                foreach (var prefsVar in _prefsVars)
+                {
+                    var writeResult = prefsVar.Write();
+                    isModified = isModified || writeResult; ;
+                }
 
-                writeTimer.Clear(true);
+                if (isModified)
+                {
+                    PlayerPrefs.Save();
+#if UNITY_SWITCH && !UNITY_EDITOR
+                    SaveLoadSingleton.WritePlayerPrefs();
+#endif
+                }
+
+                writeTimer.Clear();
             }
         }
     }

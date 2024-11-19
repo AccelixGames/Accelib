@@ -6,6 +6,7 @@
 
         public static IRemoteStorage GetRemoteStorage(bool forceLocalStorage = false)
         {
+#if !UNITY_EDITOR
             if (!forceLocalStorage)
             {
 #if UNITY_STANDALONE && STEAMWORKS_NET && !DISABLESTEAMWORKS
@@ -18,6 +19,7 @@
             return new RemoteStorage_Switch();
 #endif   
             }
+#endif
 
             return new RemoteStorage_Local();
         }

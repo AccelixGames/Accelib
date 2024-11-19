@@ -13,7 +13,8 @@
         "UnityAtoms.UnityAtomsBaseAtoms.Runtime",
         "Heathen.Steamworks",
         "com.rlabrecque.steamworks.net",
-        "Unity.VisibleEnum.Runtime"
+        "Unity.VisibleEnum.Runtime",
+        "NintendoSDK"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

@@ -4,8 +4,12 @@ using System.Linq;
 using Accelib.Core;
 using Accelib.Logging;
 using Accelib.Module.Initialization.Base;
+using Accelib.Module.SaveLoad.Config;
+using Accelib.Module.SaveLoad.RemoteStorage;
+using Accelib.Module.SaveLoad.RemoteStorage.Base;
 using Accelib.Module.SaveLoad.SaveDataHolder;
 using Cysharp.Threading.Tasks;
+using NaughtyAttributes;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
@@ -13,10 +17,22 @@ namespace Accelib.Module.SaveLoad
 {
     public class SaveLoadSingleton : MonoSingleton<SaveLoadSingleton>, IAsyncInitRequired
     {
+        [Header("Storage")]
+        [SerializeField, ReadOnly] private string remoteStorageName;
+        
+        public static IRemoteStorage RemoteStorage;
+        public static SaveLoadConfig Config;
+        
         private Dictionary<Type, SaveDataHolderBase> _holderDict = new();
-
+        
         public async UniTask<bool> InitAsync()
         {
+            Config = SaveLoadConfig.Load();
+            RemoteStorage = RemoteStorageSelector.GetRemoteStorage(Config.ForceLocalStorage);
+            remoteStorageName = RemoteStorage.Name;
+            Deb.Log("RemoteStorage Initialized: " + remoteStorageName);
+            
+            // 초기화
             var taskPool = new List<UniTask<bool>>();
             
             _holderDict = new Dictionary<Type, SaveDataHolderBase>();
@@ -49,10 +65,21 @@ namespace Accelib.Module.SaveLoad
             Deb.LogError($"{typeof(T)}를 찾을 수 없습니다.", Instance);
             return null;
         }
+      
+#if UNITY_SWITCH && !UNITY_EDITOR
+        public static void WritePlayerPrefs() => ((RemoteStorage_Switch)RemoteStorage).WritePlayerPrefs().Forget();
+        public static void ReadPlayerPrefs() => ((RemoteStorage_Switch)RemoteStorage).ReadPlayerPrefs().Forget();
+#endif
         
 #if UNITY_EDITOR
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
-        private static void Init() => Initialize();
+        private static void Init()
+        {
+            Initialize();
+
+            Config = null;
+            RemoteStorage = null;
+        }
 #endif
     }
 }

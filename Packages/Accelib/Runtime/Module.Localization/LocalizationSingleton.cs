@@ -5,53 +5,42 @@ using Accelib.Logging;
 using Accelib.Module.Initialization.Base;
 using Accelib.Module.Localization.Architecture;
 using NaughtyAttributes;
+using UnityAtoms.BaseAtoms;
 using UnityEngine;
 
 namespace Accelib.Module.Localization
 {
-    public class LocalizationSingleton : MonoSingleton<LocalizationSingleton>, IInitRequired
+    public class LocalizationSingleton : MonoSingleton<LocalizationSingleton>, ILateInitRequired
     {
         public const string NullString = "@null@";
-        private static readonly string LangKey = $"{nameof(LocalizationSingleton)}-{nameof(currLanguage)}";
+        private static readonly string LangKey = $"{nameof(LocalizationSingleton)}-{nameof(CurrLang)}";
         
         // 지원하는 로케일 데이터들
         [SerializeField] private List<LocaleSO> locales;
+        [SerializeField] private IntVariable currLangId;
         
         [Header("미리보기")]
-        [SerializeField, ReadOnly] private SystemLanguage currLanguage = SystemLanguage.Unknown;
         [SerializeField, ReadOnly] private LocaleSO currLocale = null;
 
-        public SystemLanguage CurrLanguage => currLanguage;
-        
+        public SystemLanguage CurrLang => (SystemLanguage)currLangId.Value;
+
+        public int Priority => 0;
+
         public void Init()
         {
-            if (currLocale == null) Start();
-        }
-
-        private void Start()
-        {
-            if (currLocale != null) return;
-            
             // 저장된 언어 로드
-            var lang = PlayerPrefs.GetInt(LangKey, (int)SystemLanguage.Unknown);
-            currLanguage = (SystemLanguage)lang;
+            // currLangId.Value = PlayerPrefs.GetInt(LangKey, (int)SystemLanguage.Unknown);
+            Deb.Log($"Current language Init: {CurrLang}({currLangId.Value})");
             
             // 저장된 언어가 없다면,
-            if (currLanguage == SystemLanguage.Unknown)
-            {
+            if (CurrLang == SystemLanguage.Unknown)
                 // 현재 시스템 언어를 가져옴
-                currLanguage = Application.systemLanguage;
-            }
+                currLangId.Value = (int)Application.systemLanguage;
 
             // 지원하는 언어가 아닐 경우, 
-            if (locales.All(x => x.Language != currLanguage))
-            {
+            if (locales.All(x => x.Language != CurrLang))
                 // 첫번째 언어로 설정
-                currLanguage = locales[0].Language;
-
-                // 언어 저장
-                PlayerPrefs.SetInt(LangKey, (int)currLanguage);
-            }
+                currLangId.Value = (int)locales[0].Language;
 
             // 로케일 변경
             UpdateLocale();
@@ -61,7 +50,7 @@ namespace Accelib.Module.Localization
         public void ChangeLanguage(SystemLanguage language)
         {
             // 동일한 언어로 변경하려고 할 경우, 종료
-            if(currLanguage == language) return;
+            if(CurrLang == language) return;
             
             // 지원하는 언어가 아닐 경우, 종료
             if (locales.All(x => x.Language != language))
@@ -71,10 +60,7 @@ namespace Accelib.Module.Localization
             }
 
             // 언어 로드
-            currLanguage = language;
-            
-            // 언어 저장
-            PlayerPrefs.SetInt(LangKey, (int)currLanguage);
+            currLangId.Value = (int)language;
             
             // 로케일 변경
             UpdateLocale();
@@ -94,7 +80,7 @@ namespace Accelib.Module.Localization
             if (!currLocale.TextDict.TryGetValue(key, out var result))
             {
                 // NULL 리턴
-                Deb.LogWarning($"키({key})의 로컬라이징 값을 가져올 수 없습니다. 현재 언어({currLanguage})", ctx);
+                Deb.LogWarning($"키({key})의 로컬라이징 값을 가져올 수 없습니다. 현재 언어({CurrLang})", ctx);
                 result = NullString;
             }
             
@@ -105,7 +91,8 @@ namespace Accelib.Module.Localization
         private void UpdateLocale()
         {
             // 로케일 변경
-            currLocale = locales.FirstOrDefault(x => x.Language == currLanguage);
+            Deb.Log($"Update Locale to {CurrLang}({currLangId.Value})");
+            currLocale = locales.FirstOrDefault(x => x.Language == CurrLang);
             
             // 변경 이벤트 발생
             foreach (var monoBehaviour in FindObjectsByType<MonoBehaviour>(FindObjectsSortMode.None))

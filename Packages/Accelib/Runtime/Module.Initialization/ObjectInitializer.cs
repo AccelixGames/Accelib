@@ -24,19 +24,33 @@ namespace Accelib.Module.Initialization
             InitState = State.None;
             
             var tasks = new List<UniTask<bool>>();
-            foreach (var go in FindObjectsByType<MonoBehaviour>(FindObjectsInactive.Exclude, FindObjectsSortMode.None))
+            var monoBehaviours = FindObjectsByType<MonoBehaviour>(FindObjectsInactive.Exclude, FindObjectsSortMode.None);
+            foreach (var go in monoBehaviours)
             {
                 if (go == null) continue;
 
                 if (go.TryGetComponent<IInitRequired>(out var initRequired))
                     initRequired.Init();
-
+                
                 if (go.TryGetComponent<IAsyncInitRequired>(out var asyncInitRequired))
                     tasks.Add(asyncInitRequired.InitAsync());
             }
 
             var results = await UniTask.WhenAll(tasks);
             InitState = results.All(isTrue => isTrue) ? State.Success : State.Failed;
+
+            var lateInits = new List<ILateInitRequired>();
+            foreach (var go in monoBehaviours)
+            {
+                if (go == null) continue;
+                
+                if (go.TryGetComponent<ILateInitRequired>(out var initRequired))
+                    lateInits.Add(initRequired);
+            }
+            
+            lateInits.Sort((a,b)=>b.Priority.CompareTo(a.Priority));
+            foreach (var lateInitRequired in lateInits) 
+                lateInitRequired.Init();
 
             if (loadScnAfterInit)
                 SceneManager.LoadScene(targetScene, LoadSceneMode.Single);

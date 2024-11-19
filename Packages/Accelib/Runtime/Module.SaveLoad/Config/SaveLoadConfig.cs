@@ -13,11 +13,11 @@ namespace Accelib.Module.SaveLoad.Config
 
         [field: Header("강제 옵션")]
         [field: SerializeField] public bool ForceLocalStorage
-        #if UNITY_EDITOR || DEVELOPMENT_BUILD
+#if UNITY_EDITOR 
         { get; private set; } = false;
-        #else
+#else
         => false;
-        #endif
+#endif
         [field: SerializeField] public bool ForceNoWrite { get; private set; }
         [field: SerializeField] public bool ForceNoRead { get; private set; }
         

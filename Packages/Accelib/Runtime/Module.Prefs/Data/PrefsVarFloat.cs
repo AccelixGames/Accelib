@@ -13,7 +13,10 @@ namespace Accelib.Module.Prefs.Data
             EventBase = v.Changed;
         }
 
-        protected override void Internal_Read() => Variable.Value = PlayerPrefs.GetFloat(Variable.name, (float)Variable.BaseValue);
+        protected override void Internal_Read()
+        {
+            Variable.Value = PlayerPrefs.GetFloat(Variable.name, (float)Variable.BaseValue);
+        }
 
         protected override void Internal_Write() => PlayerPrefs.SetFloat(Variable.name, Variable.Value);
     }

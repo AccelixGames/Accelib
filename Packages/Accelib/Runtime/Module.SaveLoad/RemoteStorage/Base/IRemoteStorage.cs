@@ -12,5 +12,6 @@ namespace Accelib.Module.SaveLoad.RemoteStorage.Base
         public string GetFilePath(string fileName);
         public UniTask<RemoteTaskResult> WriteAsync(byte[] bytes, string fileName);
         public UniTask<RemoteTaskResult> ReadAsync(string fileName);
+        
     }
 }

@@ -17,12 +17,9 @@ namespace Accelib.Module.SaveLoad.SaveDataHolder
         [SerializeField] private bool enableEncryption = true;
         [SerializeField] private string fileName;
         [SerializeField][ReadOnly] private string fileNameHash;
-        [SerializeField][ReadOnly] private string remoteStorageName;
         [SerializeField] [ReadOnly] private bool isDirty = false;
         [SerializeField] [ReadOnly] private bool isBlocked = false;
 
-        private static IRemoteStorage _remoteStorage;
-        private static SaveLoadConfig _config;
         
         protected abstract SaveDataBase SaveData { get; }
 
@@ -33,13 +30,13 @@ namespace Accelib.Module.SaveLoad.SaveDataHolder
             // 저장 데이터가 없을 경우,
             if (SaveData == null) throw ErrException("세이브 데이터가 없습니다.");
             // 초기화에 실패할 경우,
-            if (!TryInitialize()) throw ErrException("초기화에 실패했습니다.");
+            if (!IsInitialized()) throw ErrException("초기화에 실패했습니다.");
             // 잠긴 경우,
             if (isBlocked) throw ErrException("현재 사용중입니다.");
             
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
             // 읽기 강제 무시
-            if (_config.ForceNoRead) return true;
+            if (SaveLoadSingleton.Config.ForceNoRead) return true;
 #endif
 
             try
@@ -48,12 +45,12 @@ namespace Accelib.Module.SaveLoad.SaveDataHolder
                 isBlocked = true;
 
                 // 원격에서 읽기
-                var result = await _remoteStorage.ReadAsync(fileNameHash);
+                var result = await SaveLoadSingleton.RemoteStorage.ReadAsync(fileNameHash);
                 // 실패할 경우,
                 if (!result.success)
                 {
                     // 에러
-                    Deb.LogError($"데이터 읽기({remoteStorageName}, {fileName})에 실패하였습니다. 이유: {result.message}");
+                    Deb.LogError($"데이터 읽기({fileName})에 실패하였습니다. 이유: {result.message}");
                     // 리턴
                     SaveData.New();
                     return true;
@@ -64,22 +61,22 @@ namespace Accelib.Module.SaveLoad.SaveDataHolder
                     SaveData.New();
 
 #if UNITY_EDITOR
-                    if (_config.PrintLog)
-                        Deb.Log($"신규 데이터 읽기에 성공했습니다({remoteStorageName}, {fileName}): {_remoteStorage.GetFilePath(fileNameHash)}", this);
+                    if (SaveLoadSingleton.Config.PrintLog)
+                        Deb.Log($"신규 데이터 읽기에 성공했습니다({fileName}): {SaveLoadSingleton.RemoteStorage.GetFilePath(fileNameHash)}", this);
 #endif
                 }
                 else
                 {
                     // 복호화
                     var json = enableEncryption
-                        ? Crypto.DecryptFromBytes(result.data, _config.Secret)
+                        ? Crypto.DecryptFromBytes(result.data, SaveLoadSingleton.Config.Secret)
                         : Encoding.UTF8.GetString(result.data);
                     // 데이터 복구
                     SaveData.FromJson(json);
 
 #if UNITY_EDITOR
-                    if (_config.PrintLog)
-                        Deb.Log($"데이터 읽기에 성공했습니다({remoteStorageName}, {fileName}): {_remoteStorage.GetFilePath(fileNameHash)}", this);
+                    if (SaveLoadSingleton.Config.PrintLog)
+                        Deb.Log($"데이터 읽기에 성공했습니다({fileName}): {SaveLoadSingleton.RemoteStorage.GetFilePath(fileNameHash)}", this);
 #endif
                 }
 
@@ -103,13 +100,13 @@ namespace Accelib.Module.SaveLoad.SaveDataHolder
             // 저장 데이터가 없을 경우,
             if (SaveData == null) throw ErrException("세이브 데이터가 없습니다.");
             // 초기화에 실패할 경우,
-            if (!TryInitialize()) throw ErrException("초기화에 실패했습니다.");
+            if (!IsInitialized()) throw ErrException("초기화에 실패했습니다.");
             // 잠긴 경우,
             if (isBlocked) throw ErrException("현재 사용중입니다.");
             
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
             // 쓰기 강제 무시
-            if (_config.ForceNoWrite) return true;
+            if (SaveLoadSingleton.Config.ForceNoWrite) return true;
 #endif
             
             try
@@ -120,26 +117,26 @@ namespace Accelib.Module.SaveLoad.SaveDataHolder
                 // json화
                 var json = SaveData.ToJson();
                 // 암호화
-                var bytes = enableEncryption ? Crypto.EncryptToBytes(json, _config.Secret) : Encoding.UTF8.GetBytes(json);
+                var bytes = enableEncryption ? Crypto.EncryptToBytes(json, SaveLoadSingleton.Config.Secret) : Encoding.UTF8.GetBytes(json);
 
                 // 이전에 쓴 데이터와 같다면, 종료
                 if (_lastWrittenBytes == bytes) return true;
                 
                 // 원격 저장소에 쓰기
-                var result = await _remoteStorage.WriteAsync(bytes, fileNameHash);
+                var result = await SaveLoadSingleton.RemoteStorage.WriteAsync(bytes, fileNameHash);
                 
                 // 실패할 경우,
                 if (!result.success)
                 {
                     // 에러
-                    Deb.LogError($"데이터 쓰기({remoteStorageName}, {fileName})에 실패하였습니다. 이유: {result.message}");
+                    Deb.LogError($"데이터 쓰기({fileName})에 실패하였습니다. 이유: {result.message}");
                     // 리턴
                     return true;
                 }
 
 #if UNITY_EDITOR
-                if (_config.PrintLog)
-                    Deb.Log($"데이터 쓰기에 성공했습니다({remoteStorageName}, {fileName}): {_remoteStorage.GetFilePath(fileNameHash)}", this);
+                if (SaveLoadSingleton.Config.PrintLog)
+                    Deb.Log($"데이터 쓰기에 성공했습니다({fileName}): {SaveLoadSingleton.RemoteStorage.GetFilePath(fileNameHash)}", this);
 #endif
                 // 캐싱
                 _lastWrittenBytes = bytes;
@@ -158,25 +155,22 @@ namespace Accelib.Module.SaveLoad.SaveDataHolder
             }
         }
         
-        private Exception ErrException(string msg) => new($"{msg} : File({fileName}) Path({_remoteStorage.GetFilePath(fileNameHash)}) RemoteStorage({remoteStorageName})");
+        private Exception ErrException(string msg) => new($"{msg} : File({fileName}) Path({SaveLoadSingleton.RemoteStorage.GetFilePath(fileNameHash)})");
 
-        private bool TryInitialize()
+        private bool IsInitialized()
         {
-            _config ??= SaveLoadConfig.Load();
-            if (!_config)
+            if (SaveLoadSingleton.Config == null)
             {
                 Deb.LogError("DataHandlerConfig 파일이 없습니다.", this);
                 return false;
             }
             
-            _remoteStorage ??= RemoteStorageSelector.GetRemoteStorage(_config.ForceLocalStorage);
-            if (_remoteStorage == null)
+            if (SaveLoadSingleton.RemoteStorage == null)
             {
                 Deb.LogError("RemoteStorage 를 불러올 수 없습니다.", this);
                 return false;
             }
-            
-            remoteStorageName = _remoteStorage?.Name ?? "NULL";
+
             return true;
         }
 
@@ -207,8 +201,8 @@ namespace Accelib.Module.SaveLoad.SaveDataHolder
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
         private static void Init()
         {
-            _remoteStorage = null;
-            _config = null;
+            SaveLoadSingleton.RemoteStorage = null;
+            SaveLoadSingleton.Config = null;
         }
 
         [Button(enabledMode: EButtonEnableMode.Playmode)]

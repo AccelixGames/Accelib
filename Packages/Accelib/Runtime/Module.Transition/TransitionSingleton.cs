@@ -48,10 +48,36 @@ namespace Accelib.Module.Transition
         private Sequence Transition(bool start)
         {
             _seq?.Kill();
-            _seq = start ? targetEffects[currIndex].StartTransition() : targetEffects[currIndex].EndTransition();
-            var targetVolume = start ? transitionControlVolume : 1f;
+            _seq = DOTween.Sequence();
+            
+            // 끝
+            if(!start)
+                _seq.AppendCallback(() =>
+                {
+                    Application.backgroundLoadingPriority = ThreadPriority.Low;
+#if UNITY_SWITCH && !UNITY_EDITOR
+                    UnityEngine.Switch.Performance.SetCpuBoostMode(UnityEngine.Switch.Performance.CpuBoostMode.Normal);
+#endif
+                }).AppendInterval(0.2f);
 
+            var eff = targetEffects[currIndex];
+            _seq.Append(start ? eff.StartTransition() : eff.EndTransition());
+            
+            // 콜백
+            var targetVolume = start ? transitionControlVolume : 1f;
             _seq.AppendCallback(() => AudioSingleton.SetControlVolume(AudioChannel.Bgm, targetVolume));
+            
+            // 시작
+            if (start)
+            {
+                _seq.AppendCallback(() =>
+                {
+                    Application.backgroundLoadingPriority = ThreadPriority.High;
+#if UNITY_SWITCH && !UNITY_EDITOR
+                    UnityEngine.Switch.Performance.SetCpuBoostMode(UnityEngine.Switch.Performance.CpuBoostMode.FastLoad);
+#endif
+                });
+            }
             
             return _seq;
         }
