@@ -28,7 +28,7 @@ namespace Accelib.Module.Prefs
             SaveLoadSingleton.ReadPlayerPrefs();
 #endif
             
-            Deb.Log("PlayerPrefsSingleton init");
+            // Deb.Log("PlayerPrefsSingleton init");
             _prefsVars = new List<PrefsVar>();
             foreach (var variable in variables)
             {

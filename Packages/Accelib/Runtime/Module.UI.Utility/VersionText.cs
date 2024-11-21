@@ -16,7 +16,7 @@ namespace Accelib.Module.UI.Utility
         private void OnEnable()
         {
             var demoStr = "";
-#if DEMO_BUILD
+#if DEMO_BUILD || UNITY_ANDROID || UNITY_IOS
             demoStr = "demo-";
 #endif
             

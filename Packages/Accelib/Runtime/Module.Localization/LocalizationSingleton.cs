@@ -12,8 +12,7 @@ namespace Accelib.Module.Localization
 {
     public class LocalizationSingleton : MonoSingleton<LocalizationSingleton>, ILateInitRequired
     {
-        public const string NullString = "@null@";
-        private static readonly string LangKey = $"{nameof(LocalizationSingleton)}-{nameof(CurrLang)}";
+        private const string NullString = "@null@";
         
         // 지원하는 로케일 데이터들
         [SerializeField] private List<LocaleSO> locales;
@@ -30,7 +29,7 @@ namespace Accelib.Module.Localization
         {
             // 저장된 언어 로드
             // currLangId.Value = PlayerPrefs.GetInt(LangKey, (int)SystemLanguage.Unknown);
-            Deb.Log($"Current language Init: {CurrLang}({currLangId.Value})");
+            //Deb.Log($"Current language Init: {CurrLang}({currLangId.Value})");
             
             // 저장된 언어가 없다면,
             if (CurrLang == SystemLanguage.Unknown)
@@ -91,7 +90,7 @@ namespace Accelib.Module.Localization
         private void UpdateLocale()
         {
             // 로케일 변경
-            Deb.Log($"Update Locale to {CurrLang}({currLangId.Value})");
+            // Deb.Log($"Update Locale to {CurrLang}({currLangId.Value})");
             currLocale = locales.FirstOrDefault(x => x.Language == CurrLang);
             
             // 변경 이벤트 발생
