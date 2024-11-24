@@ -8,7 +8,7 @@ namespace Accelib.Module.SaveLoad.RemoteStorage
     {
         public override string Name => "IOS";
 
-        public override string GetFilePath(string fileName) => Path.Combine(Application.persistentDataPath   , "..", "..", "Documents", fileName);
+        public override string GetFilePath(string fileName) => Path.Combine(Application.persistentDataPath, fileName);
     }
 }
 #endif
