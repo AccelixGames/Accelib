@@ -7,6 +7,7 @@ namespace Accelib.Module.UI.Toggle
         [Header("[코어]")] 
         public ToggleBtnGroup Group { get; private set; }
         public bool IsEnabled { get; private set; }
+        [field: SerializeField] public int Id { get; private set; }
         
         internal void Initialize(ToggleBtnGroup g, bool isOn)
         {

@@ -27,14 +27,13 @@ namespace Accelib.Module.Localization
 
         public void Init()
         {
-            // 저장된 언어 로드
-            // currLangId.Value = PlayerPrefs.GetInt(LangKey, (int)SystemLanguage.Unknown);
-            //Deb.Log($"Current language Init: {CurrLang}({currLangId.Value})");
+            var systemLang = Application.systemLanguage;
+            Deb.Log($"시스템 언어: {systemLang}, 저장된 언어: {(SystemLanguage)currLangId.Value}");
             
             // 저장된 언어가 없다면,
             if (CurrLang == SystemLanguage.Unknown)
                 // 현재 시스템 언어를 가져옴
-                currLangId.Value = (int)Application.systemLanguage;
+                currLangId.SetValue((int)systemLang);
 
             // 지원하는 언어가 아닐 경우, 
             if (locales.All(x => x.Language != CurrLang))

@@ -10,6 +10,8 @@ namespace Accelib.Module.UI.Toggle
         [SerializeField] private bool initOnStart = true;
         [ShowIf(nameof(initOnStart)), SerializeField] private int initialIndex = 0;
         public UnityEvent<int> onToggle;
+        public UnityEvent<int> onToggleId;
+        public UnityEvent<ToggleBtn> onToggleObject;
 
         [field: Header("토글 버튼들")]
         [field:SerializeField, ReadOnly] public int CurrIndex { get; private set; }
@@ -90,6 +92,8 @@ namespace Accelib.Module.UI.Toggle
                 currToggle.Toggle(true);
                 CurrIndex = i;
                 onToggle?.Invoke(i);
+                onToggleId?.Invoke(currToggle.Id);
+                onToggleObject?.Invoke(currToggle);
                 return;
             }
         }
