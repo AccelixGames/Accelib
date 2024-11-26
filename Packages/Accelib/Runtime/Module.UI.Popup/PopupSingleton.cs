@@ -119,6 +119,31 @@ namespace Accelib.Module.UI.Popup
             OnLayerPopupClosed();
             return true;
         }
+
+        public bool CloseLayerWithID(string targetId)
+        {
+            if (string.IsNullOrEmpty(targetId))
+            {
+                Deb.LogWarning("팝업 ID가 없어 닫을 수 없습니다.", this);
+                return false;
+            }
+            
+            var layer = layerPopups.Find(x => x.GetId() == targetId);
+            return CloseLayer(layer);
+        }
+
+        public bool CloseLayerWithID(LayerPopupBase target)
+        {
+            var targetId = target.GetId();
+            if (string.IsNullOrEmpty(targetId))
+            {
+                Deb.LogWarning("팝업 ID가 없어 닫을 수 없습니다.", target);
+                return false;
+            }
+            
+            var layer = layerPopups.Find(x => x.GetId() == target.GetId());
+            return CloseLayer(layer);
+        }
         
         /// <summary>
         /// 마지막 레이어 팝업을 닫는다.

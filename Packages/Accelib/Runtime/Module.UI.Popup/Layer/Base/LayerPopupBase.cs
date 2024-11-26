@@ -9,6 +9,8 @@ namespace Accelib.Module.UI.Popup.Layer.Base
         public virtual bool AllowMultiInstance => false;
         public virtual bool HideOnLostFocus => true;
 
+        public abstract string GetId();
+        
         internal void OpenLayer(object param)
         {
             OnPreOpen(param);
@@ -39,6 +41,13 @@ namespace Accelib.Module.UI.Popup.Layer.Base
         public virtual void Close()
         {
             if(!(PopupSingleton.Instance?.CloseLayer(this) ?? false))
+                Deb.LogWarning($"팝업을 닫지 못했습니다: {name}", this);
+        }
+        
+        [Button(enabledMode: EButtonEnableMode.Playmode)]
+        public virtual void CloseWithId()
+        {
+            if(!(PopupSingleton.Instance?.CloseLayerWithID(this) ?? false))
                 Deb.LogWarning($"팝업을 닫지 못했습니다: {name}", this);
         }
     }

@@ -52,5 +52,7 @@ namespace Accelib.Module.UI.Popup.Layer
             _ucs?.TrySetResult((Result)result);
             PopupSingleton.Instance.CloseModal();
         }
+
+        public override string GetId() => "_modal";
     }
 }
