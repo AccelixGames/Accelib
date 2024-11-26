@@ -20,9 +20,13 @@ namespace Accelib.Module.SaveLoad.Config
 #endif
         [field: SerializeField] public bool ForceNoWrite { get; private set; }
         [field: SerializeField] public bool ForceNoRead { get; private set; }
-        
+
         [field: Header("디버그 옵션")]
+#if UNITY_EDITOR || DEVELOPMENT_BUILD || ENABLE_LOG
         [field: SerializeField] public bool PrintLog { get; private set; } = false;
+#else
+        public bool PrintLog => false;
+#endif
 
         public static SaveLoadConfig Load() =>
             Resources.Load<SaveLoadConfig>(nameof(Accelib) + "/" + nameof(SaveLoadConfig));
