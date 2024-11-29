@@ -19,6 +19,8 @@ namespace Accelib.Module.UI.Toggle
         [SerializeField, ReadOnly] private ToggleBtn currToggle = null;
         [SerializeField, ReadOnly] private ToggleBtn[] toggles = null;
         
+        public int CurrId => toggles[CurrIndex].Id;
+        
         private void Awake()
         {
             toggles = GetComponentsInChildren<ToggleBtn>();
