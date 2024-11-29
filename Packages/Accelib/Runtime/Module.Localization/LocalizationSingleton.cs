@@ -22,6 +22,7 @@ namespace Accelib.Module.Localization
         [SerializeField, ReadOnly] private LocaleSO currLocale = null;
 
         public SystemLanguage CurrLang => (SystemLanguage)currLangId.Value;
+        private bool IsSupportedLang(SystemLanguage lang) => locales.Any(x => x.Language == lang);
 
         public int Priority => 0;
 
@@ -31,12 +32,12 @@ namespace Accelib.Module.Localization
             Deb.Log($"시스템 언어: {systemLang}, 저장된 언어: {(SystemLanguage)currLangId.Value}");
             
             // 저장된 언어가 없다면,
-            if (CurrLang == SystemLanguage.Unknown)
+            if(!IsSupportedLang(CurrLang))
                 // 현재 시스템 언어를 가져옴
                 currLangId.SetValue((int)systemLang);
 
             // 지원하는 언어가 아닐 경우, 
-            if (locales.All(x => x.Language != CurrLang))
+            if (!IsSupportedLang(CurrLang))
                 // 첫번째 언어로 설정
                 currLangId.Value = (int)locales[0].Language;
 
