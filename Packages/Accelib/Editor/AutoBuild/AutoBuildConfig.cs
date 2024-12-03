@@ -105,12 +105,12 @@ namespace Accelib.Editor
 
                         // Platform
                         var platform = depot.buildTarget.ToString();
-                        var subBuildPath = Path.Combine(platform, "v" + versionNumber);
+                        var buildPath = Path.Combine(baseBuildPath, platform, "v" + versionNumber);
                         var fileName = $"{appName}{GetAppExecutionExtension(depot.buildTarget)}";
 
                         // 디포 빌드 스크립트 생성
                         var depotVdfPath = Path.Combine(scriptPath, $"depot_{depot.depotID}.vdf");
-                        var depotContent = DepotUtility.GetDepotContent(appName, depot.depotID, subBuildPath);
+                        var depotContent = DepotUtility.GetDepotContent(appName, depot.depotID, buildPath);
                         DepotUtility.CreateFile(depotVdfPath, depotContent);
                         
                         // 빌드 정보 추가
@@ -120,7 +120,7 @@ namespace Accelib.Editor
                             depot = depot,
                             versionStr = versionStr,
                             versionNumber = versionNumber.ToString(),
-                            buildPath = Path.Combine(baseBuildPath, subBuildPath, fileName)
+                            buildPath = Path.Combine(buildPath, fileName)
                         });
                         
                         // 패치노트
@@ -131,7 +131,7 @@ namespace Accelib.Editor
                     var appVdfPath = Path.Combine(scriptPath, $"app_{app.appID}.vdf");
                     var desc = patchNotePreInfo + "\n" + patchNote;
                     var logPath = Path.Combine(baseLogPath, "v" + versionNumber);
-                    var appContent = DepotUtility.GetAppContent(app.appID, desc, baseBuildPath, logPath, app.liveBranch, app.depots);
+                    var appContent = DepotUtility.GetAppContent(app.appID, desc, logPath, app.liveBranch, app.depots);
                     DepotUtility.CreateFile(appVdfPath, appContent);
                     
                     // 업로드 정보 추가

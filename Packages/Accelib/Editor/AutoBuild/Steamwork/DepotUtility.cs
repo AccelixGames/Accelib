@@ -18,13 +18,13 @@ namespace Accelib.Editor.Steamwork
             File.WriteAllText(path, content);
         }
         
-        public static string GetAppContent(string appId, string desc, string contentRoot, string buildOutput, string liveBranch, List<DepotConfig> depots)
+        public static string GetAppContent(string appId, string desc, string buildOutput, string liveBranch, List<DepotConfig> depots)
         {
             var vdfContent = "AppBuild\n{\n";
 
             vdfContent += $"\t\"AppID\" \"{appId}\"\n";
             vdfContent += $"\t\"Desc\" \"{desc}\"\n";
-            vdfContent += $"\t\"ContentRoot\" \"{contentRoot}\"\n";
+            vdfContent += $"\t\"ContentRoot\" \"\"\n";
             vdfContent += $"\t\"BuildOutput\" \"{buildOutput}\"\n";
             vdfContent += $"\t\"SetLive\" \"{liveBranch}\"\n";
             vdfContent += "\t\"Preview\" \"0\"\n";
@@ -38,13 +38,15 @@ namespace Accelib.Editor.Steamwork
             return vdfContent;
         }
         
-        public static string GetDepotContent(string appName, string depotId, string localPath)
+        public static string GetDepotContent(string appName, string depotId, string contentRoot)
         {
             var config = "DepotBuild\n{\n";
 
             config += $"\t\"DepotID\" \"{depotId}\"\n";
+            config += $"\t\"ContentRoot\" \"{contentRoot}\"\n";
             config += "\t\"FileMapping\"\n\t{\n";
-            config += $"\t\t\"LocalPath\" \"{localPath}\"\n";
+            
+            config += $"\t\t\"LocalPath\" \"*\"\n";
             config += "\t\t\"DepotPath\" \".\"\n";
             config += "\t\t\"Recursive\" \"1\"\n";
             config += "\t}\n";
