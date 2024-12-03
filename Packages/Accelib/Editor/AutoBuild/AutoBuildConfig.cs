@@ -204,7 +204,7 @@ namespace Accelib.Editor
 
             // 빌드 성공 메세지
             var totalTime = $"{summary.totalTime.Minutes}분 {summary.totalTime.Seconds}초";
-            var totalSize = summary.totalSize / ((ulong)8 * 1024 * 1024);
+            var totalSize = summary.totalSize / 8 / 1024 / 1024;
             var msg = new JDiscordMsg {embeds = new JDiscordEmbed[1]};
             msg.embeds[0] = new JDiscordEmbed
             {
