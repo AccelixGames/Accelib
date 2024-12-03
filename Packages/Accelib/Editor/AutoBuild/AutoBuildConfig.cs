@@ -144,8 +144,6 @@ namespace Accelib.Editor
 
                 // 플랫폼으로 빌드 풀 정렬
                 buildInfoList.Sort((a, b) => a.depot.buildTarget.CompareTo(b.depot.buildTarget));
-
-                return;
                 
                 // 디스코드 메세지 생성
                 var msg = $":computer: **빌드를 시작합니다!** [{DateTime.Now:yyyy/dd/MM HH:mm:ss}]\n";
