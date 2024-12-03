@@ -14,8 +14,5 @@ namespace Accelib.Editor.Architecture
 
         [Header("디포 정보")]
         public List<DepotConfig> depots;
-        
-        [Header("패치 정보")]
-        [TextArea] public string patchDesc;
     }
 }

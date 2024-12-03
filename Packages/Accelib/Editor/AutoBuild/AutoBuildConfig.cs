@@ -94,15 +94,9 @@ namespace Accelib.Editor
                     var baseBuildPath = Path.Combine(appPath, "build");
                     var baseLogPath = Path.Combine(appPath, "log");
                     var scriptPath = Path.Combine(appPath, "scripts");
-                    
-                    // 앱 빌드 스크립트 생성
-                    var appVdfPath = Path.Combine(scriptPath, $"app_{app.appID}.vdf");
-                    var appContent = DepotUtility.GetAppContent(app.appID, patchNote, baseBuildPath, 
-                        baseLogPath, app.liveBranch, app.depots);
-                    DepotUtility.CreateFile(appVdfPath, appContent);
-                    
-                    // 업로드 정보 추가
-                    appVdfList.Add( appVdfPath);
+
+                    // 패치노트
+                    var patchNotePreInfo = $"[v{versionStr}] ";
                     
                     // 디포를 순회하며,
                     foreach (var depot in app.depots)
@@ -131,7 +125,20 @@ namespace Accelib.Editor
                             logPath = Path.Combine(baseLogPath, platform, "v" + versionNumber),
                             scriptPath = scriptPath,
                         });
+                        
+                        // 패치노트
+                        patchNotePreInfo = string.Concat(patchNotePreInfo, platform, "/");
                     }
+                    
+                    // 앱 빌드 스크립트 생성
+                    var appVdfPath = Path.Combine(scriptPath, $"app_{app.appID}.vdf");
+                    var desc = patchNotePreInfo + "\n" + patchNote;
+                    var appContent = DepotUtility.GetAppContent(app.appID, desc, baseBuildPath, 
+                        baseLogPath, app.liveBranch, app.depots);
+                    DepotUtility.CreateFile(appVdfPath, appContent);
+                    
+                    // 업로드 정보 추가
+                    appVdfList.Add(appVdfPath);
                 }
 
                 // 빌드 풀이 없으면 에러
@@ -141,6 +148,8 @@ namespace Accelib.Editor
                 // 플랫폼으로 빌드 풀 정렬
                 buildInfoList.Sort((a, b) => a.depot.buildTarget.CompareTo(b.depot.buildTarget));
 
+                return;
+                
                 // 디스코드 메세지 생성
                 var msg = $":computer: **빌드를 시작합니다!** [{DateTime.Now:yyyy/dd/MM HH:mm:ss}]\n";
                 foreach (var buildInfo in buildInfoList)
