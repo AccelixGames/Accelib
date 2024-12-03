@@ -13,7 +13,5 @@
         
         // 경로 정보
         public string buildPath;
-        public string logPath;
-        public string scriptPath;
     }
 }

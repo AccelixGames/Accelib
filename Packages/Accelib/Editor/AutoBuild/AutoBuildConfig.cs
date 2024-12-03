@@ -120,10 +120,7 @@ namespace Accelib.Editor
                             depot = depot,
                             versionStr = versionStr,
                             versionNumber = versionNumber.ToString(),
-
-                            buildPath = Path.Combine(baseBuildPath, subBuildPath, fileName),
-                            logPath = Path.Combine(baseLogPath, platform, "v" + versionNumber),
-                            scriptPath = scriptPath,
+                            buildPath = Path.Combine(baseBuildPath, subBuildPath, fileName)
                         });
                         
                         // 패치노트
@@ -133,8 +130,8 @@ namespace Accelib.Editor
                     // 앱 빌드 스크립트 생성
                     var appVdfPath = Path.Combine(scriptPath, $"app_{app.appID}.vdf");
                     var desc = patchNotePreInfo + "\n" + patchNote;
-                    var appContent = DepotUtility.GetAppContent(app.appID, desc, baseBuildPath, 
-                        baseLogPath, app.liveBranch, app.depots);
+                    var logPath = Path.Combine(baseLogPath, "v" + versionNumber);
+                    var appContent = DepotUtility.GetAppContent(app.appID, desc, baseBuildPath, logPath, app.liveBranch, app.depots);
                     DepotUtility.CreateFile(appVdfPath, appContent);
                     
                     // 업로드 정보 추가
