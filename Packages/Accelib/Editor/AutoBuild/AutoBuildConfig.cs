@@ -156,8 +156,14 @@ namespace Accelib.Editor
                     // 빌드 시작
                     Internal_Build(in buildInfo);
                 
+                // 업로드 시작을 알림
+                DiscordWebhook.SendMsg(discordWebhookUrl, "스팀웍스 업로드 시작!");
+                
                 // 업로드 시작
-                TerminalUtility.OpenTerminalOSX(sdkPath, username, appVdfList);
+                var result = TerminalUtility.OpenTerminalOSX(sdkPath, username, appVdfList);
+                
+                // 종료!
+                DiscordWebhook.SendMsg(discordWebhookUrl, $"스팀웍스 업로드 종료!({result})");
             }
             catch (Exception e)
             {
@@ -204,7 +210,6 @@ namespace Accelib.Editor
 
             // 빌드 성공 메세지
             var totalTime = $"{summary.totalTime.Minutes}분 {summary.totalTime.Seconds}초";
-            var totalSize = summary.totalSize / 8 / 1024 / 1024;
             var msg = new JDiscordMsg {embeds = new JDiscordEmbed[1]};
             msg.embeds[0] = new JDiscordEmbed
             {
@@ -212,16 +217,10 @@ namespace Accelib.Editor
                 description = $"- **버전**: v{Application.version}({buildInfo.versionNumber})\n" +
                               $"- **타겟**: {buildInfo.depot.buildTarget}\n" +
                               $"- **경로**: {summary.outputPath}\n" +
-                              $"- **소요시간**: {totalTime}\n" +
-                              $"- **사이즈**: {totalSize}MB\n"
+                              $"- **소요시간**: {totalTime}\n"
             };
 
             DiscordWebhook.SendMsg(discordWebhookUrl, msg);
-        }
-
-        private void Internal_Upload(in BuildInfo buildInfo)
-        {
-            
         }
 
         private void SetLogTypes(StackTraceLogType stackTraceLogType)

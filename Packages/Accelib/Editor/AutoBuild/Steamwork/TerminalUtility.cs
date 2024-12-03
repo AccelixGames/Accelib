@@ -1,12 +1,11 @@
 ﻿using System.Collections.Generic;
 using System.Diagnostics;
-using Accelib.Editor.Architecture;
 
 namespace Accelib.Editor.Steamwork
 {
     public static class TerminalUtility
     {
-        public static void OpenTerminalOSX(string sdkPath, string username, in List<string> appVdfPaths)
+        public static int OpenTerminalOSX(string sdkPath, string username, in List<string> appVdfPaths)
         {
             var steamCmdCommand  = $"{sdkPath}/tools/ContentBuilder/builder_osx/steamcmd.sh ";
             steamCmdCommand     += $"+login {username} ";
@@ -22,10 +21,10 @@ namespace Accelib.Editor.Steamwork
             });
             
             // 스팀 CMD 실행
-            RunSteamcmdCommand(steamCmdCommand);
+            return RunSteamcmdCommand(steamCmdCommand);
         }
         
-        private static void RunSteamcmdCommand(string steamcmdCommand)
+        private static int RunSteamcmdCommand(string steamcmdCommand)
         {
             // Run the SteamCMD command in Terminal
             var runCommandInfo = new ProcessStartInfo
@@ -36,7 +35,20 @@ namespace Accelib.Editor.Steamwork
                 CreateNoWindow = true
             };
 
-            Process.Start(runCommandInfo);
+            // 프로세스 시작 및 종료 대기
+            using var process = Process.Start(runCommandInfo);
+            if (process != null)
+            {
+                // 프로세스가 종료될 때까지 대기
+                process.WaitForExit();
+                
+                // 종료 코드 확인 가능
+                var exitCode = process.ExitCode; 
+                UnityEngine.Debug.Log($"프로세스가 종료되었습니다. 종료 코드: {exitCode}");
+                return exitCode;
+            }
+
+            return -999;
         }
     }
 }
