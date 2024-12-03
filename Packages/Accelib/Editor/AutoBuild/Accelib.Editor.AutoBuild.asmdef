@@ -1,0 +1,19 @@
+﻿{
+  "name": "Accelib.Editor.AutoBuild",
+  "rootNamespace": "Accelib.Editor",
+  "references": [
+    "NaughtyAttributes.Core",
+    "UniTask"
+  ],
+  "includePlatforms": [
+    "Editor"
+  ],
+  "excludePlatforms": [],
+  "allowUnsafeCode": false,
+  "overrideReferences": false,
+  "precompiledReferences": [],
+  "autoReferenced": true,
+  "defineConstraints": [],
+  "versionDefines": [],
+  "noEngineReferences": false
+}
