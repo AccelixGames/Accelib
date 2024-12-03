@@ -53,6 +53,7 @@ namespace Accelib.Editor.Steamwork
             config += "\t\"FileExclusion\" \"*.pdb\"\n";
             config += $"\t\"FileExclusion\" \"{appName}_BackUpThisFolder_ButDontShipItWithYourGame*\"\n";
             config += $"\t\"FileExclusion\" \"{appName}_BurstDebugInformation_DoNotShip*\"\n";
+            config += $"\t\"FileExclusion\" \".DS_Store\"\n";
             config += "}\n";
 
             return config;

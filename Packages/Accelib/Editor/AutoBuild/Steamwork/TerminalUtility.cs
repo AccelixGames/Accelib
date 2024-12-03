@@ -1,16 +1,18 @@
 ﻿using System.Collections.Generic;
 using System.Diagnostics;
+using Accelib.Editor.Architecture;
+using Accelib.Editor.Utility.Discord;
 
 namespace Accelib.Editor.Steamwork
 {
     public static class TerminalUtility
     {
-        public static int OpenTerminalOSX(string sdkPath, string username, in List<string> appVdfPaths)
+        public static int OpenTerminalOSX(string sdkPath, string username, in List<UploadInfo> uploadInfoList, string webhookUrl)
         {
             var steamCmdCommand  = $"{sdkPath}/tools/ContentBuilder/builder_osx/steamcmd.sh ";
             steamCmdCommand     += $"+login {username} ";
-            foreach (var appVdfPath in appVdfPaths) 
-                steamCmdCommand += $"+run_app_build_http {appVdfPath} ";
+            foreach (var uploadInfo in uploadInfoList) 
+                steamCmdCommand += $"+run_app_build_http \"{uploadInfo.vdfPath}\" ";
             steamCmdCommand +=     $"+quit";
 
             // 프로세스 실행
@@ -21,62 +23,46 @@ namespace Accelib.Editor.Steamwork
             });
             
             // 스팀 CMD 실행
-            return RunSteamcmdCommand2(steamCmdCommand);
+            return RunSteamcmdCommand(steamCmdCommand, webhookUrl);
         }
         
-        private static int RunSteamcmdCommand(string steamcmdCommand)
+        private static int RunSteamcmdCommand(string steamcmdCommand, string webhookUrl)
         {
-            // Run the SteamCMD command in Terminal
-            var runCommandInfo = new ProcessStartInfo
+            var processStartInfo = new ProcessStartInfo
             {
-                FileName = "osascript", // osascript is a command-line tool for executing AppleScripts
-                Arguments = $"-e 'tell application \"Terminal\" to do script \"{steamcmdCommand}\"'",
+                FileName = "/bin/bash", // Bash를 사용해 steamcmd.sh 실행
+                Arguments = $"-c \"{steamcmdCommand}\"", // -c 옵션을 사용하여 명령어 실행
+                RedirectStandardOutput = true,
+                RedirectStandardError = true,
                 UseShellExecute = false,
                 CreateNoWindow = true
             };
 
-            // 프로세스 시작 및 종료 대기
-            using var process = Process.Start(runCommandInfo);
-            if (process != null)
+            using var process = new Process();
+            
+            process.StartInfo = processStartInfo;
+            process.OutputDataReceived += (sender, args) =>
             {
-                // 프로세스가 종료될 때까지 대기
-                process.WaitForExit();
-                
-                // 종료 코드 확인 가능
-                var exitCode = process.ExitCode; 
-                UnityEngine.Debug.Log($"프로세스가 종료되었습니다. 종료 코드: {exitCode}");
-                return exitCode;
-            }
-
-            return -999;
-        }
-        
-        private static int RunSteamcmdCommand2(string steamcmdCommand)
-        {
-            // Run the SteamCMD command in Terminal
-            var runCommandInfo = new ProcessStartInfo
-            {
-                FileName = "osascript",
-                Arguments = $"-e 'tell application \"Terminal\" to do script \"{steamcmdCommand}; exit\"'",
-                UseShellExecute = false,
-                CreateNoWindow = true
+                var msg = args.Data;
+                if (string.IsNullOrEmpty(msg)) return;
+                    
+                UnityEngine.Debug.Log(args.Data); // 명령 결과를 로그로 출력
             };
 
-            // 프로세스 시작 및 종료 대기
-            using var process = Process.Start(runCommandInfo);
-            if (process != null)
+            process.ErrorDataReceived += (sender, args) =>
             {
-                // osascript의 종료를 기다림
-                process.WaitForExit();
-        
-                // 종료 코드 확인 가능
-                var exitCode = process.ExitCode;
-                UnityEngine.Debug.Log($"osascript 프로세스가 종료되었습니다. 종료 코드: {exitCode}");
-                return exitCode;
-            }
+                if (!string.IsNullOrEmpty(args.Data))
+                    UnityEngine.Debug.LogError(args.Data); // 오류 메시지를 로그로 출력
+            };
 
-            return -999;
+            process.Start();
+            process.BeginOutputReadLine(); // 비동기적으로 출력을 읽기 시작
+            process.BeginErrorReadLine();   // 비동기적으로 오류 출력을 읽기 시작
+            process.WaitForExit(); // 프로세스가 끝날 때까지 대기
+
+            var exitCode = process.ExitCode;
+            UnityEngine.Debug.Log($"steamcmd 프로세스가 종료되었습니다. 종료 코드: {exitCode}");
+            return exitCode;
         }
-
     }
 }

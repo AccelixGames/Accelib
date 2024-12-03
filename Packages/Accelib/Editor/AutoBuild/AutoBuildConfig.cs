@@ -82,8 +82,8 @@ namespace Accelib.Editor
                 var basePath = Path.Combine(sdkPath, "tools", "ContentBuilder", "content");
 
                 // 빌드 풀 생성
-                var buildInfoList = new List<BuildInfo>();
-                var appVdfList = new List<string>();
+                var buildInfos = new List<BuildInfo>();
+                var uploadInfos = new List<UploadInfo>();
 
                 // 앱을 순회하며,
                 appName = Application.productName;
@@ -96,7 +96,7 @@ namespace Accelib.Editor
                     var scriptPath = Path.Combine(appPath, "scripts");
 
                     // 패치노트
-                    var patchNotePreInfo = $"[v{versionStr}] ";
+                    var patchNotePreInfo = $"[{app.name}({versionStr})-";
                     
                     // 디포를 순회하며,
                     foreach (var depot in app.depots)
@@ -114,7 +114,7 @@ namespace Accelib.Editor
                         DepotUtility.CreateFile(depotVdfPath, depotContent);
                         
                         // 빌드 정보 추가
-                        buildInfoList.Add(new BuildInfo
+                        buildInfos.Add(new BuildInfo
                         {
                             app = app,
                             depot = depot,
@@ -124,46 +124,74 @@ namespace Accelib.Editor
                         });
                         
                         // 패치노트
-                        patchNotePreInfo = string.Concat(patchNotePreInfo, platform, "/");
+                        patchNotePreInfo += $"{platform}, ";
                     }
                     
                     // 앱 빌드 스크립트 생성
                     var appVdfPath = Path.Combine(scriptPath, $"app_{app.appID}.vdf");
-                    var desc = patchNotePreInfo + "\n" + patchNote;
+                    var desc = $"{patchNotePreInfo}]  " + patchNote;
                     var logPath = Path.Combine(baseLogPath, "v" + versionNumber);
                     var appContent = DepotUtility.GetAppContent(app.appID, desc, logPath, app.liveBranch, app.depots);
                     DepotUtility.CreateFile(appVdfPath, appContent);
                     
                     // 업로드 정보 추가
-                    appVdfList.Add(appVdfPath);
+                    uploadInfos.Add(new UploadInfo
+                    {
+                        app = app,
+                        logPath = logPath,
+                        vdfPath = appVdfPath
+                    });
                 }
 
                 // 빌드 풀이 없으면 에러
-                if (buildInfoList.Count == 0)
+                if (buildInfos.Count == 0)
                     throw new Exception("No build pool found");
 
                 // 플랫폼으로 빌드 풀 정렬
-                buildInfoList.Sort((a, b) => a.depot.buildTarget.CompareTo(b.depot.buildTarget));
+                buildInfos.Sort((a, b) => a.depot.buildTarget.CompareTo(b.depot.buildTarget));
                 
                 // 디스코드 메세지 생성
-                var msg = $":computer: **빌드를 시작합니다!** [{DateTime.Now:yyyy/dd/MM HH:mm:ss}]\n";
-                foreach (var buildInfo in buildInfoList)
+                var msg = $":computer: **빌드를 시작합니다!** [{GetNowTime()}]\n";
+                foreach (var buildInfo in buildInfos)
                     msg += $"- {buildInfo.app.name} | {buildInfo.depot.buildTarget} | {buildInfo.versionStr}\n";
                 DiscordWebhook.SendMsg(discordWebhookUrl, msg);
 
                 // 빌드 풀을 순회하며,
-                // foreach (var buildInfo in buildInfoList)
-                //     // 빌드 시작
-                //     Internal_Build(in buildInfo);
+                foreach (var buildInfo in buildInfos)
+                    // 빌드 시작
+                    Internal_Build(in buildInfo);
+                
+                // StackTrace Revert
+                SetLogTypes(StackTraceLogType.ScriptOnly);
                 
                 // 업로드 시작을 알림
-                DiscordWebhook.SendMsg(discordWebhookUrl, "스팀웍스 업로드 시작!");
+                var uploadStartContent = $":arrow_heading_up: **스팀웍스 업로드를 시작합니다!** [{GetNowTime()}]\n";
+                foreach (var uploadInfo in uploadInfos)
+                    uploadStartContent += $"- {uploadInfo.app.name}({uploadInfo.app.appID}) | 브랜치({uploadInfo.app.liveBranch})\n";
+                DiscordWebhook.SendMsg(discordWebhookUrl, uploadStartContent);
                 
                 // 업로드 시작
-                var result = TerminalUtility.OpenTerminalOSX(sdkPath, username, appVdfList);
+                TerminalUtility.OpenTerminalOSX(sdkPath, username, uploadInfos, discordWebhookUrl);
                 
                 // 종료!
-                DiscordWebhook.SendMsg(discordWebhookUrl, $"스팀웍스 업로드 종료!({result})");
+                foreach (var uploadInfo in uploadInfos)
+                {
+                    var logPath = Path.Combine(uploadInfo.logPath, $"app_build_{uploadInfo.app.appID}.log");
+                    var lines = File.ReadAllLines(logPath);
+                    // 공백 및 빈 줄 제거
+                    var trimmedLines = lines.Where(line => !string.IsNullOrWhiteSpace(line)); 
+                    // 하나의 문자열로 결합
+                    var resultString = string.Join(Environment.NewLine, trimmedLines);
+                    
+                    var resultMsg = new JDiscordMsg {embeds = new JDiscordEmbed[1]};
+                    resultMsg.embeds[0] = new JDiscordEmbed
+                    {
+                        title = $":star: 스팀웍스 업로드 성공: {uploadInfo.app.name}({uploadInfo.app.appID})\n" +
+                                $"https://partner.steamgames.com/apps/builds/{uploadInfo.app.appID}",
+                        description = resultString
+                    };
+                    DiscordWebhook.SendMsg(discordWebhookUrl, resultMsg);
+                }
             }
             catch (Exception e)
             {
@@ -219,7 +247,6 @@ namespace Accelib.Editor
                               $"- **경로**: {summary.outputPath}\n" +
                               $"- **소요시간**: {totalTime}\n"
             };
-
             DiscordWebhook.SendMsg(discordWebhookUrl, msg);
         }
 
@@ -239,6 +266,8 @@ namespace Accelib.Editor
 
             return ".exe";
         }
+
+        private string GetNowTime() => $"{DateTime.Now:yyyy/dd/MM HH:mm:ss}";
 
         private void OnValidate()
         {

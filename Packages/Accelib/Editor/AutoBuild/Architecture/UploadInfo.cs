@@ -3,8 +3,8 @@
     [System.Serializable]
     public class UploadInfo
     {
-        public string sdkPath;
-        public string username { get; set; }
-        public string appVdfPath { get; set; }
+        public AppConfig app;
+        public string logPath;
+        public string vdfPath;
     }
 }
