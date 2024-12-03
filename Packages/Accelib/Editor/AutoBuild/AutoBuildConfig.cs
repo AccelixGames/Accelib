@@ -152,9 +152,9 @@ namespace Accelib.Editor
                 DiscordWebhook.SendMsg(discordWebhookUrl, msg);
 
                 // 빌드 풀을 순회하며,
-                foreach (var buildInfo in buildInfoList)
-                    // 빌드 시작
-                    Internal_Build(in buildInfo);
+                // foreach (var buildInfo in buildInfoList)
+                //     // 빌드 시작
+                //     Internal_Build(in buildInfo);
                 
                 // 업로드 시작을 알림
                 DiscordWebhook.SendMsg(discordWebhookUrl, "스팀웍스 업로드 시작!");
