@@ -7,7 +7,7 @@ namespace Accelib.Editor.Steamwork
 {
     public static class TerminalUtility
     {
-        public static int OpenTerminalOSX(string sdkPath, string username, in List<UploadInfo> uploadInfoList, string webhookUrl)
+        public static int OpenTerminalOSX(string sdkPath, string username, in List<UploadInfo> uploadInfoList)
         {
             var steamCmdCommand  = $"{sdkPath}/tools/ContentBuilder/builder_osx/steamcmd.sh ";
             steamCmdCommand     += $"+login {username} ";
@@ -23,10 +23,10 @@ namespace Accelib.Editor.Steamwork
             });
             
             // 스팀 CMD 실행
-            return RunSteamcmdCommand(steamCmdCommand, webhookUrl);
+            return RunSteamcmdCommand(steamCmdCommand);
         }
         
-        private static int RunSteamcmdCommand(string steamcmdCommand, string webhookUrl)
+        private static int RunSteamcmdCommand(string steamcmdCommand)
         {
             var processStartInfo = new ProcessStartInfo
             {

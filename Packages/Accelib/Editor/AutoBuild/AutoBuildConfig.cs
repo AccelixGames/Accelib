@@ -25,6 +25,10 @@ namespace Accelib.Editor
         [Header("계정 및 앱")]
         [SerializeField] private string username;
         [SerializeField] private List<AppConfig> apps;
+
+        [Header("Stage")] 
+        [SerializeField] private bool skipBuild = false;
+        [SerializeField] private bool skipUpload = false;
         
         [Header("빌드 옵션")]
         [SerializeField, ReadOnly] private string sdkPath;
@@ -149,48 +153,59 @@ namespace Accelib.Editor
 
                 // 플랫폼으로 빌드 풀 정렬
                 buildInfos.Sort((a, b) => a.depot.buildTarget.CompareTo(b.depot.buildTarget));
-                
-                // 디스코드 메세지 생성
-                var msg = $":computer: **빌드를 시작합니다!** [{GetNowTime()}]\n";
-                foreach (var buildInfo in buildInfos)
-                    msg += $"- {buildInfo.app.name} | {buildInfo.depot.buildTarget} | {buildInfo.versionStr}\n";
-                DiscordWebhook.SendMsg(discordWebhookUrl, msg);
 
-                // 빌드 풀을 순회하며,
-                foreach (var buildInfo in buildInfos)
-                    // 빌드 시작
-                    Internal_Build(in buildInfo);
-                
-                // StackTrace Revert
-                SetLogTypes(StackTraceLogType.ScriptOnly);
-                
-                // 업로드 시작을 알림
-                var uploadStartContent = $":arrow_heading_up: **스팀웍스 업로드를 시작합니다!** [{GetNowTime()}]\n";
-                foreach (var uploadInfo in uploadInfos)
-                    uploadStartContent += $"- {uploadInfo.app.name}({uploadInfo.app.appID}) | 브랜치({uploadInfo.app.liveBranch})\n";
-                DiscordWebhook.SendMsg(discordWebhookUrl, uploadStartContent);
-                
-                // 업로드 시작
-                TerminalUtility.OpenTerminalOSX(sdkPath, username, uploadInfos, discordWebhookUrl);
-                
-                // 종료!
-                foreach (var uploadInfo in uploadInfos)
+                if (!skipBuild)
                 {
-                    var logPath = Path.Combine(uploadInfo.logPath, $"app_build_{uploadInfo.app.appID}.log");
-                    var lines = File.ReadAllLines(logPath);
-                    // 공백 및 빈 줄 제거
-                    var trimmedLines = lines.Where(line => !string.IsNullOrWhiteSpace(line)); 
-                    // 하나의 문자열로 결합
-                    var resultString = string.Join(Environment.NewLine, trimmedLines);
+                    // 디스코드 메세지 생성
+                    var msg = $":computer: **빌드를 시작합니다!** [{GetNowTime()}]\n";
+                    foreach (var buildInfo in buildInfos)
+                        msg += $"- {buildInfo.app.name} | {buildInfo.depot.buildTarget} | {buildInfo.versionStr}\n";
+                    if(sendDiscordMessage)
+                        DiscordWebhook.SendMsg(discordWebhookUrl, msg);
+
+                    // 빌드 풀을 순회하며,
+                    foreach (var buildInfo in buildInfos)
+                        // 빌드 시작
+                        Internal_Build(in buildInfo);
                     
-                    var resultMsg = new JDiscordMsg {embeds = new JDiscordEmbed[1]};
-                    resultMsg.embeds[0] = new JDiscordEmbed
+                    // StackTrace Revert
+                    SetLogTypes(StackTraceLogType.ScriptOnly);
+                }
+
+                if (!skipUpload)
+                {
+                    // 업로드 시작을 알림
+                    if (sendDiscordMessage)
                     {
-                        title = $":star: 스팀웍스 업로드 성공: {uploadInfo.app.name}({uploadInfo.app.appID})\n" +
-                                $"https://partner.steamgames.com/apps/builds/{uploadInfo.app.appID}",
-                        description = resultString
-                    };
-                    DiscordWebhook.SendMsg(discordWebhookUrl, resultMsg);
+                        var uploadStartContent = $":arrow_heading_up: **스팀웍스 업로드를 시작합니다!** [{GetNowTime()}]\n";
+                        foreach (var uploadInfo in uploadInfos)
+                            uploadStartContent += $"- {uploadInfo.app.name}({uploadInfo.app.appID}) | 브랜치({uploadInfo.app.liveBranch})\n";
+                        DiscordWebhook.SendMsg(discordWebhookUrl, uploadStartContent);
+                    }
+                    
+                    // 업로드 시작
+                    TerminalUtility.OpenTerminalOSX(sdkPath, username, uploadInfos);
+                
+                    // 종료!
+                    foreach (var uploadInfo in uploadInfos)
+                    {
+                        var logPath = Path.Combine(uploadInfo.logPath, $"app_build_{uploadInfo.app.appID}.log");
+                        var lines = File.ReadAllLines(logPath);
+                        // 공백 및 빈 줄 제거
+                        var trimmedLines = lines.Where(line => !string.IsNullOrWhiteSpace(line)); 
+                        // 하나의 문자열로 결합
+                        var resultString = string.Join(Environment.NewLine, trimmedLines);
+                    
+                        var resultMsg = new JDiscordMsg {embeds = new JDiscordEmbed[1]};
+                        resultMsg.embeds[0] = new JDiscordEmbed
+                        {
+                            title = $":star: 스팀웍스 업로드 성공: {uploadInfo.app.name}({uploadInfo.app.appID})\n" +
+                                    $"https://partner.steamgames.com/apps/builds/{uploadInfo.app.appID}",
+                            description = resultString
+                        };
+                        if(sendDiscordMessage)
+                            DiscordWebhook.SendMsg(discordWebhookUrl, resultMsg);
+                    }
                 }
             }
             catch (Exception e)
@@ -232,7 +247,8 @@ namespace Accelib.Editor
                     title = $":warning: 빌드 실패({buildInfo.app.name}/{buildInfo.depot.buildTarget})",
                     description = $"{summary.totalErrors}개의 에러가 발생했습니다.",
                 };
-                DiscordWebhook.SendMsg(discordWebhookUrl, null, embed);
+                if(sendDiscordMessage)
+                    DiscordWebhook.SendMsg(discordWebhookUrl, null, embed);
                 throw new Exception(embed.title);
             }
 
@@ -247,7 +263,10 @@ namespace Accelib.Editor
                               $"- **경로**: {summary.outputPath}\n" +
                               $"- **소요시간**: {totalTime}\n"
             };
-            DiscordWebhook.SendMsg(discordWebhookUrl, msg);
+            
+            if(sendDiscordMessage)
+                DiscordWebhook.SendMsg(discordWebhookUrl, msg);
+            Debug.Log(msg);
         }
 
         private void SetLogTypes(StackTraceLogType stackTraceLogType)
