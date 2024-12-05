@@ -294,6 +294,9 @@ namespace Accelib.Editor
 
             if(target is BuildTarget.StandaloneWindows or BuildTarget.StandaloneWindows64)
                 return ".exe";
+            
+            if (target is BuildTarget.StandaloneLinux64)
+                return ".x86_64";
 
             return ".exe";
         }
