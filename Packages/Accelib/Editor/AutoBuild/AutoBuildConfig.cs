@@ -242,11 +242,23 @@ namespace Accelib.Editor
             // 에러 발생시,
             if (summary.totalErrors > 0)
             {
-                var embed = new JDiscordEmbed
+                var errors = new List<string>();
+                
+                foreach (var step in report.steps)
                 {
-                    title = $":warning: 빌드 실패({buildInfo.app.name}/{buildInfo.depot.buildTarget})",
-                    description = $"{summary.totalErrors}개의 에러가 발생했습니다.",
-                };
+                    var err = $"[{step.name}({step.depth} : {Mathf.RoundToInt((float)step.duration.TotalSeconds)}sec)]";
+
+                    foreach (var stepMsg in step.messages)
+                        if(stepMsg.type is LogType.Assert or LogType.Error or LogType.Exception)
+                            errors.Add($"{err}{stepMsg.type} : {stepMsg.content}");
+                }
+
+                var embed = new JDiscordEmbed();
+                embed.title = $":warning: 빌드 실패({buildInfo.app.name}/{buildInfo.depot.buildTarget})";
+                embed.description = $"{summary.totalErrors}개의 에러가 발생했습니다.\n";
+                foreach (var error in errors) 
+                    embed.description += $"{error}\n";
+                
                 if(sendDiscordMessage)
                     DiscordWebhook.SendMsg(discordWebhookUrl, null, embed);
                 throw new Exception(embed.title);
