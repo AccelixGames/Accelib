@@ -286,7 +286,7 @@ namespace Accelib.Editor
             return ".exe";
         }
 
-        private string GetNowTime() => $"{DateTime.Now:yyyy/dd/MM HH:mm:ss}";
+        private string GetNowTime() => $"{DateTime.Now:yyyy/MM/dd HH:mm:ss}";
 
         private void OnValidate()
         {
