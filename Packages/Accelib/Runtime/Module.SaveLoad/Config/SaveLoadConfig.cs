@@ -22,7 +22,7 @@ namespace Accelib.Module.SaveLoad.Config
         [field: SerializeField] public bool ForceNoRead { get; private set; }
 
         [field: Header("디버그 옵션")]
-#if UNITY_EDITOR || DEVELOPMENT_BUILD || ENABLE_LOG
+#if UNITY_EDITOR || DEVELOPMENT_BUILD || ENABLE_DEBUG
         [field: SerializeField] public bool PrintLog { get; private set; } = false;
 #else
         public bool PrintLog => false;
