@@ -30,7 +30,7 @@ namespace Accelib.Module.SaveLoad
             Config = SaveLoadConfig.Load();
             RemoteStorage = RemoteStorageSelector.GetRemoteStorage(Config.ForceLocalStorage);
             remoteStorageName = RemoteStorage.Name;
-            Deb.Log("RemoteStorage Initialized: " + remoteStorageName);
+            // Deb.Log("RemoteStorage Initialized: " + remoteStorageName);
             
             // 초기화
             var taskPool = new List<UniTask<bool>>();
