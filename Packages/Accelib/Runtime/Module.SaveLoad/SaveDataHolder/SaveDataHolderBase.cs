@@ -1,8 +1,7 @@
 ﻿using System;
 using System.Text;
+using Accelib.Helper;
 using Accelib.Logging;
-using Accelib.Module.SaveLoad.Config;
-using Accelib.Module.SaveLoad.RemoteStorage.Base;
 using Accelib.Module.SaveLoad.SaveData;
 using Accelib.Utility;
 using Cysharp.Threading.Tasks;
@@ -20,6 +19,11 @@ namespace Accelib.Module.SaveLoad.SaveDataHolder
         [SerializeField] [ReadOnly] private bool isDirty = false;
         [SerializeField] [ReadOnly] private bool isBlocked = false;
 
+#if UNITY_SWITCH
+        [Header("업데이트 타이머")]
+        [SerializeField] private float targetTimeForSwitch = 20f;
+        [SerializeField, ReadOnly] private float writerTimerForSwitch;
+#endif
         
         protected abstract SaveDataBase SaveData { get; }
 
@@ -95,7 +99,7 @@ namespace Accelib.Module.SaveLoad.SaveDataHolder
             }
         }
 
-        public async UniTask<bool> WriteAsync()
+        private async UniTask<bool> WriteAsync()
         {
             // 저장 데이터가 없을 경우,
             if (SaveData == null) throw ErrException("세이브 데이터가 없습니다.");
@@ -176,14 +180,31 @@ namespace Accelib.Module.SaveLoad.SaveDataHolder
 
         private void LateUpdate()
         {
+#if UNITY_SWITCH
             // 더티 플레그가 켜져있다면,
-            if (isDirty && !isBlocked)
+            if (!isBlocked && isDirty && writerTimerForSwitch >= targetTimeForSwitch)
+            {
+                // 타이머 초기화
+                writerTimerForSwitch = 0f;
+                
+                // 더티 플래그 꺼주기
+                isDirty = false;
+                // 데이터 쓰기
+                WriteAsync().Forget();
+            }
+
+            if(!isBlocked)
+                writerTimerForSwitch += Time.deltaTime;
+#else
+            // 더티 플레그가 켜져있다면,
+            if (!isBlocked && isDirty)
             {
                 // 더티 플래그 꺼주기
                 isDirty = false;
                 // 데이터 쓰기
                 WriteAsync().Forget();
             }
+#endif
         }
 
         public void SetDirty() => isDirty = true;
