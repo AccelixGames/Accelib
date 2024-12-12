@@ -75,5 +75,6 @@ namespace Accelib.Extensions
         }
 
         public static float Random(this in Vector2 v) => UnityEngine.Random.Range(v.x, v.y);
+        public static int Random(this in Vector2Int v) => UnityEngine.Random.Range(v.x, v.y);
     }
 }
