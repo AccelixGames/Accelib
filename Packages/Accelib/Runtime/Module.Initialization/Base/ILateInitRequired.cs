@@ -4,5 +4,6 @@
     {
         public int Priority { get; }
         public void Init();
+        public bool IsInitialized();
     }
 }

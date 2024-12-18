@@ -19,11 +19,15 @@ namespace Accelib.Module.Prefs
         
         [Header("Debug")]
         [SerializeReference, SerializeField] private List<PrefsVar> _prefsVars = new();
-
+        [SerializeField, ReadOnly] private bool isInitialized = false;
+        public bool IsInitialized() => isInitialized;
+        
         public int Priority => 100;
 
         public void Init()
         {
+            isInitialized = false;
+            
 #if UNITY_SWITCH && !UNITY_EDITOR
             SaveLoadSingleton.ReadPlayerPrefs();
 #endif
@@ -51,6 +55,8 @@ namespace Accelib.Module.Prefs
                 else
                     Deb.LogWarning($"Unknown variable type: {variable.name}({variable.GetType()})", variable);
             }
+
+            isInitialized = true;
         }
 
         private void OnDestroy()

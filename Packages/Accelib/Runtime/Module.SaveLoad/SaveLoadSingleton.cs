@@ -15,17 +15,22 @@ using Object = UnityEngine.Object;
 
 namespace Accelib.Module.SaveLoad
 {
-    public class SaveLoadSingleton : MonoSingleton<SaveLoadSingleton>, IAsyncInitRequired
+    public class SaveLoadSingleton : MonoSingleton<SaveLoadSingleton>, IInitRequired
     {
         [Header("Storage")]
         [SerializeField, ReadOnly] private string remoteStorageName;
+        [SerializeField] private bool isInitialized = false;
         
         public static IRemoteStorage RemoteStorage;
         public static SaveLoadConfig Config;
         
         private Dictionary<Type, SaveDataHolderBase> _holderDict = new();
         
-        public async UniTask<bool> InitAsync()
+        public void Init() => InitAsync().Forget();
+
+        public bool IsInitialized() => isInitialized;
+
+        public async UniTaskVoid InitAsync()
         {
             Config = SaveLoadConfig.Load();
             RemoteStorage = RemoteStorageSelector.GetRemoteStorage(Config.ForceLocalStorage);
@@ -48,7 +53,8 @@ namespace Accelib.Module.SaveLoad
             }
 
             var result = await UniTask.WhenAll(taskPool);
-            return result.All(isTrue => isTrue);
+
+            isInitialized = true;
         }
         
         public static T Get<T>(Object ctx = null) where T : SaveDataHolderBase
@@ -73,7 +79,7 @@ namespace Accelib.Module.SaveLoad
         
 #if UNITY_EDITOR
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
-        private static void Init()
+        private static void RuntimeInit()
         {
             Initialize();
 

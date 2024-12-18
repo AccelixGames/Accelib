@@ -20,6 +20,8 @@ namespace Accelib.Module.Localization
         
         [Header("미리보기")]
         [SerializeField, ReadOnly] private LocaleSO currLocale = null;
+        [SerializeField, ReadOnly] private bool isInitialized = false;
+        public bool IsInitialized() => isInitialized;
 
         public SystemLanguage CurrLang => (SystemLanguage)currLangId.Value;
         private bool IsSupportedLang(SystemLanguage lang) => locales.Any(x => x.Language == lang);
@@ -43,6 +45,8 @@ namespace Accelib.Module.Localization
 
             // 로케일 변경
             UpdateLocale();
+
+            isInitialized = true;
         }
 
         /// <summary>언어를 변경한다.</summary>

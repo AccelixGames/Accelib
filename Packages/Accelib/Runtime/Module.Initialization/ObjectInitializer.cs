@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Accelib.Module.Initialization.Base;
 using Cysharp.Threading.Tasks;
@@ -10,7 +11,7 @@ namespace Accelib.Module.Initialization
 {
     public class ObjectInitializer : MonoBehaviour
     {
-        public enum State {None, Success, Failed}
+        public enum State {None, Success}
 
         [Header("LoadScn")]
         [SerializeField] private bool loadScnAfterInit = true; 
@@ -19,40 +20,53 @@ namespace Accelib.Module.Initialization
         [field: Header("State")]
         [field: SerializeField, ReadOnly] public State InitState { get; private set; }
 
-        private async void Awake()
+        private List<IInitRequired> _inits;
+        private List<ILateInitRequired> _lateInits;
+
+        private void Awake()
         {
             InitState = State.None;
-            
-            var tasks = new List<UniTask<bool>>();
             var monoBehaviours = FindObjectsByType<MonoBehaviour>(FindObjectsInactive.Exclude, FindObjectsSortMode.None);
+            
+            _inits = new List<IInitRequired>();
             foreach (var go in monoBehaviours)
             {
                 if (go == null) continue;
 
                 if (go.TryGetComponent<IInitRequired>(out var initRequired))
+                {
+                    _inits.Add(initRequired);
                     initRequired.Init();
-                
-                if (go.TryGetComponent<IAsyncInitRequired>(out var asyncInitRequired))
-                    tasks.Add(asyncInitRequired.InitAsync());
+                }
             }
 
-            var results = await UniTask.WhenAll(tasks);
-            InitState = results.All(isTrue => isTrue) ? State.Success : State.Failed;
-
-            var lateInits = new List<ILateInitRequired>();
+            _lateInits = new List<ILateInitRequired>();
             foreach (var go in monoBehaviours)
             {
                 if (go == null) continue;
                 
                 if (go.TryGetComponent<ILateInitRequired>(out var initRequired))
-                    lateInits.Add(initRequired);
+                    _lateInits.Add(initRequired);
             }
             
-            lateInits.Sort((a,b)=>b.Priority.CompareTo(a.Priority));
-            foreach (var lateInitRequired in lateInits) 
+            _lateInits.Sort((a,b)=>b.Priority.CompareTo(a.Priority));
+            foreach (var lateInitRequired in _lateInits) 
                 lateInitRequired.Init();
+        }
 
-            if (loadScnAfterInit)
+        private void LateUpdate()
+        {
+            if(InitState != State.None) return;
+            
+            foreach (var initRequired in _inits)
+                if(!initRequired.IsInitialized()) return;
+            
+            foreach (var initRequired in _lateInits)
+                if(!initRequired.IsInitialized()) return;
+
+            InitState = State.Success;
+            
+            if (loadScnAfterInit) 
                 SceneManager.LoadScene(targetScene, LoadSceneMode.Single);
         }
     }
