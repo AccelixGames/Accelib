@@ -12,7 +12,10 @@ namespace Accelib.Data
         [Range(0f, 10f)] public float delayA = 0f;
         [FormerlySerializedAs("delay")]
         [Range(0f, 10f)] public float delayB = 0f;
-        [Range(0.01f, 10f)] public float duration = 1f;
+        [FormerlySerializedAs("duration")]
+        [Range(0.01f, 10f)] public float durationA = 1f;
+        [FormerlySerializedAs("duration")]
+        [Range(0.01f, 10f)] public float durationB = 1f;
         public Ease easeA = Ease.OutBack;
         public Ease easeB = Ease.InBack;
         
@@ -20,6 +23,10 @@ namespace Accelib.Data
         public float overshoot = 1.70158f;
 
         public Ease GetEase(bool isIn) => isIn ? easeA : easeB;
+        public float GetDuration(bool isIn) => isIn ? durationA : durationB;
+        public float GetDelay(bool isIn) => isIn ? delayA : delayB;
+
+        public float duration => durationA;
     }
 
     public static class EasePairTweenConfigExtension

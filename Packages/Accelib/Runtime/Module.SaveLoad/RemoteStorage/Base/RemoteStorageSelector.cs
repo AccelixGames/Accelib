@@ -20,6 +20,7 @@
 #elif UNITY_SWITCH
             return new RemoteStorage_Switch();
 #endif
+            return new RemoteStorage_Local();
         }
     }
 }

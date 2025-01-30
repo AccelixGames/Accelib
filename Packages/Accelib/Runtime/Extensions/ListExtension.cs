@@ -7,6 +7,22 @@ namespace Accelib.Extensions
 {
     public static class ListExtension
     {
+        public static T GetOrDefault<T>(this List<T> list, int index, T defaultValue = default)
+        {
+            if (list != null && index < list.Count)
+                return list[index];
+            
+            return defaultValue;
+        }
+        
+        public static T GetOrDefault<T>(this IEnumerable<T> list, int index, T defaultValue = default)
+        {
+            if (list != null && index < list.Count())
+                return list.ElementAt(index);
+            
+            return defaultValue;
+        }
+        
         public static void AddRangeNullCheck<T>(this List<T> list, IEnumerable<T> collection)
         {
             if(collection == null) return;
@@ -30,11 +46,17 @@ namespace Accelib.Extensions
         public static List<T> GetRandomElements<T>(this List<T> list, int n)
         {
             if (list == null) return null;
-            if (n < 0 || n > list.Count)
-            {
-                Deb.LogError("The number of elements to select must be between 0 and the size of the list.");
-                return null;
-            }
+            if (n < 0) return null;
+            n = Mathf.Min(list.Count, n);
+
+            return list.OrderBy(x => UnityEngine.Random.value).Take(n).ToList();
+        }
+        
+        public static IEnumerable<T> GetRandomElements<T>(this IEnumerable<T> list, int n)
+        {
+            if (list == null) return null;
+            if (n < 0) return null;
+            n = Mathf.Min(list.Count(), n);
 
             return list.OrderBy(x => UnityEngine.Random.value).Take(n).ToList();
         }

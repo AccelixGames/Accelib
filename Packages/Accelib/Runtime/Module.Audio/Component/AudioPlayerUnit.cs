@@ -51,7 +51,7 @@ namespace Accelib.Module.Audio.Component
         public Tweener SetControlVolume(float value)
         {
             return DOTween
-                .To(() => ControlVolume, x => ControlVolume = x, value, fadeTweenConfig.duration)
+                .To(() => ControlVolume, x => ControlVolume = x, value, fadeTweenConfig.durationA)
                 .SetEase(fadeTweenConfig.easeA)
                 .OnComplete(() => ControlVolume = value)
                 .SetLink(gameObject);
@@ -162,13 +162,13 @@ namespace Accelib.Module.Audio.Component
         }
 
         private Tweener PlayFadeIn(AudioRefBase audioRef) => DOTween
-            .To(() => FadeVolume, x => FadeVolume = x, 1f, fadeTweenConfig.duration)
+            .To(() => FadeVolume, x => FadeVolume = x, 1f, fadeTweenConfig.durationA)
             .SetEase(fadeTweenConfig.easeA)
             .OnStart(() => DefaultUnit.Play(audioRef, _totalVolume))
             .SetLink(gameObject);
 
         private Tweener StopFadeOut() => DOTween
-            .To(() => FadeVolume, x => FadeVolume = x, 0f, fadeTweenConfig.duration)
+            .To(() => FadeVolume, x => FadeVolume = x, 0f, fadeTweenConfig.durationA)
             .SetEase(fadeTweenConfig.easeB)
             .OnComplete(() => DefaultUnit.Stop(_totalVolume))
             .SetLink(gameObject);

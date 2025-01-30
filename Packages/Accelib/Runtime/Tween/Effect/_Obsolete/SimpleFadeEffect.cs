@@ -65,7 +65,7 @@ namespace Accelib.Effect
             }
             
             _tween?.Kill();
-            _tween = group.DOFade(0f, config.duration)
+            _tween = group.DOFade(0f, config.durationA)
                 .SetEase(config.easeB)
                 .SetDelay(config.delayB)
                 .OnComplete(() => gameObject.SetActive(false));
