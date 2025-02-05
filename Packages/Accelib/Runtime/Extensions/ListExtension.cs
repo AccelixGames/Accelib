@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Accelib.Logging;
 using UnityEngine;
@@ -7,6 +8,12 @@ namespace Accelib.Extensions
 {
     public static class ListExtension
     {
+        public static IEnumerable<T> DeepCopy<T>(this IEnumerable<T> list) where T : ICloneable => 
+            list.Select(item => (T)item.Clone());
+
+        public static List<T> DeepCopy<T>(this List<T> list) where T : ICloneable => 
+            list.Select(item => (T)item.Clone()).ToList();
+
         public static T GetOrDefault<T>(this List<T> list, int index, T defaultValue = default)
         {
             if (list != null && index < list.Count)
@@ -73,5 +80,12 @@ namespace Accelib.Extensions
             var id = UnityEngine.Random.Range(0, list.Count);
             return list[id];
         }
+
+        public static string ToString<T>(this IEnumerable<T> enumerable, string separator = ",") => 
+            string.Join(separator, enumerable);
+        
+        
+        public static string ToString<T>(this List<T> enumerable, string separator = ",") => 
+            string.Join(separator, enumerable);
     }
 }
