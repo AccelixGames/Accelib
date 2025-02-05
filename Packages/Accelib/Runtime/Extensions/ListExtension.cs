@@ -8,6 +8,30 @@ namespace Accelib.Extensions
 {
     public static class ListExtension
     {
+        public static T Peek<T>(this List<T> list, int index)
+        {
+            if (index >= list.Count)
+                return default;
+            
+            var element = list[index];
+            list.RemoveAt(index);
+            return element;
+        }
+        
+        public static T PeekLast<T>(this List<T> list)
+        {
+            if (list.Count <= 0)
+            {
+                Deb.LogWarning("List is empty");
+                return default;
+            }
+            
+            var idx = list.Count - 1;
+            var element = list[idx];
+            list.RemoveAt(idx);
+            return element;
+        }
+        
         public static IEnumerable<T> DeepCopy<T>(this IEnumerable<T> list) where T : ICloneable => 
             list.Select(item => (T)item.Clone());
 
