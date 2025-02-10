@@ -25,6 +25,8 @@ namespace Accelib.Effect
             target.DOShakePosition(tweenConfig.duration, tweenConfig.strength, tweenConfig.vibrato, tweenConfig.randomness, 
                 tweenConfig.snapping, tweenConfig.fadeOut, tweenConfig.randomnessMode);
 
+        public void Shake() => DoShake();
+
         // private void Reset()
         // {
         //     duration = 1f;

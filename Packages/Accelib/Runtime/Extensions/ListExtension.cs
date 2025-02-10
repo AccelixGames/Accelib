@@ -40,7 +40,7 @@ namespace Accelib.Extensions
 
         public static T GetOrDefault<T>(this List<T> list, int index, T defaultValue = default)
         {
-            if (list != null && index < list.Count)
+            if (list != null && index < list.Count && index >= 0)
                 return list[index];
             
             return defaultValue;
@@ -48,7 +48,7 @@ namespace Accelib.Extensions
         
         public static T GetOrDefault<T>(this IEnumerable<T> list, int index, T defaultValue = default)
         {
-            if (list != null && index < list.Count())
+            if (list != null && index < list.Count() && index >= 0)
                 return list.ElementAt(index);
             
             return defaultValue;

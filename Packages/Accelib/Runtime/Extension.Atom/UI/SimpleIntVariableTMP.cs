@@ -2,10 +2,11 @@
 using TMPro;
 using UnityAtoms.BaseAtoms;
 using UnityEngine;
+using UnityEngine.Events;
 
 namespace Accelib.Extension.Atom.UI
 {
-    [RequireComponent(typeof(TMP_Text))]
+    //[RequireComponent(typeof(TMP_Text))]
     public class SimpleIntVariableTMP : MonoBehaviour
     {
         [SerializeField] private TMP_Text tmp;
@@ -13,6 +14,9 @@ namespace Accelib.Extension.Atom.UI
 
         [Header("Modifier")]
         [SerializeField] private string format;
+
+        [Header("Event")]
+        [SerializeField] private UnityEvent<int> onUpdate;
 
         private void OnEnable()
         {
@@ -28,6 +32,8 @@ namespace Accelib.Extension.Atom.UI
                 tmp.text = v.ToString();
             else
                 tmp.text = v.ToString(format);
+            
+            onUpdate?.Invoke(v);
         }
 
         private void Reset() => tmp = GetComponent<TMP_Text>();
