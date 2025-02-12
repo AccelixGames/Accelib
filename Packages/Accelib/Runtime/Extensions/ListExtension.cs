@@ -54,6 +54,13 @@ namespace Accelib.Extensions
             return defaultValue;
         }
         
+        public static void AddNullCheck<T>(this List<T> list, T item)
+        {
+            if (item == null) return;
+            
+            list.Add(item);
+        }
+        
         public static void AddRangeNullCheck<T>(this List<T> list, IEnumerable<T> collection)
         {
             if(collection == null) return;
@@ -107,7 +114,6 @@ namespace Accelib.Extensions
 
         public static string ToString<T>(this IEnumerable<T> enumerable, string separator = ",") => 
             string.Join(separator, enumerable);
-        
         
         public static string ToString<T>(this List<T> enumerable, string separator = ",") => 
             string.Join(separator, enumerable);
