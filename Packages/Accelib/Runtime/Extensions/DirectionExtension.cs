@@ -8,10 +8,10 @@ namespace Accelib.Extensions
     {
         public static readonly Vector2 RefVec = new(-1, 0);
 
-        public static Direction Abs(this Direction dir) => (dir.ToVector() * -Vector2Int.one).ToDirection();
+        public static Direction Abs(this Direction dir) => (dir.ToVec2Int() * -Vector2Int.one).ToDirection();
         
         public static float ToAngle(this Vector2 dir) => Vector2.SignedAngle(RefVec, dir);
-        public static float ToAngle(this Direction dir) => Vector2.SignedAngle(RefVec, dir.ToVector());
+        public static float ToAngle(this Direction dir) => Vector2.SignedAngle(RefVec, dir.ToVec2Int());
         
         public static Vector2 RotateRadian(this Vector2 v, float radians)
         {
@@ -26,7 +26,7 @@ namespace Accelib.Extensions
 
         public static Quaternion ToQuaternion(this Vector2 vec) => Quaternion.Euler(0f, 0f, Vector2.SignedAngle(RefVec, vec));
 
-        public static Vector2Int ToVector(this Direction dir) => dir switch
+        public static Vector2Int ToVec2Int(this Direction dir) => dir switch
             {
                 Direction.Left => Vector2Int.left,
                 Direction.Right => Vector2Int.right,
