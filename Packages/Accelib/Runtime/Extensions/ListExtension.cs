@@ -10,7 +10,7 @@ namespace Accelib.Extensions
     {
         public static T Peek<T>(this List<T> list, int index)
         {
-            if (index >= list.Count)
+            if (list.Count <= 0 || index >= list.Count || index < 0)
                 return default;
             
             var element = list[index];
