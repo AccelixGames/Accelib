@@ -1,35 +1,13 @@
-﻿using System;
-using TMPro;
+﻿using Accelib.Extension.Atom.UI.Base;
+using UnityAtoms;
 using UnityAtoms.BaseAtoms;
-using UnityEngine;
 
 namespace Accelib.Extension.Atom.UI
 {
-    [RequireComponent(typeof(TMP_Text))]
-    public class SimpleFloatVariableTMP : MonoBehaviour
+    public class SimpleFloatVariableTMP : SimpleVariableTMP<FloatVariable, float>
     {
-        [SerializeField] private TMP_Text tmp;
-        [SerializeField] private FloatVariable targetVar;
+        protected override AtomEvent<float> Changed => variable?.Changed;
+        protected override float GetValue => variable?.Value ?? 0f;
 
-        [Header("Modifier")]
-        [SerializeField] private string format = "F1";
-
-        private void OnEnable()
-        {
-            targetVar.Changed.Register(OnChanged);
-            OnChanged(targetVar.Value);
-        }
-
-        private void OnDisable() => targetVar.Changed.Unregister(OnChanged);
-
-        private void OnChanged(float v)
-        {
-            if (string.IsNullOrEmpty(format))
-                tmp.text = v.ToString();
-            else
-                tmp.text = v.ToString(format);
-        }
-
-        private void Reset() => tmp = GetComponent<TMP_Text>();
     }
 }

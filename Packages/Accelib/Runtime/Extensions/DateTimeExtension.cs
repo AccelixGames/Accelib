@@ -4,7 +4,9 @@ namespace Accelib.Extensions
 {
     public static class DateTimeExtension
     {
-        public static string SecToTime(int totalSecond)
+        public enum TimeDisplayMode {Hour, Min, Sec}
+        
+        public static string SecToTime(int totalSecond, TimeDisplayMode mode = TimeDisplayMode.Hour)
         {
             var hour = totalSecond / 3600;
 
@@ -14,7 +16,11 @@ namespace Accelib.Extensions
             totalSecond -= min * 60;
             var sec = totalSecond;
 
-            return $"{hour:00}:{min:00}:{sec:00}";
+            if(mode == TimeDisplayMode.Hour)
+                return $"{hour:00}:{min:00}:{sec:00}";
+            if(mode == TimeDisplayMode.Min)
+                return $"{min:00}:{sec:00}";
+            return $"{sec:00}";
         }
         
         public static long UtcTotalSec() => (long)(DateTime.UtcNow - DateTime.UnixEpoch).TotalSeconds;

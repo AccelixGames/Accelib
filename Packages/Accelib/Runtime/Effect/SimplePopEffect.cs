@@ -21,14 +21,14 @@ namespace Accelib.Effect
         private void OnEnable()
         {
             if (startMode == FadeMode.In)
-                EffectIn();
+                DoEffectIn();
             else if (startMode == FadeMode.Out)
-                EffectOut();
+                DoEffectOut();
         }
 
         private void OnDisable() => _seq?.Kill();
 
-        public Sequence EffectIn()
+        public Sequence DoEffectIn()
         {
             _seq?.Kill();
             _seq = DOTween.Sequence().SetLink(gameObject);
@@ -38,27 +38,29 @@ namespace Accelib.Effect
                 transform.localScale = disabledScale;
             });
             _seq.Append(transform.DOScale(Vector3.one, config.duration)
-                .SetEase(config.easeA)
+                .SetEase(config.easeA, config.overshoot)
                 .SetDelay(config.delayA));
 
             return _seq;
         }
+        public void EffectIn() => DoEffectIn();
 
-        public Sequence EffectOut()
+        public Sequence DoEffectOut()
         {
             if (!gameObject.activeSelf) return null;
 
             _seq?.Kill();
             _seq = DOTween.Sequence().SetLink(gameObject);
             _seq.Append(transform.DOScale(disabledScale, config.duration)
-                .SetEase(config.easeB)
+                .SetEase(config.easeB ,config.overshoot)
                 .SetDelay(config.delayB));
             _seq.OnComplete(() => gameObject.SetActive(false));
 
             return _seq;
         }
+        public void EffectOut() => DoEffectOut();
 
         [Button(enabledMode: EButtonEnableMode.Playmode)]
-        public void OnSetDisable() => EffectOut();
+        public void OnSetDisable() => DoEffectOut();
     }
 }

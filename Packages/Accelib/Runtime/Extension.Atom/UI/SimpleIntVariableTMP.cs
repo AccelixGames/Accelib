@@ -1,41 +1,12 @@
-﻿using System;
-using TMPro;
+﻿using Accelib.Extension.Atom.UI.Base;
+using UnityAtoms;
 using UnityAtoms.BaseAtoms;
-using UnityEngine;
-using UnityEngine.Events;
 
 namespace Accelib.Extension.Atom.UI
 {
-    //[RequireComponent(typeof(TMP_Text))]
-    public class SimpleIntVariableTMP : MonoBehaviour
+    public class SimpleIntVariableTMP : SimpleVariableTMP<IntVariable, int>
     {
-        [SerializeField] private TMP_Text tmp;
-        [SerializeField] private IntVariable intVar;
-
-        [Header("Modifier")]
-        [SerializeField] private string format;
-
-        [Header("Event")]
-        [SerializeField] private UnityEvent<int> onUpdate;
-
-        private void OnEnable()
-        {
-            intVar.Changed.Register(OnChanged);
-            OnChanged(intVar.Value);
-        }
-
-        private void OnDisable() => intVar.Changed.Unregister(OnChanged);
-
-        private void OnChanged(int v)
-        {
-            if (string.IsNullOrEmpty(format))
-                tmp.text = v.ToString();
-            else
-                tmp.text = v.ToString(format);
-            
-            onUpdate?.Invoke(v);
-        }
-
-        private void Reset() => tmp = GetComponent<TMP_Text>();
+        protected override AtomEvent<int> Changed => variable?.Changed;
+        protected override int GetValue => variable?.Value ?? 0;
     }
 }
