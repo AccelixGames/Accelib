@@ -9,7 +9,6 @@ namespace Accelib.Utility
     public class AspectScaleController : MonoBehaviour
     {
         [Header("")]
-        [FormerlySerializedAs("target")]
         [SerializeField] private RectTransform canvas;
         [SerializeField] private bool autoUpdate = false; 
         

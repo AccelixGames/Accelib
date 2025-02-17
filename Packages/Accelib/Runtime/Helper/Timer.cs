@@ -7,7 +7,7 @@ namespace Accelib.Helper
     public class Timer
     {
         [field: SerializeField] public bool IsEnabled { get;  set; } = false;
-        [field: SerializeField] public float Time { get; private set; } = 0f;
+        [field: SerializeField] public float Time { get; set; } = 0f;
         [field: SerializeField] public float TargetTime { get; private set; } = 0f;
 
         public float TimeLeft => Mathf.Clamp(TargetTime - Time, 0f, TargetTime);
