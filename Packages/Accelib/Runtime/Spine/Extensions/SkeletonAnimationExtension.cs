@@ -1,9 +1,17 @@
 ﻿using Spine;
+using Spine.Unity;
 
 namespace Accelib.Spine.Extensions
 {
     public static class SkeletonAnimationExtension
     {
+        public static void UpdateSkin(this SkeletonAnimation skeleton, string skinName)
+        {
+            skeleton.Skeleton.SetSkin(skinName);
+            skeleton.Skeleton.SetSlotsToSetupPose();
+        }
+
+        
         public static TrackEntry SetAnimationWithoutDuplication(this AnimationState animState, int trackIndex, string animation, bool loop, float? mixDuration =null, float? delay = null)
         {
             var curr = animState.GetCurrent(trackIndex);
