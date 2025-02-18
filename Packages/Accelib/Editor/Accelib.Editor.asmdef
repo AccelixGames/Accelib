@@ -8,7 +8,11 @@
         "Unity.TextMeshPro",
         "UniTask.TextMeshPro",
         "DOTween.Modules",
-        "Accelib.Runtime"
+        "Accelib.Runtime",
+        "UnityAtoms.UnityAtomsCore.Editor",
+        "UnityAtoms.UnityAtomsBaseAtoms.Editor",
+        "UnityAtoms.UnityAtomsBaseAtoms.Runtime",
+        "UnityAtoms.UnityAtomsCore.Runtime"
     ],
     "includePlatforms": [
         "Editor"

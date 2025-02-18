@@ -5,11 +5,17 @@ namespace Accelib.Spine.Extensions
 {
     public static class SkeletonAnimationExtension
     {
-        public static void UpdateSkin(this SkeletonAnimation skeleton, string skinName)
+        public static void UpdateSkin(this Skeleton skeleton, string skinName)
         {
-            skeleton.Skeleton.SetSkin(skinName);
-            skeleton.Skeleton.SetSlotsToSetupPose();
+            skeleton.SetSkin(skinName);
+            skeleton.SetSlotsToSetupPose();
         }
+        
+        public static void UpdateSkin(this SkeletonGraphic skeleton, string skinName) => 
+            skeleton.Skeleton.UpdateSkin(skinName);
+
+        public static void UpdateSkin(this SkeletonAnimation skeleton, string skinName)=>
+            skeleton.Skeleton.UpdateSkin(skinName);
 
         
         public static TrackEntry SetAnimationWithoutDuplication(this AnimationState animState, int trackIndex, string animation, bool loop, float? mixDuration =null, float? delay = null)
