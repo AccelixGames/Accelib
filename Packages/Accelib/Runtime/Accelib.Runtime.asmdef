@@ -14,7 +14,9 @@
         "Heathen.Steamworks",
         "com.rlabrecque.steamworks.net",
         "Unity.VisibleEnum.Runtime",
-        "NintendoSDK"
+        "NintendoSDK",
+        "Febucci.TextAnimator.Runtime",
+        "Febucci.TextAnimator.TMP.Runtime"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],
