@@ -7,6 +7,7 @@ namespace Accelib.Helper
     public class Timer
     {
         [field: SerializeField] public bool IsEnabled { get;  set; } = false;
+        [field: SerializeField] public bool IsDone { get;  set; } = false;
         [field: SerializeField] public float Time { get; set; } = 0f;
         [field: SerializeField] public float TargetTime { get; private set; } = 0f;
 
@@ -35,6 +36,7 @@ namespace Accelib.Helper
             if (Time >= TargetTime)
             {
                 IsEnabled = false;
+                IsDone = true;
                 return true;
             }
             
@@ -46,6 +48,7 @@ namespace Accelib.Helper
             Time = 0f;
             TargetTime = target;
             IsEnabled = true;
+            IsDone = false;
         }
 
         public void Clear(bool repeat = false)
@@ -54,12 +57,15 @@ namespace Accelib.Helper
                 Time -= TargetTime;
             else
                 Time = 0f;
+            
             IsEnabled = true;
+            IsDone = false;
         }
 
         public void Stop(bool clear = true)
         {
             if(clear) Time = 0f;
+            
             IsEnabled = false;
         }
 
