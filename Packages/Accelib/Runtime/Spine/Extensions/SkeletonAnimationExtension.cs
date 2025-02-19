@@ -1,21 +1,31 @@
-﻿using Spine;
+﻿using System;
+using Accelib.Logging;
+using Spine;
 using Spine.Unity;
+using Object = UnityEngine.Object;
 
 namespace Accelib.Spine.Extensions
 {
     public static class SkeletonAnimationExtension
     {
-        public static void UpdateSkin(this Skeleton skeleton, string skinName)
+        public static void UpdateSkin(this Skeleton skeleton, string skinName, Object obj = null)
         {
-            skeleton.SetSkin(skinName);
-            skeleton.SetSlotsToSetupPose();
+            try
+            {
+                skeleton.SetSkin(skinName);
+                skeleton.SetSlotsToSetupPose();
+            }
+            catch (Exception e)
+            {
+                Deb.LogWarning(e.Message, obj);
+            }
         }
         
         public static void UpdateSkin(this SkeletonGraphic skeleton, string skinName) => 
-            skeleton.Skeleton.UpdateSkin(skinName);
+            skeleton.Skeleton.UpdateSkin(skinName, skeleton);
 
         public static void UpdateSkin(this SkeletonAnimation skeleton, string skinName)=>
-            skeleton.Skeleton.UpdateSkin(skinName);
+            skeleton.Skeleton.UpdateSkin(skinName, skeleton);
 
         
         public static TrackEntry SetAnimationWithoutDuplication(this AnimationState animState, int trackIndex, string animation, bool loop, float? mixDuration =null, float? delay = null)
