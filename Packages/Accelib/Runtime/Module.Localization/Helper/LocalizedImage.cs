@@ -11,10 +11,6 @@ namespace Accelib.Module.Localization.Helper
     public class LocalizedImage : MonoBehaviour, ILocaleChangedEventListener
     {
         [field:SerializeField, ReadOnly] public Image Image { get; private set; }
-        
-        // [SerializeField] private Sprite krImage;
-        // [SerializeField] private Sprite enImage;
-        
         [SerializeField] SerializedDictionary<SystemLanguage, Sprite> localizedImages = new ();
         
         public string LocaleKey { get; }
