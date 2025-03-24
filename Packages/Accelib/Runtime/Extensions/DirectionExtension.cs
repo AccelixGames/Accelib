@@ -26,6 +26,15 @@ namespace Accelib.Extensions
 
         public static Quaternion ToQuaternion(this Vector2 vec) => Quaternion.Euler(0f, 0f, Vector2.SignedAngle(RefVec, vec));
 
+        public static Vector2 ToVec2(this Direction dir) => dir switch
+        {
+            Direction.Left => Vector2.left,
+            Direction.Right => Vector2.right,
+            Direction.Up => Vector2.up,
+            Direction.Down => Vector2.down,
+            _ => Vector2.zero
+        };
+        
         public static Vector2Int ToVec2Int(this Direction dir) => dir switch
             {
                 Direction.Left => Vector2Int.left,

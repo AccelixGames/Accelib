@@ -37,7 +37,10 @@ namespace Accelib.Spine.Extensions
                 curr = animState.SetAnimation(trackIndex, animation, loop);
 
                 if (mixDuration.HasValue || delay.HasValue)
-                    curr.SetMixDuration(mixDuration.GetValueOrDefault(0f), delay.GetValueOrDefault(0f));
+                {
+                    curr.MixDuration = mixDuration.GetValueOrDefault(0f);
+                    curr.Delay = delay.GetValueOrDefault(0f);
+                }
             }
 
             return curr;
