@@ -1,4 +1,5 @@
-﻿using Accelib.Data;
+﻿using System;
+using Accelib.Data;
 using DG.Tweening;
 using NaughtyAttributes;
 using UnityEngine;
@@ -18,6 +19,14 @@ namespace Accelib.Effect
         
         private Sequence _seq;
 
+        private void Start()
+        {
+            _seq = DOTween.Sequence()
+                .Append(render.DOColor(colorInit, config.durationB).SetEase(config.easeB))
+                .Append(render.DOColor(colorTo, config.durationA).SetEase(config.easeA))
+                .SetUpdate(true).SetAutoKill(false).SetLink(gameObject).Pause();
+        }
+
         private void OnEnable()
         {
             if (playOnStart)
@@ -29,12 +38,7 @@ namespace Accelib.Effect
         [Button]
         public Sequence Blink()
         {
-            _seq?.Kill();
-            _seq = DOTween.Sequence()
-                .Append(render.DOColor(colorTo, config.durationA).SetEase(config.easeA))
-                .Append(render.DOColor(colorInit, config.durationB).SetEase(config.easeB))
-                .SetLoops(loopCount);
-
+            _seq?.Play().Restart();
             return _seq;
         }
     }
