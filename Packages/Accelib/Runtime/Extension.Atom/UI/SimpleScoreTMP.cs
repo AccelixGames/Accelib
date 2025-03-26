@@ -32,6 +32,7 @@ namespace Accelib.Extension.Atom.UI
 
         private void OnEnable()
         {
+            tmp.text = currValue.ToString();
             variable.Changed?.Register(OnChanged);
             OnChanged(variable.Value);
         }
