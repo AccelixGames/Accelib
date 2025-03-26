@@ -10,9 +10,13 @@ namespace Accelib.Extension.Atom
     {
         [SerializeField] private BoolVariable variable;
         
-        [Header("Events")]
+        [Header("True/False")]
         [SerializeField] private UnityEvent onTrue;
         [SerializeField] private UnityEvent onFalse;
+        
+        [Header("Bool")]
+        [SerializeField] private UnityEvent<bool> onEvent;
+        [SerializeField] private bool reverseValue = false;
 
         private void OnEnable() => variable.Changed.Register(OnEventRaised);
         private void OnDisable() => variable.Changed.Unregister(OnEventRaised);
@@ -25,6 +29,8 @@ namespace Accelib.Extension.Atom
                     onTrue?.Invoke();
                 else
                     onFalse?.Invoke();
+
+                onEvent?.Invoke(reverseValue ? !value : value);
             }
             catch (Exception e)
             {

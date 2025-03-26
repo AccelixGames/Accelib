@@ -16,18 +16,35 @@ namespace Accelib.Utility
         [SerializeField, MinMaxSlider(0f, 300f)] private Vector2 fovRange = new(30f, 60f);
         
         [Header("Size Debug")]
+        [SerializeField, ReadOnly] private bool isLocked;
         [SerializeField, ReadOnly] private Camera cam;
         [SerializeField, ReadOnly] private float initOrthographicSize = 11.5f;
         [SerializeField, ReadOnly] private float initFieldOfView = 60f;
         [SerializeField, ReadOnly] private float ratio;
-
         
+        public bool IsLocked
+        {
+            get => isLocked;
+            set
+            {
+                isLocked = value;
+                if (!isLocked)
+                {
+                    if (cam.orthographic)
+                        cam.orthographicSize = initOrthographicSize * ratio;
+                    else
+                        cam.fieldOfView = Mathf.Clamp(initFieldOfView * ratio, fovRange.x, fovRange.y);
+                }
+            }
+        }
+
         private void Start()
         {
             cam = GetComponent<Camera>();
             initOrthographicSize = cam.orthographicSize;
             initFieldOfView = cam.fieldOfView;
             ratio = -1f;
+            isLocked = false;
 
             UpdateRatio();
         }
@@ -46,7 +63,7 @@ namespace Accelib.Utility
                 if (Mathf.Abs(ratio - newRatio) < 0.001f) return;
             
                 ratio = newRatio;
-                cam.orthographicSize = initOrthographicSize * ratio;
+                if(!isLocked) cam.orthographicSize = initOrthographicSize * ratio;
             }
             else
             {
@@ -54,7 +71,7 @@ namespace Accelib.Utility
                 if (Mathf.Abs(ratio - newRatio) < 0.001f) return;
             
                 ratio = newRatio;
-                cam.fieldOfView = Mathf.Clamp(initFieldOfView * ratio, fovRange.x, fovRange.y);
+                if(!isLocked) cam.fieldOfView = Mathf.Clamp(initFieldOfView * ratio, fovRange.x, fovRange.y);
             }
         }
     }

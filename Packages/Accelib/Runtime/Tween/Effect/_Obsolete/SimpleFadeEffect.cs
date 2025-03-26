@@ -53,7 +53,7 @@ namespace Accelib.Effect
 
             return _tween;
         }
-
+        
         public Tweener FadeOut(bool clearOnStart = true)
         {
             group = GetComponent<CanvasGroup>();
@@ -72,5 +72,8 @@ namespace Accelib.Effect
 
             return _tween;
         }
+        
+        public void DoFadeIn() => FadeIn();
+        public void DoFadeOut() => FadeOut();
     }
 }
