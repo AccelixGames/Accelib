@@ -1,4 +1,5 @@
-﻿using System;
+﻿#if ACCELIX_SPINE
+using System;
 using Accelib.Logging;
 using Spine;
 using Spine.Unity;
@@ -57,3 +58,4 @@ namespace Accelib.Spine.Extensions
         }
     }
 }
+#endif

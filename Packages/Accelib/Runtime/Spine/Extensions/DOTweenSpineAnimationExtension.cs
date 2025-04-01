@@ -1,4 +1,5 @@
-﻿using DG.Tweening;
+﻿#if ACCELIX_SPINE
+using DG.Tweening;
 using Spine;
 using Spine.Unity;
 
@@ -22,3 +23,4 @@ namespace Accelib.Spine.Extensions
             => DOTween.To(() => bone.overrideAlpha, x => bone.overrideAlpha = x, endValue, duration);
     }
 }
+#endif

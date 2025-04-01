@@ -1,4 +1,5 @@
-﻿using NaughtyAttributes;
+﻿#if FEBUCCI
+using NaughtyAttributes;
 using UnityEngine;
 
 namespace Accelib.Module.TextEffect._Test
@@ -11,3 +12,4 @@ namespace Accelib.Module.TextEffect._Test
         private void Test() => TextEffectSingleton.ShowText(transform.position, text);
     }
 }
+#endif

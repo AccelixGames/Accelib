@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿#if FEBUCCI
+using System.Collections.Generic;
 using System.Linq;
 using Accelib.Core;
 using Accelib.Extensions;
@@ -58,3 +59,4 @@ namespace Accelib.Module.TextEffect
         private static void Init() => Initialize();
     }
 }
+#endif
