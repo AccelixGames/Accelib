@@ -21,5 +21,17 @@ namespace Accelib.Data
 
             //target.color = c;
         }
+        
+        public void DoAlpha(ref DG.Tweening.Tween tween, CanvasGroup target, bool enable)
+        {
+            tween?.Kill();
+            
+            var c = enable ? enabledColor : disabledColor;
+            var ease = enable ? easeA : easeB;
+
+            tween = target.DOFade(c.a, duration).SetEase(ease);
+
+            //target.color = c;
+        }
     }
 }
