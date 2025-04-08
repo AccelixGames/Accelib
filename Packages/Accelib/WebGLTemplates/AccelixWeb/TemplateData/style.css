@@ -1,0 +1,70 @@
+body {
+  padding: 0;
+  margin: 0;
+  background: #231f20;
+}
+
+#unity-container {
+  position: absolute;
+}
+
+#unity-container.unity-desktop,
+#unity-container.unity-mobile {
+  position: fixed;
+  width: 100%;
+  height: 100%;
+}
+
+#unity-canvas {
+  width: 100%;
+  height: 100%;
+  background: #231f20;
+}
+
+#unity-logo {
+  position: fixed;
+  bottom: 2vh;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 50%; 
+  max-width: 496px; 
+  height: auto; 
+  aspect-ratio: 496 / 192; 
+  display: flex;
+  background: url("logo.png") no-repeat center;
+  background-size: contain;
+  z-index: 101;
+}
+
+#unity-loading-bar {
+  position: fixed;
+  width: 100%;
+  bottom: 0;
+  left: 0;
+  height: 2.5vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 100;
+}
+
+#unity-progress-bar-empty {
+  width: 100%; 
+  height: 100%;
+  border: 0.25vh solid white;
+  box-sizing: border-box;
+  position: relative;
+}
+
+#unity-progress-bar-full {
+  height: 100%;
+  background-color: white;
+  width: 0%;
+  transition: width 0.5s ease-in; /* 너비가 부드럽게 늘어나도록 */
+}
+
+.fade-out {
+  opacity: 0;
+  transition: opacity 0.2s ease-out;
+  pointer-events: none;
+}
