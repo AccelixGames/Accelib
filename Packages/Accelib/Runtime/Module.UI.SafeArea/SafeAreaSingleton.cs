@@ -2,7 +2,6 @@
 using Accelib.Core;
 using Accelib.Logging;
 using Accelib.Module.UI.SafeArea.Architecture;
-using Accelix.Plugins.AccelixWeb;
 using AYellowpaper.SerializedCollections;
 using NaughtyAttributes;
 using UnityEngine;
@@ -57,7 +56,7 @@ namespace Accelib.Module.UI.SafeArea
         private Rect GetSafeArea()
         {
 #if ACCELIB_AIT
-            var insets = AppInTossNative.GetSafeArea();
+            var insets = Accelix.Plugins.AccelixWeb.AppInTossNative.GetSafeArea();
             var area = new Rect(0f, insets.bottom, Screen.width, Screen.height - insets.top - insets.bottom);
 #else
             var area =  Screen.safeArea;

@@ -12,7 +12,7 @@ window.handleHapticFeedback = (typeName) => {
   try {
     generateHapticFeedback({type : typeName});
   } catch (e) {
-    console.error('진동발생 실패: ', e);
+    // console.error('진동발생 실패: ', e);
   }
 };
 
@@ -31,7 +31,6 @@ window.getSafeAreaInsets = () => {
     const json = JSON.stringify(inset);
     return json;
   } catch (e) {
-    console.error('SafeAreaInsets 가져오기 실패: ', e);
     return "{}";
   }
 };
