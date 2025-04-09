@@ -16,7 +16,8 @@
         "Unity.VisibleEnum.Runtime",
         "NintendoSDK",
         "Febucci.TextAnimator.Runtime",
-        "Febucci.TextAnimator.TMP.Runtime"
+        "Febucci.TextAnimator.TMP.Runtime",
+        "Accelib.AccelixWeb"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

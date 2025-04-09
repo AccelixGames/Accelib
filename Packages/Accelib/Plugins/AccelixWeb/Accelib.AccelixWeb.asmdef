@@ -1,0 +1,23 @@
+{
+    "name": "Accelib.AccelixWeb",
+    "rootNamespace": "Accelib.AccelixWeb",
+    "references": [
+        "UniTask",
+        "NaughtyAttributes.Core",
+        "Unity.TextMeshPro"
+    ],
+    "includePlatforms": [
+        "Editor",
+        "WebGL"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [
+        "ACCELIB_AIT"
+    ],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
