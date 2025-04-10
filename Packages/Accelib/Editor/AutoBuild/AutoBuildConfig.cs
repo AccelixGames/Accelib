@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using Accelib.Editor.Architecture;
+using Accelib.Editor.AutoBuild.Steamwork;
 using Accelib.Editor.Steamwork;
 using Accelib.Editor.Utility.Discord;
 using NaughtyAttributes;
@@ -60,7 +61,7 @@ namespace Accelib.Editor
             try
             {
                 // SDK Path is Empty
-                if (string.IsNullOrEmpty(sdkPath))
+                if (!skipUpload && string.IsNullOrEmpty(sdkPath))
                     throw new Exception("SDK Path is empty");
 
                 // Discord URL is Empty
@@ -184,7 +185,7 @@ namespace Accelib.Editor
                     }
                     
                     // 업로드 시작
-                    TerminalUtility.OpenTerminalOSX(sdkPath, username, uploadInfos);
+                    TerminalUtility.OpenTerminal(sdkPath, username, uploadInfos);
                 
                     // 종료!
                     foreach (var uploadInfo in uploadInfos)
