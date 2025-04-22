@@ -35,19 +35,21 @@ namespace Accelib.Module.API.Control
                 await request.SendWebRequest().ToUniTask();
                 
                 // http 응답 역직렬화
-                var result = JsonConvert.DeserializeObject<T>(request.downloadHandler.text);
-
+                
+                var isDeserialize = TryDeserializeObject<T>(request.downloadHandler.text, out var jsonObj);
+                if (!isDeserialize) jsonObj = null;
+                
                 // http 응답 객체 생성
                 var isSuccess = request.result == UnityWebRequest.Result.Success && request.responseCode is >= 200 and < 300;
                 var response = new WebRequestResponse<T>
                 {
                     isSuccess = isSuccess,
                     status = request.responseCode,
-                    message = isSuccess ? null : request.downloadHandler.text,
-                    data = isSuccess ? result : null,
+                    message = isSuccess ? "" : request.downloadHandler.text,
+                    data = isSuccess ? jsonObj : null,
                 };
-
-                Deb.Log($"url : {url}\n"+
+            
+                Deb.Log($"url : {url}\n" +
                         $"request : {json}\n" +
                         $"response : {JsonConvert.SerializeObject(response, Formatting.Indented)}");
 
@@ -55,15 +57,15 @@ namespace Accelib.Module.API.Control
             }
             catch (Exception e)
             {
-                var result = WebRequestResponse<T>.Exception(e.Message);
+                var response = WebRequestResponse<T>.Exception(e.Message);
                 var match = Regex.Match(e.Message, @"HTTP\/1\.1 (\d{3})");
                 if (match.Success)
-                    long.TryParse(match.Groups[1].Value, out result.status);
+                    long.TryParse(match.Groups[1].Value, out response.status);
                 
                 Deb.LogWarning($"url : {url}\n"+
                                  $"request : {json}\n" +
-                                 $"response : {JsonConvert.SerializeObject(result, Formatting.Indented)}");
-                return result;
+                                 $"response : {JsonConvert.SerializeObject(response, Formatting.Indented)}");
+                return response;
             }
         }
         
@@ -74,6 +76,20 @@ namespace Accelib.Module.API.Control
                 body.Add(key, value);
 
             return body;
+        }
+
+        private static bool TryDeserializeObject<T>(string json, out T result)
+        {
+            try
+            {
+                result = JsonConvert.DeserializeObject<T>(json);
+                return true;
+            }
+            catch (Exception e)
+            {
+                result = default;
+                return false;
+            }
         }
     }
 }
