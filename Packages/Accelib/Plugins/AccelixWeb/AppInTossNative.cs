@@ -5,9 +5,10 @@ using Accelib.AccelixWeb.Model;
 using Cysharp.Threading.Tasks;
 using Newtonsoft.Json;
 using UnityEngine;
+
 // ReSharper disable InconsistentNaming
 
-namespace Accelix.Plugins.AccelixWeb
+namespace Accelib.AccelixWeb
 {
     public static class AppInTossNative
     {
@@ -63,6 +64,24 @@ namespace Accelix.Plugins.AccelixWeb
         public static void HandleShare(string msg) => Debug.Log($"[AppInTossUtility] {nameof(HandleShare)}({msg}) called");
         private static void HandleHapticFeedback(string type) => Debug.Log($"[AppInTossUtility] {nameof(HandleHapticFeedback)}({type}) called");
         public static string GetTossAppVersion() => "unity_editor";
+
+        public static void CallAds(string _unityCallerName, string _unitId, bool _isLoad, bool _isInterstitial)
+        {
+            var load = _isLoad ? "Load" : "Show";
+            var inter = _isInterstitial ? "Interstitial" : "Rewarded";
+            var methodName = "On" + load + inter;
+            Debug.Log($"[{_unityCallerName}] {methodName} ({_unitId})");
+            
+            var unityCaller = GameObject.Find(_unityCallerName);
+            if (unityCaller != null)
+            {
+                if (_isLoad)
+                    unityCaller.SendMessage(methodName, "received");
+                else
+                    unityCaller.SendMessage(methodName, "requested");
+            }
+        }
+        
 #else
         [DllImport("__Internal")]
         public static extern void HandleShare(string msg);
@@ -75,6 +94,9 @@ namespace Accelix.Plugins.AccelixWeb
         
         [DllImport("__Internal")]
         private static extern string GetSafeAreaInsets();
+        
+        [DllImport("__Internal")]
+        public static extern void CallAds(string _unityCallerName, string _unitId, bool _isLoad, bool _isInterstitial);
 #endif
     }
 }

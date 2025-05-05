@@ -32,6 +32,7 @@ namespace Accelib.Module.UI.Toggle
             {
                 Initialize(initialIndex);
                 onToggle?.Invoke(CurrIndex);   
+                onToggleId?.Invoke(currToggle.Id);
             }
         }
 

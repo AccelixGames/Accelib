@@ -1,10 +1,8 @@
 ﻿#if ACCELIB_AIT
-using System;
-using Accelix.Plugins.AccelixWeb;
 using TMPro;
 using UnityEngine;
 
-namespace Accelib.AccelixWeb.Utility
+namespace Accelib.AccelixWeb.Control.Utility
 {
     public class AITUtil_SafeAreaVisualizer : MonoBehaviour
     {

@@ -36,7 +36,7 @@
         }
     },
 
-     GetSafeAreaInsets: function()
+    GetSafeAreaInsets: function()
     {
         try
         {
@@ -50,6 +50,33 @@
             console.error(e);
         }
     },
+
+    CallAds: function(_unityCallerName, _unitId, _isLoad, _isInterstitial)
+    {
+        try
+        {
+            const unityCallerName = UTF8ToString(_unityCallerName);
+            const unitId = UTF8ToString(_unitId);
+
+            if(_isInterstitial)
+            {
+                if(_isLoad)
+                    {window.aitAds.loadInterstitial(unityCallerName, unitId);}
+                else
+                    {window.aitAds.showInterstitial(unityCallerName, unitId);}
+            }else
+            {
+                if(_isLoad)
+                    {window.aitAds.loadRewarded(unityCallerName, unitId);}
+                else
+                    {window.aitAds.showRewarded(unityCallerName, unitId);}
+            }
+        }catch(e)
+        {
+            console.error(e);
+        }
+    },
+
 }
 
 mergeInto(LibraryManager.library, appInTossUtilityLib);

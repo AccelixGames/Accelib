@@ -1,4 +1,4 @@
-import { share, generateHapticFeedback, getTossAppVersion, getSafeAreaInsets } from '@apps-in-toss/web-framework';
+import { share, generateHapticFeedback, getTossAppVersion, getSafeAreaInsets} from '@apps-in-toss/web-framework';
 
 window.handleShare = async (msg) => {
   try {

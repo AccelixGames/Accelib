@@ -1,9 +1,8 @@
 ﻿#if ACCELIB_AIT
-using Accelix.Plugins.AccelixWeb;
 using NaughtyAttributes;
 using UnityEngine;
 
-namespace Accelib.AccelixWeb.Utility
+namespace Accelib.AccelixWeb.Control.Utility
 {
     public class AITUtil_Share : MonoBehaviour
     {
