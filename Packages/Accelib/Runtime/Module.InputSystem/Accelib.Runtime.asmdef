@@ -1,0 +1,26 @@
+{
+    "name": "Accelib.Runtime.InputSystem",
+    "rootNamespace": "Accelib.InputSystem",
+    "references": [
+        "NaughtyAttributes.Core",
+        "UniTask",
+        "UniTask.DOTween",
+        "Unity.TextMeshPro",
+        "UniTask.TextMeshPro",
+        "DOTween.Modules",
+        "AYellowpaper.SerializedCollections",
+        "UnityAtoms.UnityAtomsCore.Runtime",
+        "UnityAtoms.UnityAtomsBaseAtoms.Runtime",
+        "Unity.VisibleEnum.Runtime",
+        "Unity.InputSystem"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
