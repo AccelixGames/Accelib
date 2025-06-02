@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Pool;
 
@@ -22,24 +23,23 @@ namespace Accelib.Module.ObjectPool
             Pool = new ObjectPool<GameObject>(CreatePooledItem, OnTakeFromPool, OnReturnedToPool,
                 OnDestroyPoolObject, true, defaultCapacity, maxPoolSize);
 
-            // 오브젝트 생성
-            for (var i = 0; i < defaultCapacity; i++)
-            {   
-                var go = CreatePooledItem();
-                if (go.TryGetComponent(out IPoolableGameObject poolObj))
-                {
-                    poolObj.Pool = Pool;
-                    poolObj.Pool.Release(go.gameObject);
-                    
-                    go.name = go.name.Replace("(Clone)", $"{i}");
-                }
-            }
+            // // 오브젝트 생성
+            // for (var i = 0; i < defaultCapacity; i++)
+            // {
+            //     var go = CreatePooledItem();
+            //     go.name = go.name.Replace("(Clone)", $"{i}");
+            //     if (go.TryGetComponent(out IPoolableGameObject poolObj))
+            //         poolObj.Pool.Release(go);
+            //
+            // }
         }
         
         // 생성
         private GameObject CreatePooledItem()
         {
             var poolGo = Instantiate(prefab, transform);
+            if (poolGo.TryGetComponent(out IPoolableGameObject poolObj))
+                poolObj.Pool = Pool;
             return poolGo;
         }
 
@@ -58,7 +58,8 @@ namespace Accelib.Module.ObjectPool
         // 삭제
         private void OnDestroyPoolObject(GameObject poolGo)
         {
-            Destroy(poolGo);
+            if(poolGo)
+                Destroy(poolGo);
         }
         
         /// <summary>

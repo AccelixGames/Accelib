@@ -6,5 +6,7 @@ namespace Accelib.Module.ObjectPool
     public interface IPoolableGameObject
     {
         public IObjectPool<GameObject> Pool { get; set; }
+        
+        public void Release();
     }
 }
