@@ -8,80 +8,49 @@ namespace Accelib.Logging
 {
     public static class ErrorLogger
     {
-        public static void LogErrorWithSentry(
-            string context,
-            string message,
+        public static void LogError(
+            string context, string message,
             Exception exception = null,
+            object contexts = null,
             Dictionary<string, object> extras = null)
         {
-            LogWithSentry(SentryLevel.Error, context, message, exception, extras);
+            LogWithSentry(SentryLevel.Error, context, message, exception, contexts, extras);
         }
 
-        public static void LogWarningWithSentry(
+        public static void LogWarning(
             string context,
             string message,
+            object contexts = null,
             Dictionary<string, object> extras = null)
         {
-            LogWithSentry(SentryLevel.Warning, context, message, null, extras);
+            LogWithSentry(SentryLevel.Warning, context, message, null, contexts, extras);
         }
 
-        public static void LogInfoWithSentry(
+        public static void LogInfo(
             string context,
             string message,
+            object contexts = null,
             Dictionary<string, object> extras = null)
         {
-            LogWithSentry(SentryLevel.Info, context, message, null, extras);
+            LogWithSentry(SentryLevel.Info, context, message, null, contexts, extras);
         }
 
-        public static void LogDebugWithSentry(
+        public static void LogDebug(
             string context,
             string message,
+            object contexts = null,
             Dictionary<string, object> extras = null)
         {
-            LogWithSentry(SentryLevel.Debug, context, message, null, extras);
-        }
-
-        public static void LogWithSentry(SentryLevel level, string context, string message, Exception exception = null, Dictionary<string, object> contexts = null, Dictionary<string, object> extras = null)
-        {
-            // Unity 로그 출력
-            var formatted = $"[{level}] [Context: {context}] {message}";
-#if UNITY_EDITOR
-            Debug.LogWarning($"Sentry Log : {formatted}");
-#endif
-            // Sentry 전송
-            SentrySdk.ConfigureScope(scope =>
-            {
-                // Level
-                scope.Level = level;
-                // Tag
-                scope.SetTag("context", context);
-                // Contexts
-                if (contexts != null)
-                {
-                    scope.Contexts["Custom Data"] = contexts;
-                }
-                // Extras
-                if (extras != null)
-                {
-                    foreach (var kv in extras)
-                        scope.SetExtra(kv.Key, kv.Value);
-                }
-                // Exception or Message
-                if (exception != null)
-                    SentrySdk.CaptureException(exception);
-                else
-                    SentrySdk.CaptureMessage(formatted, level);
-            });
+            LogWithSentry(SentryLevel.Debug, context, message, null, contexts, extras);
         }
         
-        public static void LogWithSentry(SentryLevel level, string context, string message, Exception exception = null, object contexts = null, Dictionary<string, object> extras = null)
+        private static void LogWithSentry(SentryLevel level, string context, string message, Exception exception = null, object contexts = null, Dictionary<string, object> extras = null)
         {
             var formatted = $"[{level}] [{context}] {message}";
 #if UNITY_EDITOR
             // Unity 로그 출력
             Debug.LogWarning($"Sentry Log : {formatted}");
 #endif
-    
             // Sentry 전송
             SentrySdk.ConfigureScope(scope =>
             {
