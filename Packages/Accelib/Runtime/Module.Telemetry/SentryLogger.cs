@@ -1,13 +1,12 @@
-﻿using System;
+﻿#if ACCELIB_TELEMETRY
+using Sentry;
+#endif
+using System;
 using System.Collections.Generic;
 using System.Reflection;
 using UnityEngine;
 
-#if ACCELIB_TELEMETRY
-using Sentry;
-#endif
-
-namespace Accelib.Logging
+namespace Accelib.Module.Telemetry
 {
     public static class SentryLogger
     {

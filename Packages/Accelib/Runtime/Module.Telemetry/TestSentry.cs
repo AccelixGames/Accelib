@@ -1,7 +1,8 @@
+using Accelib.Logging;
 using NaughtyAttributes;
 using UnityEngine;
 
-namespace Accelib.Logging
+namespace Accelib.Module.Telemetry
 {
     public class TestSentry : MonoBehaviour
     {
@@ -14,7 +15,7 @@ namespace Accelib.Logging
         [Button]
         private void SendSentryMessage()
         {
-            SentryLogger.LogWarning("Test", testMessage);
+            SentryLogger.LogDebug("Test", testMessage);
         }
     }
 }
