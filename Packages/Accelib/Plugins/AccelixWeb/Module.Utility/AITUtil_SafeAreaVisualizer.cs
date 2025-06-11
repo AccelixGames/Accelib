@@ -2,7 +2,7 @@
 using TMPro;
 using UnityEngine;
 
-namespace Accelib.AccelixWeb.Control.Utility
+namespace Accelib.AccelixWeb.Module.Utility
 {
     public class AITUtil_SafeAreaVisualizer : MonoBehaviour
     {
