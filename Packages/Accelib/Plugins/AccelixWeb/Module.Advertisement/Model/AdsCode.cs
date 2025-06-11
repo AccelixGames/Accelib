@@ -1,4 +1,5 @@
-﻿namespace Accelib.AccelixWeb.Module.Advertisement.Model
+﻿#if ACCELIB_AIT
+namespace Accelib.AccelixWeb.Module.Advertisement.Model
 {
     public static class AdsCode
     {
@@ -14,3 +15,4 @@
         public const string Requested = "requested"; // Show 호출 성공
     }
 }
+#endif

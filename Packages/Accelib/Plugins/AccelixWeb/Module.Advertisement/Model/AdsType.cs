@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿#if ACCELIB_AIT
+using UnityEngine;
 
 namespace Accelib.AccelixWeb.Module.Advertisement.Model
 {
@@ -10,3 +11,4 @@ namespace Accelib.AccelixWeb.Module.Advertisement.Model
         Rewarded = 1
     }
 }
+#endif

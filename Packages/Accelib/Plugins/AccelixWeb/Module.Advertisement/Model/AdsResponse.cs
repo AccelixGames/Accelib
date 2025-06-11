@@ -1,4 +1,5 @@
-﻿namespace Accelib.AccelixWeb.Module.Advertisement.Model
+﻿#if ACCELIB_AIT
+namespace Accelib.AccelixWeb.Module.Advertisement.Model
 {
     [System.Serializable]
     public class AdsResponse
@@ -19,3 +20,4 @@
         public AdsResponse() { }
     }
 }
+#endif

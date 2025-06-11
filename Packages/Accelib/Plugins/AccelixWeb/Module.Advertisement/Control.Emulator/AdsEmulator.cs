@@ -1,4 +1,5 @@
-﻿using Accelib.AccelixWeb.Module.Advertisement.Control.Emulator.Screen;
+﻿#if ACCELIB_AIT
+using Accelib.AccelixWeb.Module.Advertisement.Control.Emulator.Screen;
 using Accelib.AccelixWeb.Module.Advertisement.Model;
 using Cysharp.Threading.Tasks;
 using NaughtyAttributes;
@@ -118,3 +119,4 @@ namespace Accelib.AccelixWeb.Module.Advertisement.Control.Emulator
         public static void SendMsg(GameObject unityCaller, string methodName, AdsResponse resp) => unityCaller.SendMessage(methodName, JsonConvert.SerializeObject(resp));
     }
 }
+#endif

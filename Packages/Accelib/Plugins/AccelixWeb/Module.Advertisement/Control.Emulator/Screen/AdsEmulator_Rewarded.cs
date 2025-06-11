@@ -1,4 +1,5 @@
-﻿using Accelib.AccelixWeb.Module.Advertisement.Model;
+﻿#if ACCELIB_AIT
+using Accelib.AccelixWeb.Module.Advertisement.Model;
 
 namespace Accelib.AccelixWeb.Module.Advertisement.Control.Emulator.Screen
 {
@@ -15,3 +16,4 @@ namespace Accelib.AccelixWeb.Module.Advertisement.Control.Emulator.Screen
         }
     }
 }
+#endif

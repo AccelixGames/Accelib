@@ -1,4 +1,5 @@
-﻿using Accelib.AccelixWeb.Module.Advertisement.Model;
+﻿#if ACCELIB_AIT
+using Accelib.AccelixWeb.Module.Advertisement.Model;
 using NaughtyAttributes;
 using UnityEngine;
 
@@ -31,3 +32,4 @@ namespace Accelib.AccelixWeb.Module.Advertisement.Control.Emulator.Screen
         }
     }
 }
+#endif

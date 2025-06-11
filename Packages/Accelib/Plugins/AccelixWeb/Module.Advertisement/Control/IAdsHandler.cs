@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿#if ACCELIB_AIT
+using UnityEngine;
 
 namespace Accelib.AccelixWeb.Module.Advertisement.Control
 {
@@ -11,3 +12,4 @@ namespace Accelib.AccelixWeb.Module.Advertisement.Control
         public GameObject GetInstance() => null;
     }
 }
+#endif

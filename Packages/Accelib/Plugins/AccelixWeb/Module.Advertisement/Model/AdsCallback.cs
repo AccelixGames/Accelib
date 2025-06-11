@@ -1,4 +1,5 @@
-﻿namespace Accelib.AccelixWeb.Module.Advertisement.Model
+﻿#if ACCELIB_AIT
+namespace Accelib.AccelixWeb.Module.Advertisement.Model
 {
     public static class AdsCallback
     {
@@ -7,3 +8,4 @@
         public const string OnShow = "OnShow";
     }
 }
+#endif

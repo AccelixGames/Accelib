@@ -1,4 +1,5 @@
-﻿using Accelib.AccelixWeb.Module.Advertisement.Control.Emulator;
+﻿#if ACCELIB_AIT
+using Accelib.AccelixWeb.Module.Advertisement.Control.Emulator;
 using Accelib.AccelixWeb.Module.Advertisement.Model;
 using UnityEngine;
 
@@ -58,3 +59,4 @@ namespace Accelib.AccelixWeb.Module.Advertisement.Control
         private static void Init() => _emulator = null;
     }
 }
+#endif

@@ -1,4 +1,5 @@
-﻿using Accelib.AccelixWeb.Module.Advertisement.Model;
+﻿#if ACCELIB_AIT
+using Accelib.AccelixWeb.Module.Advertisement.Model;
 using Cysharp.Threading.Tasks;
 using NaughtyAttributes;
 using UnityEngine;
@@ -108,3 +109,4 @@ namespace Accelib.AccelixWeb.Module.Advertisement.Control
         // public void Mute(bool mute) => manager?.OnMute(mute);
     }
 }
+#endif
