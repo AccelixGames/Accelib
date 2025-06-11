@@ -1,4 +1,5 @@
 ﻿#if ACCELIB_AIT
+using System;
 using Accelib.AccelixWeb.Module.Advertisement.Control.Emulator.Screen;
 using Accelib.AccelixWeb.Module.Advertisement.Model;
 using Cysharp.Threading.Tasks;
@@ -11,11 +12,23 @@ namespace Accelib.AccelixWeb.Module.Advertisement.Control.Emulator
     public class AdsEmulator : MonoBehaviour
     {
         private enum State {NotLoaded = 0, Loading, Loaded, Shown}
-        
+        [Flags] 
+        public enum EventFlag
+        {
+            Loaded = 1 << 0,
+            Show = 1 << 1,
+            Impression = 1 << 2,
+            UserEarnedReward = 1 << 3,
+            Dismissed = 1 << 4,
+            Requested = 1 << 5,
+            Clicked = 1 << 6
+        }
+
         [Header("옵션")]
         [SerializeField, Range(0f, 10f)] private float delayTime = 0.2f;
         [SerializeField] private bool loadSuccess;
         [SerializeField] private bool showSuccess;
+        [field: SerializeField, EnumFlags] public EventFlag EventToInvoke { get; private set; } = (EventFlag)int.MaxValue;
 
         [Header("UI")]
         [SerializeField] private AdsEmulator_Interstitial interstitialEmulator;
@@ -47,12 +60,15 @@ namespace Accelib.AccelixWeb.Module.Advertisement.Control.Emulator
             }
             else
             {
-                if (currState is State.NotLoaded or State.Loading) 
-                    SendMsg(unityCaller, AdsCallback.OnShow, new AdsResponse(type, unitId, AdsCode.Failed, "Not Loaded"));
-                else if(currState is State.Shown)
-                    SendMsg(unityCaller, AdsCallback.OnShow, new AdsResponse(type, unitId, AdsCode.Failed, "Already Shown"));
-                else if(!showSuccess)
-                    SendMsg(unityCaller, AdsCallback.OnShow, new AdsResponse(type, unitId, AdsCode.Failed, "Failed by emulator logic"));
+                if (currState is State.NotLoaded or State.Loading)
+                    SendMsg(unityCaller, AdsCallback.OnShow,
+                        new AdsResponse(type, unitId, AdsCode.Failed, "Not Loaded"));
+                else if (currState is State.Shown)
+                    SendMsg(unityCaller, AdsCallback.OnShow,
+                        new AdsResponse(type, unitId, AdsCode.Failed, "Already Shown"));
+                else if (!showSuccess)
+                    SendMsg(unityCaller, AdsCallback.OnShow,
+                        new AdsResponse(type, unitId, AdsCode.Failed, "Failed by emulator logic"));
                 else
                 {
                     if (isInterstitial)
@@ -79,7 +95,7 @@ namespace Accelib.AccelixWeb.Module.Advertisement.Control.Emulator
                 // 즉시 완료
                 resp.code = AdsCode.Loaded;
                 resp.message = "Already loaded";
-                SendMsg(unityCaller, AdsCallback.OnLoad, resp);
+                if(EventToInvoke.HasFlag(EventFlag.Loaded)) SendMsg(unityCaller, AdsCallback.OnLoad, resp);
                 return;
             }
             
@@ -89,7 +105,7 @@ namespace Accelib.AccelixWeb.Module.Advertisement.Control.Emulator
             
             // 로딩 완료
             currState = State.Loaded;
-            SendMsg(unityCaller, AdsCallback.OnLoad, resp);
+            if(EventToInvoke.HasFlag(EventFlag.Loaded)) SendMsg(unityCaller, AdsCallback.OnLoad, resp);
         }
 
         private async UniTaskVoid EmulatorTask(GameObject unityCaller, string unitId, AdsEmulatorBase emulator)
@@ -106,14 +122,14 @@ namespace Accelib.AccelixWeb.Module.Advertisement.Control.Emulator
             
             // 보여주기
             resp.code = AdsCode.Show;
-            SendMsg(unityCaller, AdsCallback.OnEvent, resp);
+            if(EventToInvoke.HasFlag(EventFlag.Show)) SendMsg(unityCaller, AdsCallback.OnEvent, resp);
             
             // 1프레임 대기
             await UniTask.DelayFrame(1);
             
             // 임프레션
             resp.code = AdsCode.Impression;
-            SendMsg(unityCaller, AdsCallback.OnEvent, resp);
+            if(EventToInvoke.HasFlag(EventFlag.Impression)) SendMsg(unityCaller, AdsCallback.OnEvent, resp);
         }
 
         public static void SendMsg(GameObject unityCaller, string methodName, AdsResponse resp) => unityCaller.SendMessage(methodName, JsonConvert.SerializeObject(resp));

@@ -329,6 +329,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f0d814b5925147e39eb815c08f894ffc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  emulator: {fileID: 3607365710218513404}
   unityCaller: {fileID: 0}
   unitId: 
 --- !u!1 &3137714887106851575
@@ -485,6 +486,7 @@ MonoBehaviour:
   delayTime: 0.2
   loadSuccess: 1
   showSuccess: 1
+  <EventToInvoke>k__BackingField: 2147483647
   interstitialEmulator: {fileID: 2760064111986342844}
   rewardedEmulator: {fileID: 6792446005879013300}
   currState: 0
@@ -1060,6 +1062,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ffba540fc87c4145aea45264e5be6ac3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  emulator: {fileID: 3607365710218513404}
   unityCaller: {fileID: 0}
   unitId: 
 --- !u!1 &7408108666302596483

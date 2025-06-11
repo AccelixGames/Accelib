@@ -7,6 +7,7 @@ namespace Accelib.AccelixWeb.Module.Advertisement.Control.Emulator.Screen
 {
     public abstract class AdsEmulatorBase : MonoBehaviour
     {
+        [SerializeField] protected AdsEmulator emulator;
         [SerializeField, ReadOnly] protected GameObject unityCaller;
         [SerializeField, ReadOnly] protected string unitId;
 
@@ -20,13 +21,18 @@ namespace Accelib.AccelixWeb.Module.Advertisement.Control.Emulator.Screen
             gameObject.SetActive(true);
         }
 
-        public void OnClickAds() => AdsEmulator.SendMsg(unityCaller, AdsCallback.OnEvent, new AdsResponse(Type, unitId, AdsCode.Clicked, "Clicked called by emulator logic"));
-        
+        public void OnClickAds()
+        {
+            if(emulator.EventToInvoke.HasFlag(AdsEmulator.EventFlag.Clicked))
+                AdsEmulator.SendMsg(unityCaller, AdsCallback.OnEvent, new AdsResponse(Type, unitId, AdsCode.Clicked, "Clicked called by emulator logic"));
+        }
 
         public void OnClickClose()
         {
-            AdsEmulator.SendMsg(unityCaller, AdsCallback.OnEvent, new AdsResponse(Type, unitId, AdsCode.Dismissed, "Dismissed called by emulator logic"));
-            AdsEmulator.SendMsg(unityCaller, AdsCallback.OnShow, new AdsResponse(Type, unitId, AdsCode.Requested, "Show request called by emulator logic"));
+            if(emulator.EventToInvoke.HasFlag(AdsEmulator.EventFlag.Dismissed))
+                AdsEmulator.SendMsg(unityCaller, AdsCallback.OnEvent, new AdsResponse(Type, unitId, AdsCode.Dismissed, "Dismissed called by emulator logic"));
+            if(emulator.EventToInvoke.HasFlag(AdsEmulator.EventFlag.Requested))
+                AdsEmulator.SendMsg(unityCaller, AdsCallback.OnShow, new AdsResponse(Type, unitId, AdsCode.Requested, "Show request called by emulator logic"));
             
             gameObject.SetActive(false);
         }

@@ -9,8 +9,9 @@ namespace Accelib.AccelixWeb.Module.Advertisement.Control.Emulator.Screen
 
         public void OnClickReward()
         {
-            AdsEmulator.SendMsg(unityCaller, AdsCallback.OnEvent,
-                new AdsResponse(Type, unitId, AdsCode.UserEarnedReward, "Rewarded called by emulator logic"));
+            if(emulator.EventToInvoke.HasFlag(AdsEmulator.EventFlag.UserEarnedReward))
+                AdsEmulator.SendMsg(unityCaller, AdsCallback.OnEvent,
+                    new AdsResponse(Type, unitId, AdsCode.UserEarnedReward, "Rewarded called by emulator logic"));
 
             OnClickClose();
         }
