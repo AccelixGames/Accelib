@@ -1,4 +1,5 @@
-﻿using NaughtyAttributes;
+﻿#if ACCELIB_InputSystem
+using NaughtyAttributes;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
@@ -51,3 +52,4 @@ namespace Accelib.InputSystem
         }
     }
 }
+#endif

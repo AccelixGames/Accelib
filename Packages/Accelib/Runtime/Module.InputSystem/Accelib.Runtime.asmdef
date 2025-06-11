@@ -20,7 +20,7 @@
     "overrideReferences": false,
     "precompiledReferences": [],
     "autoReferenced": true,
-    "defineConstraints": [],
+    "defineConstraints": ["ACCELIB_InputSystem"],
     "versionDefines": [],
     "noEngineReferences": false
 }

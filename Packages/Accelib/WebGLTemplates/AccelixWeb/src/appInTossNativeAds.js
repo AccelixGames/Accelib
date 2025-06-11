@@ -1,116 +1,110 @@
-import { GoogleAdMob } from '@apps-in-toss/web-framework';
+import { GoogleAdMob } from "@apps-in-toss/web-framework";
 
 // 유니티 메서드명 상수
-const UNITY_METHOD = {
-  INTERSTITIAL_LOAD: "OnLoadInterstitial",
-  INTERSTITIAL_SHOW: "OnShowInterstitial",
-  REWARDED_LOAD: "OnLoadRewarded",
-  REWARDED_SHOW: "OnShowRewarded"
+const UNITY_CALLBACK = {
+  ON_LOAD: "OnLoad",
+  ON_EVENT: "OnEvent",
+  ON_SHOW: "OnShow",
 };
 
 // 공통 응답 타입 상수
-const RESP = {
-  ERROR: "error",
-  EXCEPTION: "exception"
+const CODE = {
+  FAILED: "failed",
+  UNKNOWN: "unknown"
 };
 
-// 이벤트 전달 함수
-function sendUnityMessage(unityCallerName, unityMethod, type, data = '') {
-  canvas?.unityInstance?.SendMessage?.(unityCallerName, unityMethod, type, data);
+const ADS_TYPE = {
+  INTERSTITIAL: "interstitial",
+  REWARDED: "rewarded",
 }
 
-// 공통 광고 로드 함수
-function loadAd({ unityCallerName, unityMethod, apiFn, unitId }) {
-  try {
-    if (apiFn.isSupported() !== true) {
-      sendUnityMessage(unityCallerName, unityMethod, RESP.ERROR, 'NotSupported');
-      console.error(`${unityMethod}는 지원되지 않습니다.`);
+function sendUnityMsg(unityCallerName, unityMethod, type, unitId, code, message) 
+{
+  const json = JSON.stringify({
+      type : type,
+      unitId: unitId ?? CODE.UNKNOWN,
+      code: code ?? CODE.UNKNOWN,
+      message: message ?? CODE.UNKNOWN,
+    });
+
+  canvas?.unityInstance?.SendMessage?.(unityCallerName, unityMethod, json);
+}
+
+function requestAds({unityCallerName, apiMethod, adsType, unitId, unityCallback}) {
+  
+  // 광고ID 캐싱
+  const id = unitId ?? CODE.UNKNOWN;
+  
+  try{  
+    // 미지원 핸들링
+    if (apiMethod.isSupported() !== true) {
+      sendUnityMsg(unityCallerName, unityCallback, adsType, id, CODE.FAILED, `[Error] ${apiMethod} is not supported.`);
       return;
     }
 
-    apiFn({
-      options: { adUnitId: unitId },
-      onEvent: (event) => {
-        // 모든 이벤트를 Unity로 전달
-        sendUnityMessage(unityCallerName, unityMethod, event.type, event.data || '');
+    // 광고 함수 호출
+    apiMethod({
+      // 옵션 설정
+      options: { adUnitId: id },
+
+      // 이벤트 핸들러 설정
+      onEvent: (event) => { 
+        if(event.type == "loaded") { sendUnityMsg(unityCallerName, unityCallback, adsType, id, event.type, ""); }
+        else if(event.type == "requested") { sendUnityMsg(unityCallerName, unityCallback, adsType, id, event.type, ""); }
+        else { sendUnityMsg(unityCallerName, UNITY_CALLBACK.ON_EVENT, adsType, id, event.type, ""); }
       },
-      onError: (error) => {
-        sendUnityMessage(unityCallerName, unityMethod, RESP.ERROR, error);
-        console.error('광고 불러오기 실패', error);
-      }
+
+      // 에러 핸들러 설정
+      onError: (error) => { sendUnityMsg(unityCallerName, unityCallback, adsType, id, CODE.FAILED, `[${error?.code ?? CODE.UNKNOWN}] ${error?.message ?? "Unknown error"}`); }
     });
-  } catch (e) {
-    sendUnityMessage(unityCallerName, unityMethod, RESP.EXCEPTION, '');
-    console.error(e);
+  }catch (ex) {
+    sendUnityMsg(unityCallerName, unityCallback, adsType, id, CODE.FAILED, `[Exception] ${ex}`);
   }
 }
 
-// 공통 광고 표시 함수
-function showAd({ unityCallerName, unityMethod, apiFn, unitId }) {
-  try {
-    if (apiFn.isSupported() !== true) {
-      sendUnityMessage(unityCallerName, unityMethod, RESP.ERROR, 'NotSupported');
-      console.error(`${unityMethod}는 지원되지 않습니다.`);
-      return;
-    }
-
-    apiFn({
-      options: { adUnitId: unitId },
-      onEvent: (event) => {
-        if (event.type === 'requested') {
-          sendUnityMessage(unityCallerName, unityMethod, event.type, '');
-        }
-      },
-      onError: (error) => {
-        sendUnityMessage(unityCallerName, unityMethod, RESP.ERROR, error);
-        console.error('광고 보여주기 실패', error);
-      }
-    });
-  } catch (e) {
-    sendUnityMessage(unityCallerName, unityMethod, RESP.EXCEPTION, '');
-    console.error(e);
-  }
-}
-
+// 광고 관련 함수 정의
 window.aitAds = {
-
-// 전면 광고 로드
-  loadInterstitial : (unityCallerName, unitId) => {
-    loadAd({
+  // 전면 광고 로드
+  loadInterstitial: (unityCallerName, unitId) => {
+    requestAds({
       unityCallerName,
-      unityMethod: UNITY_METHOD.INTERSTITIAL_LOAD,
-      apiFn: GoogleAdMob.loadAdMobInterstitialAd,
-      unitId
+      apiMethod: GoogleAdMob.loadAdMobInterstitialAd,
+      adsType: ADS_TYPE.INTERSTITIAL,
+      unitId: unitId,
+      unityCallback: UNITY_CALLBACK.ON_LOAD,
     });
   },
 
-// 전면 광고 표시
-  showInterstitial : (unityCallerName, unitId) => {
-    showAd({
+    // 리워드 광고 로드
+  loadRewarded: (unityCallerName, unitId) => {
+    requestAds({
       unityCallerName,
-      unityMethod: UNITY_METHOD.INTERSTITIAL_SHOW,
-      apiFn: GoogleAdMob.showAdMobInterstitialAd,
-      unitId
+      apiMethod: GoogleAdMob.loadAdMobRewardedAd,
+      adsType: ADS_TYPE.REWARDED,
+      unitId: unitId,
+      unityCallback: UNITY_CALLBACK.ON_LOAD,
     });
   },
 
-// 리워드 광고 로드
-  loadRewarded : (unityCallerName, unitId) => {
-    loadAd({
+  // 전면 광고 표시
+  showInterstitial: (unityCallerName, unitId) => {
+    requestAds({
       unityCallerName,
-      unityMethod: UNITY_METHOD.REWARDED_LOAD,
-      apiFn: GoogleAdMob.loadAdMobRewardedAd,
-      unitId
+      apiMethod: GoogleAdMob.showAdMobInterstitialAd,
+      adsType: ADS_TYPE.INTERSTITIAL,
+      unitId: unitId,
+      unityCallback: UNITY_CALLBACK.ON_SHOW,
     });
   },
 
-// 리워드 광고 표시
-  showRewarded : (unityCallerName, unitId) => {
-    showAd({
+  // 리워드 광고 표시
+  showRewarded: (unityCallerName, unitId) => {
+    requestAds({
       unityCallerName,
-      unityMethod: UNITY_METHOD.REWARDED_SHOW,
-      apiFn: GoogleAdMob.showAdMobRewardedAd,
-      unitId
+      apiMethod: GoogleAdMob.showAdMobRewardedAd,
+      adsType: ADS_TYPE.REWARDED,
+      unitId: unitId,
+      unityCallback: UNITY_CALLBACK.ON_SHOW,
     });
-  }
-}
+  },
+};

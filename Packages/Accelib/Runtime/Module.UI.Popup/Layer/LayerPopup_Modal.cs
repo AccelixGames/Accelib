@@ -12,7 +12,9 @@ namespace Accelib.Module.UI.Popup.Layer
         [SerializeField] private TMP_Text titleTMP;
         [SerializeField] private TMP_Text descTMP;
         [SerializeField] private TMP_Text okButton;
+        [SerializeField] private GameObject okButtonObj;
         [SerializeField] private TMP_Text ngButton;
+        [SerializeField] private GameObject ngButtonObj;
 
         public enum Result {OK = 0, NG = 1, Exception = -1}
         
@@ -26,8 +28,8 @@ namespace Accelib.Module.UI.Popup.Layer
             
             SetText(titleTMP, option.title, option.useLocale);
             SetText(descTMP, option.desc, option.useLocale);
-            SetText(okButton, option.ok, option.useLocale);
-            SetText(ngButton, option.ng, option.useLocale);
+            SetText(okButton, option.ok, option.useLocale, okButtonObj);
+            SetText(ngButton, option.ng, option.useLocale, ngButtonObj);
             
             _ucs?.TrySetResult(Result.Exception);
             _ucs = new UniTaskCompletionSource<Result>();
@@ -35,10 +37,13 @@ namespace Accelib.Module.UI.Popup.Layer
             return _ucs.Task;
         }
 
-        private void SetText(TMP_Text target, string text, bool useLocale)
+        private void SetText(TMP_Text target, string text, bool useLocale, GameObject obj = null)
         {
-            target.transform.parent.gameObject.SetActive(!string.IsNullOrEmpty(text));
-            if(!target.transform.parent.gameObject.activeSelf) return;
+            if (obj)
+            {
+                obj.SetActive(!string.IsNullOrEmpty(text));
+                if(!obj.activeSelf) return;
+            }
             
             if(useLocale)
                 target.GetComponent<LocalizedTMP>()?.ChangeKey(text);

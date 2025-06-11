@@ -2,9 +2,12 @@
 using System;
 using System.Runtime.InteropServices;
 using Accelib.AccelixWeb.Model;
+using Accelib.AccelixWeb.Module.Advertisement.Control;
+using Accelib.AccelixWeb.Module.Advertisement.Model;
 using Cysharp.Threading.Tasks;
 using Newtonsoft.Json;
 using UnityEngine;
+using Object = UnityEngine.Object;
 
 // ReSharper disable InconsistentNaming
 
@@ -12,6 +15,8 @@ namespace Accelib.AccelixWeb
 {
     public static class AppInTossNative
     {
+        public const string Unknown = "unknown";
+        
         public enum FeedbackType
         {
             basicWeak,
@@ -61,36 +66,49 @@ namespace Accelib.AccelixWeb
         }
 
 #if UNITY_EDITOR
-        public static void HandleShare(string msg) => Debug.Log($"[AppInTossUtility] {nameof(HandleShare)}({msg}) called");
-        private static void HandleHapticFeedback(string type) => Debug.Log($"[AppInTossUtility] {nameof(HandleHapticFeedback)}({type}) called");
-        public static string GetTossAppVersion() => "unity_editor";
-
-        public static void CallAds(string _unityCallerName, string _unitId, bool _isLoad, bool _isInterstitial)
-        {
-            var load = _isLoad ? "Load" : "Show";
-            var inter = _isInterstitial ? "Interstitial" : "Rewarded";
-            var methodName = "On" + load + inter;
-            Debug.Log($"[{_unityCallerName}] {methodName} ({_unitId})");
-            
-            var unityCaller = GameObject.Find(_unityCallerName);
-            if (unityCaller != null)
-            {
-                if (_isLoad)
-                    unityCaller.SendMessage(methodName, "received");
-                else
-                    unityCaller.SendMessage(methodName, "requested");
-            }
-        }
+        public static string GetDeviceId() => "device_unity";
+        public static string GetOperationalEnvironment() => "os_unity";
+        public static string GetTossAppVersion() => "version_unity";
+        public static string GetPlatformOS() => "unity";
+        public static string GetSchemeUri() => "unity_editor";
+        public static string GetLocale() => "korean";
         
+        /// <summary>
+        /// {link} 는 딥링크로 치환됩니다.
+        /// </summary>
+        public static void HandleShare(string msg, string deepLink) => Debug.Log($"[AppInTossUtility] {nameof(HandleShare)}({msg}) called");
+        private static void HandleHapticFeedback(string type)
+        {
+            // Debug.Log($"[AppInTossUtility] {nameof(HandleHapticFeedback)}({type}) called");
+        }
+
+        public static void CallAds(string _unityCallerName, string _unitId, bool _isLoad, bool _isInterstitial) => Debug.LogError($"유니티 에디터에서 사용할 수 없는 함수입니다.");
+
 #else
         [DllImport("__Internal")]
-        public static extern void HandleShare(string msg);
+        public static extern string GetDeviceId();
+
+        [DllImport("__Internal")]
+        public static extern string GetOperationalEnvironment();
+
+        [DllImport("__Internal")]
+        public static extern string GetTossAppVersion();
+
+        [DllImport("__Internal")]
+        public static extern string GetPlatformOS();
+
+        [DllImport("__Internal")]
+        public static extern string GetSchemeUri();
+
+        [DllImport("__Internal")]
+        public static extern string GetLocale();
+
+        [DllImport("__Internal")]
+        public static extern void HandleShare(string msg, string deepLink);
         
         [DllImport("__Internal")]
         private static extern void HandleHapticFeedback(string type);
         
-        [DllImport("__Internal")]
-        public static extern string GetTossAppVersion();
         
         [DllImport("__Internal")]
         private static extern string GetSafeAreaInsets();

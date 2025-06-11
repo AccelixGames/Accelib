@@ -1,8 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Collections.Generic;
 using Accelib.Module.Initialization.Base;
-using Cysharp.Threading.Tasks;
 using NaughtyAttributes;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -54,7 +51,7 @@ namespace Accelib.Module.Initialization
                 lateInitRequired.Init();
         }
 
-        private void LateUpdate()
+        private void Update()
         {
             if(InitState != State.None) return;
             
