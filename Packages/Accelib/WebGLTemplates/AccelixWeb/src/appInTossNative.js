@@ -79,6 +79,16 @@ window.handleShare = async (msg, deepLink) => {
   }
 };
 
+window.getTossShareLink = async (deepLink) => {
+  try {
+    return await getTossShareLink(deepLink);
+    // canvas?.unityInstance?.SendMessage?.(unityCallerName, unityMethod, link);
+  } catch (e) {
+    console.error('공유 링크 가져오기 실패: ', e);
+    return "unknown";
+  }
+}
+
 window.handleHapticFeedback = (typeName) => {
   try {
     generateHapticFeedback({type : typeName});

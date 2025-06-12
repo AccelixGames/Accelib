@@ -76,7 +76,7 @@ namespace Accelib.AccelixWeb
         /// <summary>
         /// {link} 는 딥링크로 치환됩니다.
         /// </summary>
-        public static void HandleShare(string msg, string deepLink) => Debug.Log($"[AppInTossUtility] {nameof(HandleShare)}({msg}) called");
+        public static void HandleShare(string msg, string deepLink) => Debug.Log($"[AppInTossUtility] {nameof(HandleShare)}({msg.Replace("{link}", deepLink)}) called");
         private static void HandleHapticFeedback(string type)
         {
             // Debug.Log($"[AppInTossUtility] {nameof(HandleHapticFeedback)}({type}) called");

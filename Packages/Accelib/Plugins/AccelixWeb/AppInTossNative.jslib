@@ -90,16 +90,37 @@
         }
     },
 
-    HandleShare: function(msg)
+    HandleShare: function(msg, deepLink)
     {
         try
         {
-            window.handleShare(UTF8ToString(msg));
+            window.handleShare(UTF8ToString(msg), UTF8ToString(deepLink));
         }catch(e)
         {
             console.error(e);
         }
     },
+
+    // GetTossShareLink: function(deepLinkPtr, callback)
+    // {
+    //     try
+    //     {
+    //         const deepLink = UTF8ToString(deepLinkPtr);
+
+    //         window.getTossShareLink(deepLink)
+    //             .then((returnStr) => {
+    //                 let bufferSize = lengthBytesUTF8(returnStr) + 1;
+    //                 let buffer = _malloc(bufferSize);
+    //                 stringToUTF8(returnStr, buffer, bufferSize);
+    //                 {{{ makeDynCall('vi', 'callback') }}} (buffer);
+    //             }).catch((e) => {
+    //                 console.error(e);
+    //             });
+    //     }catch(e)
+    //     {
+    //         console.error(e);
+    //     }
+    // },
 
     HandleHapticFeedback: function(typeName)
     {
