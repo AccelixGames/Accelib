@@ -32,5 +32,8 @@ namespace Accelib.Effect
                 timer.Set(interval);
             }
         }
+        
+        public void SetRotationA(Vector3 rotation) => rotationA = rotation;
+        public void SetRotationB(Vector3 rotation) => rotationB = rotation;
     }
 }
