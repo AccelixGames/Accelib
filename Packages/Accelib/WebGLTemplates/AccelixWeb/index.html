@@ -102,19 +102,9 @@
     script.src = loaderUrl;
     script.onload = () => {
       try {
-        const timeoutMillis = 20000;
         const unityPromise = createUnityInstance(canvas, config, (progress) => {
           document.querySelector("#unity-progress-bar-full").style.width = 100 * progress + "%";
-        });
-
-        const timeoutPromise = new Promise((_, reject) => {
-          setTimeout(() => {
-            reject(new Error("createUnityInstance timed out after " + timeoutMillis + "ms"));
-          }, timeoutMillis);
-        });
-
-        Promise.race([unityPromise, timeoutPromise])
-          .then((unityInstance) => {
+        }).then((unityInstance) => {
 
             canvas.unityInstance = unityInstance;
 
