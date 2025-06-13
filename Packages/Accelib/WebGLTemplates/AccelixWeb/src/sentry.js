@@ -9,3 +9,10 @@ Sentry.init({
     Sentry.extraErrorDataIntegration()
   ],
 });
+
+window.onerror = function (message, source, lineno, colno, error) {
+  Sentry.captureException(error || new Error(message));
+};
+window.onunhandledrejection = function (event) {
+  Sentry.captureException(event.reason || new Error("Unhandled promise rejection"));
+};

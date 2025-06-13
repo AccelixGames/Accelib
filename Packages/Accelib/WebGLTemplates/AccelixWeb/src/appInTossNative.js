@@ -1,8 +1,19 @@
 import { share, getTossShareLink, generateHapticFeedback, getSafeAreaInsets } from '@apps-in-toss/web-framework';
 import { getDeviceId, getOperationalEnvironment, getTossAppVersion, isMinVersionSupported, getPlatformOS, getSchemeUri, getLocale } from '@apps-in-toss/web-framework';
+import { setIosSwipeGestureEnabled } from '@apps-in-toss/web-framework';
+
+function isInAppInToss() {
+  return typeof window.ReactNativeWebView !== 'undefined';
+}
+
+// IOS 스와이프 제스처 비활성화
+if(isInAppInToss())
+  setIosSwipeGestureEnabled({ isEnabled: false });
 
 window.getDeviceId = () => {
   try {
+    if(!isInAppInToss()) return "localhost";
+
     return getDeviceId();
   } catch (e) {
     console.error('DeviceID 가져오기 실패: ', e);
@@ -12,6 +23,8 @@ window.getDeviceId = () => {
 
 window.getOperationalEnvironment  = () => {
   try {
+    if(!isInAppInToss()) return "localhost";
+
     // 'toss' | 'sandbox'
     return getOperationalEnvironment ();
   } catch (e) {
@@ -22,6 +35,8 @@ window.getOperationalEnvironment  = () => {
 
 window.getTossAppVersion = () => {
   try {
+    if(!isInAppInToss()) return "localhost";
+
     return getTossAppVersion();
   } catch (e) {
     console.error('앱인토스 버전 가져오기 실패: ', e);
@@ -31,6 +46,8 @@ window.getTossAppVersion = () => {
 
 window.getPlatformOS = () => {
   try {
+    if(!isInAppInToss()) throw new Error();
+
     // 'ios' | 'android'
     return getPlatformOS();
   } catch (e) {
@@ -42,12 +59,13 @@ window.getPlatformOS = () => {
     if (/Mac/.test(ua)) return "macos";
     if (/Linux/.test(ua)) return "linux";
 
-    return "unknown"; 
+    return "unknown";
   }
 };
 
 window.getSchemeUri  = () => {
   try {
+    if(!isInAppInToss()) return "localhost";
     return getSchemeUri();
   } catch (e) {
     console.error('스킴URI 가져오기 실패: ', e);
@@ -57,6 +75,7 @@ window.getSchemeUri  = () => {
 
 window.getLocale  = () => {
   try {
+    if(!isInAppInToss()) return "unknown";
     return getLocale();
   } catch (e) {
     console.error('스킴URI 가져오기 실패: ', e);
@@ -66,39 +85,33 @@ window.getLocale  = () => {
 
 window.handleShare = async (msg, deepLink) => {
   try {
-    let finalMsg = msg;
+    if(isInAppInToss()){
+      let finalMsg = msg;
 
-    if (msg.includes('{link}')) {
-      const link = await getTossShareLink(deepLink);
-      finalMsg = msg.replace('{link}', link);
+      if (msg.includes('{link}')) {
+        const link = await getTossShareLink(deepLink);
+        finalMsg = msg.replace('{link}', link);
+      }
+
+      await share({ message: finalMsg });
     }
-
-    await share({ message: finalMsg });
   } catch (e) {
     console.error('공유 실패: ', e);
   }
 };
 
-window.getTossShareLink = async (deepLink) => {
-  try {
-    return await getTossShareLink(deepLink);
-    // canvas?.unityInstance?.SendMessage?.(unityCallerName, unityMethod, link);
-  } catch (e) {
-    console.error('공유 링크 가져오기 실패: ', e);
-    return "unknown";
-  }
-}
-
 window.handleHapticFeedback = (typeName) => {
   try {
+    if(!isInAppInToss()) return;
     generateHapticFeedback({type : typeName});
   } catch (e) {
-    // console.error('진동발생 실패: ', e);
+    console.error('진동발생 실패: ', e);
   }
 };
 
 window.getSafeAreaInsets = () => {
   try {
+    if(!isInAppInToss()) return "{top:0, bottom:0}";
     const inset = getSafeAreaInsets();
     const json = JSON.stringify(inset);
     return json;
