@@ -1,5 +1,7 @@
-﻿using System;
+﻿#if ACCELIB_AIT
 using Accelib.AccelixWeb;
+#endif
+using System;
 using Accelib.Core;
 using Accelib.Module.UI.SafeArea.Architecture;
 using AYellowpaper.SerializedCollections;
