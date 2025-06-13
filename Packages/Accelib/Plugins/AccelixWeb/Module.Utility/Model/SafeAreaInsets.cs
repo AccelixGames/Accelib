@@ -1,5 +1,7 @@
 ﻿#if ACCELIB_AIT
-namespace Accelib.AccelixWeb.Model
+using UnityEngine;
+
+namespace Accelib.AccelixWeb.Module.Utility.Model
 {
     [System.Serializable]
     public class SafeAreaInsets
@@ -17,6 +19,12 @@ namespace Accelib.AccelixWeb.Model
         {
             this.top = top;
             this.bottom = bottom;
+        }
+        
+        public SafeAreaInsets(in SafeAreaInsetsRaw raw)
+        {
+            top = Mathf.RoundToInt(raw.top);
+            bottom = Mathf.RoundToInt(raw.bottom);
         }
     }
 }

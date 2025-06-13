@@ -1,9 +1,9 @@
 #if ACCELIB_AIT
 using System;
 using System.Runtime.InteropServices;
-using Accelib.AccelixWeb.Model;
 using Accelib.AccelixWeb.Module.Advertisement.Control;
 using Accelib.AccelixWeb.Module.Advertisement.Model;
+using Accelib.AccelixWeb.Module.Utility.Model;
 using Cysharp.Threading.Tasks;
 using Newtonsoft.Json;
 using UnityEngine;
@@ -53,9 +53,10 @@ namespace Accelib.AccelixWeb
             try
             {
                 var json = GetSafeAreaInsets();
-                var obj = JsonConvert.DeserializeObject<SafeAreaInsets>(json);
-                obj ??= new SafeAreaInsets();
-                return obj;
+                var raw = JsonConvert.DeserializeObject<SafeAreaInsetsRaw>(json);
+                raw ??= new SafeAreaInsetsRaw();
+                
+                return new SafeAreaInsets(raw);
             }
             catch (Exception e)
             {

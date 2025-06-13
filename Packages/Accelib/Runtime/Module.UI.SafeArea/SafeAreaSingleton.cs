@@ -3,6 +3,7 @@ using Accelib.AccelixWeb;
 #endif
 using System;
 using Accelib.Core;
+using Accelib.Helper;
 using Accelib.Module.UI.SafeArea.Architecture;
 using AYellowpaper.SerializedCollections;
 using NaughtyAttributes;
@@ -35,6 +36,7 @@ namespace Accelib.Module.UI.SafeArea
         [SerializeField, EnumFlags] private AreaOption safeAreaOption = (AreaOption)int.MaxValue;
         [SerializeField, EnumFlags] private AreaOption customAreaOption = (AreaOption)int.MaxValue;
         [SerializeField] private bool showLog = false;
+        [SerializeField] private Timer refreshTimer;
 
         [Header("이벤트")]
         public UnityEvent<Vector2, Vector2> onSafeAreaUpdated;
@@ -53,8 +55,12 @@ namespace Accelib.Module.UI.SafeArea
         
         private void OnEnable() => Refresh();
 
-        private void Update() => Refresh();
-        
+        private void Update()
+        {
+            if(refreshTimer.OnTime())
+                Refresh();
+        }
+
         private Rect GetSafeArea()
         {
 #if ACCELIB_AIT
