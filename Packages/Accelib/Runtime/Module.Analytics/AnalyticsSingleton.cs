@@ -1,15 +1,16 @@
-#if ACCELIB_TELEMETRY
+#if ACCELIB_ANALYTICS
+using System;
 using Newtonsoft.Json;
 using Unity.Services.Core;
 using Unity.Services.Core.Environments;
 using Unity.Services.Analytics;
 #endif
 using System.Collections.Generic;
-using UnityEngine;
 using Accelib.Core;
 using NaughtyAttributes;
+using UnityEngine;
 
-namespace Accelib.Module.Telemetry
+namespace Accelib.Module.Analytics
 {
     public class AnalyticsSingleton<T> : MonoSingleton<T> where T : MonoBehaviour
     {
@@ -28,31 +29,37 @@ namespace Accelib.Module.Telemetry
 #endif
         }
         
-        private void Start()
+        protected virtual void Start()
         {
             Init();
         }
 
         private async void Init()
         {
-#if ACCELIB_TELEMETRY
-            
-            // 개발 환경
-            environment = GetEnvironment();
-            
-            var options = new InitializationOptions();
-            options.SetEnvironmentName(environment);
-            
-            // 초기화
-            await UnityServices.InitializeAsync(options);
-            if (UnityServices.State != ServicesInitializationState.Initialized)
+#if ACCELIB_ANALYTICS
+            try
             {
-                Debug.Log("Unity Service Init 실패");
-                return;
-            }
+                // 개발 환경
+                environment = GetEnvironment();
+            
+                var options = new InitializationOptions();
+                options.SetEnvironmentName(environment);
+            
+                // 초기화
+                await UnityServices.InitializeAsync(options);
+                if (UnityServices.State != ServicesInitializationState.Initialized)
+                {
+                    Debug.Log("Unity Service Init 실패");
+                    return;
+                }
 
-            AnalyticsService.Instance.StartDataCollection();
-            isInitialized = true;
+                AnalyticsService.Instance.StartDataCollection();
+                isInitialized = true;
+            }
+            catch (Exception e)
+            {
+                Debug.LogException(e);
+            }
 #endif
         }
 
@@ -61,7 +68,7 @@ namespace Accelib.Module.Telemetry
         /// </summary>
         public void RecordEvent(string eventName, params (string key, object value)[] data)
         {
-#if ACCELIB_TELEMETRY
+#if ACCELIB_ANALYTICS
             if (!isInitialized) return;
             if (string.IsNullOrEmpty(eventName)) return;
 
@@ -81,7 +88,7 @@ namespace Accelib.Module.Telemetry
             }
             
 #endif
-#if ACCELIB_TELEMETRY && UNITY_EDITOR
+#if ACCELIB_ANALYTICS && UNITY_EDITOR
             AnalyticsService.Instance.Flush();
 #endif
         }
@@ -91,7 +98,7 @@ namespace Accelib.Module.Telemetry
         /// </summary>
         public void RecordEvent(string eventName, Dictionary<string, object> data)
         {
-#if ACCELIB_TELEMETRY
+#if ACCELIB_ANALYTICS
             if (!isInitialized) return;
             if (string.IsNullOrEmpty(eventName)) return;
 
@@ -111,7 +118,7 @@ namespace Accelib.Module.Telemetry
             }
             
 #endif
-#if ACCELIB_TELEMETRY && UNITY_EDITOR
+#if ACCELIB_ANALYTICS && UNITY_EDITOR
             AnalyticsService.Instance.Flush();
 #endif
         }

@@ -18,19 +18,19 @@ namespace Accelib.Module.Telemetry
             Error
         }
         
-        public static void LogError(string context, string message, Exception exception = null, object contexts = null, Dictionary<string, object> extras = null)
+        public static void LogError(string context, string message, Exception exception = null, Dictionary<string, object> contexts = null, Dictionary<string, object> extras = null)
             => Log(LogLevel.Error, context, message, exception, contexts, extras);
 
-        public static void LogWarning(string context, string message, object contexts = null, Dictionary<string, object> extras = null)
+        public static void LogWarning(string context, string message, Dictionary<string, object> contexts = null, Dictionary<string, object> extras = null)
             => Log(LogLevel.Warning, context, message, null, contexts, extras);
 
-        public static void LogInfo(string context, string message, object contexts = null, Dictionary<string, object> extras = null)
+        public static void LogInfo(string context, string message, Dictionary<string, object> contexts = null, Dictionary<string, object> extras = null)
             => Log(LogLevel.Info, context, message, null, contexts, extras);
 
-        public static void LogDebug(string context, string message, object contexts = null, Dictionary<string, object> extras = null)
+        public static void LogDebug(string context, string message, Dictionary<string, object> contexts = null, Dictionary<string, object> extras = null)
             => Log(LogLevel.Debug, context, message, null, contexts, extras);
 
-        private static void Log(LogLevel level, string context, string message, Exception exception = null, object contexts = null, Dictionary<string, object> extras = null)
+        private static void Log(LogLevel level, string context, string message, Exception exception = null, Dictionary<string, object> contexts = null, Dictionary<string, object> extras = null)
         {
             var formatted = $"[{level}] [{context}] {message}";
             Debug.Log($"Sentry Log : {formatted}");
@@ -43,9 +43,8 @@ namespace Accelib.Module.Telemetry
                 scope.Level = sentryLevel;
                 scope.SetTag("context", context);
 
-                var dic = ToDictionary(contexts);
-                if (dic != null)
-                    scope.Contexts["Custom Data"] = dic;
+                if(contexts != null)
+                    scope.Contexts["Custom Data"] = contexts;
 
                 if (extras != null)
                 {

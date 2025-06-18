@@ -1,4 +1,3 @@
-using Accelib.Logging;
 using NaughtyAttributes;
 using UnityEngine;
 
@@ -17,5 +16,6 @@ namespace Accelib.Module.Telemetry
         {
             SentryLogger.LogDebug("Test", testMessage);
         }
+
     }
 }
