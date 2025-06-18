@@ -1,0 +1,28 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 74e3cf23b80a42b458874d3c36df5356, type: 3}
+  m_Name: AutoBuildConfig_AIT
+  m_EditorClassIdentifier: 
+  companyName: Accelix
+  productName: slime-2048
+  appVersion: 250618.01
+  isDev: 0
+  index: 1
+  buildVersion: p250618.01
+  buildPath: C:/Accelix/Projects/Accelix/2048Slime-WebGL/Assets\Builds\p250618.01
+  aitProjectFolder: C:/Accelix/Projects/AppInToss/slime-2048
+  aitBuildFolder: C:/Accelix/Projects/AppInToss_Builds
+  aitBuildName: slime-2048-p250618.01
+  copyFolderNames:
+  - Build
+  - StreamingAssets
+  - TemplateData
