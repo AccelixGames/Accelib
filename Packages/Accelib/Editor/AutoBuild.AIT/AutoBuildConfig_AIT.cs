@@ -307,7 +307,7 @@ namespace Accelib.Editor
         private void UpdateVariables()
         {
             var date = DateTime.Now.ToString("yyMMdd");
-            appVersion = $"{date}.{index:D2}";
+            appVersion = $"{date}-{index:D2}";
 
             var env = isDev ? "d" : "p";
             buildVersion = $"{env}{appVersion}";
@@ -316,7 +316,7 @@ namespace Accelib.Editor
             buildPath = Path.Combine(projectFolder, "Builds", buildVersion);
             
             var aitProjectName = Path.GetFileName(aitProjectFolder);
-            aitBuildName = string.IsNullOrEmpty(aitProjectName) ? "" : $"{aitProjectName}-{buildVersion}";
+            aitBuildName = string.IsNullOrEmpty(aitProjectName) ? "" : $"{aitProjectName}_{buildVersion}";
         }
         
         private void OnEnable()
