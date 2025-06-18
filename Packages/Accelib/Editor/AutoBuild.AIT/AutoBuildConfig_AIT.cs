@@ -91,16 +91,16 @@ namespace Accelib.Editor
             }
         }
         
-        [Button("\U0001F5C2 [Open] AIT Build Folder")]
-        private void OpenAITBuildFolder()
-        {
-            OpenFolderInExplorer(aitBuildFolder);
-        }
-        
         [Button("\U0001F5C2 [Open] AIT Project Folder")]
         private void OpenAITProjectFolder()
         {
             OpenFolderInExplorer(aitProjectFolder);
+        }
+        
+        [Button("\U0001F5C2 [Open] AIT Build Folder")]
+        private void OpenAITBuildFolder()
+        {
+            OpenFolderInExplorer(aitBuildFolder);
         }
         
         private static void OpenFolderInExplorer(string folderPath)
