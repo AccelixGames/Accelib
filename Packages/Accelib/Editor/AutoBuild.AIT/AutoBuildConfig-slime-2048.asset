@@ -14,15 +14,17 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   companyName: Accelix
   productName: slime-2048
-  appVersion: 250618.01
-  isDev: 0
+  appVersion: 250618-01
+  isDev: 1
   index: 1
-  buildVersion: p250618.01
-  buildPath: C:\Accelix\Projects\Accelix\2048Slime-WebGL\Builds\p250618.01
+  buildVersion: d250618-01
+  buildPath: C:\Accelix\Projects\Accelix\2048Slime-WebGL\Builds\d250618-01
   aitProjectFolder: C:/Accelix/Projects/AppInToss/slime-2048
   aitBuildFolder: C:/Accelix/Projects/AppInToss_Builds
-  aitBuildName: slime-2048-p250618.01
+  aitBuildName: slime-2048_d250618-01
   copyFolderNames:
   - Build
   - StreamingAssets
   - TemplateData
+  accelibWebglTemplatePath: C:\WorkSpace\github.com\AccelixGames\Accelib\Packages\Accelib\WebGLTemplates\AccelixWeb
+  webglTemplatePath: C:\Accelix\Projects\Accelix\2048Slime-WebGL\Assets\WebGLTemplates\AccelixWeb

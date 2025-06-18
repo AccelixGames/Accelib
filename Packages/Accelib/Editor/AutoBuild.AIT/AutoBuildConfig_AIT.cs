@@ -30,11 +30,41 @@ namespace Accelib.Editor
         [SerializeField, ReadOnly] private string aitProjectFolder;
         [SerializeField, ReadOnly] private string aitBuildFolder;
         [SerializeField, ReadOnly] private string aitBuildName;
-
         [SerializeField] private string[] copyFolderNames = {"Build", "StreamingAssets", "TemplateData"};
+
+        [Header("WebGLTemplate")]
+        [SerializeField, ReadOnly] private string accelibWebglTemplatePath = @"C:\WorkSpace\github.com\AccelixGames\Accelib\Packages\Accelib\WebGLTemplates\AccelixWeb";
+        [SerializeField, ReadOnly] private string webglTemplatePath = Path.Combine(Application.dataPath, "WebGLTemplates", "AccelixWeb");
         
+        private void OnEnable()
+        {
+            companyName = PlayerSettings.companyName;
+            productName = PlayerSettings.productName;
+            
+            UpdateVariables();
+        }
+
+        private void OnValidate()
+        {
+            UpdateVariables();
+        }
         
-        [Button("\U0001F4C1 Ait Project Folder")]
+        private void UpdateVariables()
+        {
+            var date = DateTime.Now.ToString("yyMMdd");
+            appVersion = $"{date}-{index:D2}";
+
+            var env = isDev ? "d" : "p";
+            buildVersion = $"{env}{appVersion}";
+
+            var projectFolder = Path.GetDirectoryName(Application.dataPath);
+            buildPath = Path.Combine(projectFolder, "Builds", buildVersion);
+            
+            var aitProjectName = Path.GetFileName(aitProjectFolder);
+            aitBuildName = string.IsNullOrEmpty(aitProjectName) ? "" : $"{aitProjectName}_{buildVersion}";
+        }
+        
+        [Button("\U0001F4C1 [Select] Ait Project Folder")]
         private void SelectAitProjectFolder()
         {
             // 앱인토스의 프로젝트 폴더
@@ -49,7 +79,7 @@ namespace Accelib.Editor
             }
         }
         
-        [Button("\U0001F4C1 Ait Build Folder")]
+        [Button("\U0001F4C1 [Select] Ait Build Folder")]
         private void SelectAitBuildFolder()
         {
             // 앱인토스의 빌드 파일(.ait)을 저장하는 폴더
@@ -60,9 +90,42 @@ namespace Accelib.Editor
                 aitBuildFolder = path;
             }
         }
+        
+        [Button("\U0001F5C2 [Open] AIT Build Folder")]
+        private void OpenAITBuildFolder()
+        {
+            OpenFolderInExplorer(aitBuildFolder);
+        }
+        
+        [Button("\U0001F5C2 [Open] AIT Project Folder")]
+        private void OpenAITProjectFolder()
+        {
+            OpenFolderInExplorer(aitProjectFolder);
+        }
+        
+        private static void OpenFolderInExplorer(string folderPath)
+        {
+            if (string.IsNullOrWhiteSpace(folderPath)) return;
+
+            if (!Directory.Exists(folderPath))
+            {
+                Debug.LogError($"폴더가 존재하지 않습니다: {folderPath}");
+                return;
+            }
+
+#if UNITY_EDITOR_WIN
+            Process.Start("explorer.exe", folderPath.Replace("/", "\\"));
+#elif UNITY_EDITOR_OSX
+            Process.Start("open", folderPath);
+#elif UNITY_EDITOR_LINUX
+            Process.Start("xdg-open", folderPath);
+#else
+            UnityEngine.Debug.LogWarning("지원되지 않는 플랫폼입니다.");
+#endif
+        }
 
         [Button("\U0001F528 Build")]
-        private void StartBuild()
+        private void StartBuildProgress()
         {
             PlayerSettings.companyName = companyName;
             PlayerSettings.productName = productName;
@@ -70,6 +133,8 @@ namespace Accelib.Editor
 
             UpdateVariables();
 
+            CopyWebglTemplate();
+            
             try
             {
                 if (!Build())
@@ -78,6 +143,9 @@ namespace Accelib.Editor
                     throw new Exception("WebGL -> AIT 프로젝트로 파일 복사 실패");
                 if(!Command())
                     throw new Exception("AIT 빌드 실패");
+
+                // ait 파일 있는 경로 열기
+                OpenAITBuildFolder();
             }
             catch (Exception e)
             {
@@ -154,50 +222,56 @@ namespace Accelib.Editor
         
         private bool Copy()
         {
-            var aitPath = Path.Combine(aitProjectFolder, "build");
+            var aitBuildPath = Path.Combine(aitProjectFolder, "build");
             
             // 폴더 내에 있는 파일 복사
             foreach (var folderName in copyFolderNames)
             {
                 var sourcePath = Path.Combine(buildPath, folderName);
-                var targetPath = Path.Combine(aitPath, "public", folderName);
+                var targetPath = Path.Combine(aitBuildPath, "public", folderName);
                 
                 var result = CopyFiles(sourcePath, targetPath);
-                if (!result)
+                if (result < 0)
                     return false;
             }
+
+            var srcPath = Path.Combine(accelibWebglTemplatePath, "src");
+            var aitSrcPath = Path.Combine(aitBuildPath, "src");
+            var srcResult = CopyFiles(srcPath, aitSrcPath, ".meta");
+            if (srcResult < 0)
+                return false;
+            
             // index.html 복사
             var srcIndexFilePath = Path.Combine(buildPath, "index.html");
-            var targetIndexFilePath = Path.Combine(aitPath, "index.html");
+            var targetIndexFilePath = Path.Combine(aitBuildPath, "index.html");
             File.Copy(srcIndexFilePath, targetIndexFilePath, overwrite: true);
 
             var msg = $"\u2705 [webgl] > [ait] 프로젝트로 파일 복사 성공: {productName}-{buildVersion}\n" +
                       $"- webgl 빌드 경로: {buildPath}\n" +
-                      $"- ait 빌드 경로 : {aitPath}\n";
+                      $"- ait 빌드 경로 : {aitBuildPath}\n";
             
             Debug.Log(msg);
             
             return true;
         }
         
-        private static bool CopyFiles(string sourceDir, string targetDir)
+        private static int CopyFiles(string sourceDir, string targetDir, params string[] excludeExtensions)
         {
             try
             {
-                // 빌드 경로에 있는 파일 복사 > 앱인토스 프로젝트 의 폴더들에 이동
                 if (!Directory.Exists(sourceDir))
                 {
-                    throw new Exception($"원본 폴더가 존재하지 않습니다: {sourceDir}");
+                    Debug.LogWarning($"원본 폴더가 존재하지 않습니다: {sourceDir}");
+                    return 1;
                 }
 
-                // 대상 폴더가 없을 경우 폴더 생성
+                // 대상 폴더 생성 또는 초기화
                 if (!Directory.Exists(targetDir))
                 {
                     Directory.CreateDirectory(targetDir);
                 }
                 else
                 {
-                    // 대상 폴더의 모든 파일 삭제
                     var oldFiles = Directory.GetFiles(targetDir);
                     foreach (var oldFile in oldFiles)
                     {
@@ -205,30 +279,34 @@ namespace Accelib.Editor
                     }
                 }
 
-                // 원본 폴더의 모든 파일 복사
                 var newFiles = Directory.GetFiles(sourceDir);
+                int copiedCount = 0;
+
                 foreach (var srcFilePath in newFiles)
                 {
+                    string ext = Path.GetExtension(srcFilePath);
+                    if (excludeExtensions != null && excludeExtensions.Contains(ext, StringComparer.OrdinalIgnoreCase))
+                        continue;
+
                     var fileName = Path.GetFileName(srcFilePath);
                     var destFilePath = Path.Combine(targetDir, fileName);
                     File.Copy(srcFilePath, destFilePath, overwrite: true);
+                    copiedCount++;
                 }
 
-                var msg = $"파일 복사 완료 : {newFiles.Length}개의 파일\n" +
-                          $"- 원본 경로 : {sourceDir}\n"+
-                          $"- 대상 경로 : {targetDir}\n";
-            
-                Debug.Log(msg);
+                Debug.Log($"📁 복사 완료: {copiedCount}개 파일 (.제외 확장자: {string.Join(", ", excludeExtensions ?? Array.Empty<string>())})\n" +
+                          $"- 원본: {sourceDir}\n- 대상: {targetDir}");
             }
             catch (Exception e)
             {
                 Debug.LogException(e);
-
-                return false;
+                return -1;
             }
 
-            return true;
+            return 2;
         }
+
+
         
         private bool Command()
         {
@@ -304,32 +382,15 @@ namespace Accelib.Editor
             return !string.IsNullOrWhiteSpace(path) && Directory.Exists(path);
         }
 
-        private void UpdateVariables()
+        private void CopyWebglTemplate()
         {
-            var date = DateTime.Now.ToString("yyMMdd");
-            appVersion = $"{date}-{index:D2}";
+            CopyFiles(accelibWebglTemplatePath, webglTemplatePath);
 
-            var env = isDev ? "d" : "p";
-            buildVersion = $"{env}{appVersion}";
+            var srcTemplateData = Path.Combine(accelibWebglTemplatePath, "TemplateData");
+            var targetTemplateData = Path.Combine(webglTemplatePath, "TemplateData");
+            CopyFiles(srcTemplateData, targetTemplateData);
 
-            var projectFolder = Path.GetDirectoryName(Application.dataPath);
-            buildPath = Path.Combine(projectFolder, "Builds", buildVersion);
-            
-            var aitProjectName = Path.GetFileName(aitProjectFolder);
-            aitBuildName = string.IsNullOrEmpty(aitProjectName) ? "" : $"{aitProjectName}_{buildVersion}";
-        }
-        
-        private void OnEnable()
-        {
-            companyName = PlayerSettings.companyName;
-            productName = PlayerSettings.productName;
-            
-            UpdateVariables();
-        }
-
-        private void OnValidate()
-        {
-            UpdateVariables();
+            Debug.Log("Webgl Template 복사!");
         }
     }
 }
