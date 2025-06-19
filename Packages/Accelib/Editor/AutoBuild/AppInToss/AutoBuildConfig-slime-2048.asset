@@ -12,16 +12,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 74e3cf23b80a42b458874d3c36df5356, type: 3}
   m_Name: AutoBuildConfig-slime-2048
   m_EditorClassIdentifier: 
+  sendDiscordMessage: 1
+  discordWebhookUrl: https://discord.com/api/webhooks/1359366072817422466/2aUjhMzBL6vtczywmaNQxnajuJxBTFJs7dUCkQkCs3dHRfGb8gyB15Nmi-DqNoOFcYFn
   companyName: Accelix
   productName: slime-2048
-  appVersion: 250618-01
+  appVersion: 250619-03
   isDev: 1
-  index: 1
-  buildVersion: d250618-01
-  buildPath: C:\Accelix\Projects\Accelix\2048Slime-WebGL\Builds\d250618-01
+  index: 3
+  buildVersion: d250619-03
+  buildPath: C:\Accelix\Projects\Accelix\2048Slime-WebGL\Builds\d250619-03
   aitProjectFolder: C:/Accelix/Projects/AppInToss/slime-2048
   aitBuildFolder: C:/Accelix/Projects/AppInToss_Builds
-  aitBuildName: slime-2048_d250618-01
+  aitBuildName: slime-2048_d250619-03
   copyFolderNames:
   - Build
   - StreamingAssets

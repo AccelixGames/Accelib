@@ -1,20 +1,25 @@
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
+using Accelib.Editor.Utility.Discord;
 using NaughtyAttributes;
 using UnityEditor;
 using UnityEditor.SceneManagement;
 using UnityEngine;
-using UnityEngine.Serialization;
 using Debug = UnityEngine.Debug;
 
-namespace Accelib.Editor
+namespace Accelib.Editor.AppInToss
 {
     [CreateAssetMenu(fileName = "AutoBuildConfig_AIT", menuName = "Accelib/AutoBuildConfig_AIT")]
     public class AutoBuildConfig_AIT : ScriptableObject
     {
+        [Header("# 디스코드 메세지")]
+        [SerializeField] private bool sendDiscordMessage = true;
+        [SerializeField, TextArea, ShowIf(nameof(sendDiscordMessage))] private string discordWebhookUrl = "https://discord.com/api/webhooks/1359366072817422466/2aUjhMzBL6vtczywmaNQxnajuJxBTFJs7dUCkQkCs3dHRfGb8gyB15Nmi-DqNoOFcYFn";
+        
         [Header("# 프로젝트 설정")]
         [SerializeField] private string companyName;
         [SerializeField] private string productName;
@@ -32,9 +37,12 @@ namespace Accelib.Editor
         [SerializeField, ReadOnly] private string aitBuildName;
         [SerializeField] private string[] copyFolderNames = {"Build", "StreamingAssets", "TemplateData"};
 
-        [Header("WebGLTemplate")]
+        [Header("# WebGLTemplate")]
         [SerializeField, ReadOnly] private string accelibWebglTemplatePath = @"C:\WorkSpace\github.com\AccelixGames\Accelib\Packages\Accelib\WebGLTemplates\AccelixWeb";
         [SerializeField, ReadOnly] private string webglTemplatePath = Path.Combine(Application.dataPath, "WebGLTemplates", "AccelixWeb");
+        
+
+        private const string TemplateName = "AccelixWeb";
         
         private void OnEnable()
         {
@@ -75,7 +83,7 @@ namespace Accelib.Editor
                 aitProjectFolder = path;
                 
                 var aitProjectName = Path.GetFileName(aitProjectFolder);
-                aitBuildName = $"{aitProjectName}-{buildVersion}";
+                aitBuildName = $"{aitProjectName}_{buildVersion}";
             }
         }
         
@@ -124,24 +132,20 @@ namespace Accelib.Editor
 #endif
         }
 
+
         [Button("\U0001F528 Build")]
         private void StartBuildProgress()
         {
-            PlayerSettings.companyName = companyName;
-            PlayerSettings.productName = productName;
-            PlayerSettings.bundleVersion = appVersion;
-
+            // 변수 업데이트
             UpdateVariables();
-
+            // webgl template 복사
             CopyWebglTemplate();
             
             try
             {
-                if (!Build())
-                    throw new Exception("WebGL Build 실패");
-                if (!Copy())
-                    throw new Exception("WebGL -> AIT 프로젝트로 파일 복사 실패");
-                if(!Command())
+                if (!Build_Webgl())
+                    throw new Exception("WebGL 빌드 실패");
+                if (!Build_AIT())
                     throw new Exception("AIT 빌드 실패");
 
                 // ait 파일 있는 경로 열기
@@ -153,10 +157,17 @@ namespace Accelib.Editor
             }
         }
 
-        private bool Build()
+        private bool Build_Webgl()
         {
             try
             {
+                var message = $":computer: ** WebGL 빌드를 시작합니다!** [{AutoBuildConfig.GetNowTime()}]";
+                SendDiscordMessage(message);
+                
+                PlayerSettings.companyName = companyName;
+                PlayerSettings.productName = productName;
+                PlayerSettings.bundleVersion = appVersion;
+                
                 if (!ValidFolderPath(aitProjectFolder))
                     throw new Exception("ait 프로젝트 폴더의 경로가 유효하지 않습니다.");
                 if (!ValidFolderPath(aitBuildFolder))
@@ -195,21 +206,53 @@ namespace Accelib.Editor
                 if (report == null)
                     throw new Exception($"WebGL 빌드 실패 : 빌드 리포트가 null 입니다.");
 
-                // 빌드 성공
                 var summary = report.summary;
+                var embed = new JDiscordEmbed();
+                
+                // 빌드 실패
+                if (summary.totalErrors > 0)
+                {
+                    var errors = new List<string>();
+                
+                    foreach (var step in report.steps)
+                    {
+                        var err = $"[{step.name}({step.depth} : {Mathf.RoundToInt((float)step.duration.TotalSeconds)}sec)]";
+
+                        foreach (var stepMsg in step.messages)
+                            if(stepMsg.type is LogType.Assert or LogType.Error or LogType.Exception)
+                                errors.Add($"{err}{stepMsg.type} : {stepMsg.content}");
+                    }
+
+                    embed.title = $":warning: 빌드 실패 : ({productName})";
+                    embed.description = $"{summary.totalErrors}개의 에러가 발생했습니다.\n";
+                    foreach (var error in errors) 
+                        embed.description += $"{error}\n";
+                    SendDiscordMessage(null, embed);
+                    
+                    throw new Exception(embed.title);
+                }
+                
+                // 빌드 성공
                 var totalTime = $"{summary.totalTime.Minutes}분 {summary.totalTime.Seconds}초";
-                var msg = $"\u2705 빌드 성공: {productName}-{buildVersion}\n" +
-                          $"- 경로: {summary.outputPath}\n" +
-                          $"- 소요시간: {totalTime}\n";
+                embed.title = $"\u2705 빌드 성공: ({productName})\n";
+                embed.description = $"- **버전**: {buildVersion}\n" +
+                                    $"- **타겟**: {BuildTarget.WebGL}\n" +
+                                    $"- **경로**: {summary.outputPath}\n" +
+                                    $"- **소요시간**: {totalTime}\n";
+                
+                SendDiscordMessage(null, embed);
 
-                Debug.Log(msg);
-
-                SetLogTypes(StackTraceLogType.ScriptOnly);
+                Debug.Log($"{embed.title}\n{embed.description}");
             }
             catch (Exception e)
             {
-                Debug.LogException(e, this);
-
+                var embed = new JDiscordEmbed
+                {
+                    title = $":warning: 빌드 실패 : ({productName})",
+                    description = $"- **실패 이유** : {e}"
+                };
+                SendDiscordMessage(null, embed);
+                
                 return false;
             }
             finally
@@ -219,38 +262,59 @@ namespace Accelib.Editor
 
             return true;
         }
-        
-        private bool Copy()
+
+        private bool Build_AIT()
         {
-            var aitBuildPath = Path.Combine(aitProjectFolder, "build");
+            // 명령 실행
+            var message = $":large_blue_diamond: **AIT 빌드를 시작합니다!** [{AutoBuildConfig.GetNowTime()}]";
+            SendDiscordMessage(message);
             
-            // 폴더 내에 있는 파일 복사
-            foreach (var folderName in copyFolderNames)
+            if (!CopyBuild()) return false;
+            if (!Command()) return false;
+
+            return true;
+        }
+        
+        private bool CopyBuild()
+        {
+            try
             {
-                var sourcePath = Path.Combine(buildPath, folderName);
-                var targetPath = Path.Combine(aitBuildPath, "public", folderName);
+                var aitBuildPath = Path.Combine(aitProjectFolder, "build");
+            
+                // 폴더 내에 있는 파일 복사
+                foreach (var folderName in copyFolderNames)
+                {
+                    var sourcePath = Path.Combine(buildPath, folderName);
+                    var targetPath = Path.Combine(aitBuildPath, "public", folderName);
                 
-                var result = CopyFiles(sourcePath, targetPath);
-                if (result < 0)
-                    return false;
+                    var result = CopyFiles(sourcePath, targetPath);
+                    if (result < 0)
+                        throw new Exception($"[{folderName}] 폴더 안에 있는 파일 복사에 실패했습니다.");
+                }
+                // src 복사
+                var srcPath = Path.Combine(accelibWebglTemplatePath, "src");
+                var aitSrcPath = Path.Combine(aitBuildPath, "src");
+                var srcResult = CopyFiles(srcPath, aitSrcPath, ".meta");
+                if (srcResult < 0)
+                    throw new Exception($"[src] 폴더 안에 있는 파일 복사에 실패했습니다.");
+                
+                // index.html 복사
+                var srcIndexFilePath = Path.Combine(buildPath, "index.html");
+                var targetIndexFilePath = Path.Combine(aitBuildPath, "index.html");
+                File.Copy(srcIndexFilePath, targetIndexFilePath, overwrite: true);
             }
-
-            var srcPath = Path.Combine(accelibWebglTemplatePath, "src");
-            var aitSrcPath = Path.Combine(aitBuildPath, "src");
-            var srcResult = CopyFiles(srcPath, aitSrcPath, ".meta");
-            if (srcResult < 0)
+            catch (Exception e)
+            {
+                var embed = new JDiscordEmbed
+                {
+                    title = $":warning: 빌드 실패 : ({aitBuildName})",
+                    description = $"- **실패 이유** : {e}"
+                };
+                SendDiscordMessage(null, embed);
+                
+                Debug.LogException(e);
                 return false;
-            
-            // index.html 복사
-            var srcIndexFilePath = Path.Combine(buildPath, "index.html");
-            var targetIndexFilePath = Path.Combine(aitBuildPath, "index.html");
-            File.Copy(srcIndexFilePath, targetIndexFilePath, overwrite: true);
-
-            var msg = $"\u2705 [webgl] > [ait] 프로젝트로 파일 복사 성공: {productName}-{buildVersion}\n" +
-                      $"- webgl 빌드 경로: {buildPath}\n" +
-                      $"- ait 빌드 경로 : {aitBuildPath}\n";
-            
-            Debug.Log(msg);
+            }
             
             return true;
         }
@@ -306,31 +370,47 @@ namespace Accelib.Editor
             return 2;
         }
 
-
-        
         private bool Command()
         {
-            // 명령 실행
-            Debug.Log("ait 빌드 시작...");
+            try
+            {
+                RunCommand("yarn upgrade --latest", aitProjectFolder);
+                RunCommand("yarn build", aitProjectFolder);
             
-            RunCommand("yarn upgrade --latest", aitProjectFolder);
-            RunCommand("yarn build", aitProjectFolder);
+                var aitFileName = $"{Path.GetFileName(aitProjectFolder)}.ait";
+                var altFilePath = Path.Combine(aitProjectFolder, aitFileName);
             
-            var aitFileName = $"{Path.GetFileName(aitProjectFolder)}.ait";
-            var altFilePath = Path.Combine(aitProjectFolder, aitFileName);
+                // .ait 빌드 실패
+                if (!File.Exists(altFilePath))
+                    throw new Exception(".ait 빌드 파일 생성에 실패했습니다.");
             
-            // .ait 빌드 실패
-            if (!File.Exists(altFilePath)) return false;
+                // .ait 빌드 성공 > 파일 이동
+                var targetFilePath = Path.Combine(aitBuildFolder, $"{aitBuildName}.ait");
             
-            // .ait 빌드 성공 > 파일 이동
-            var targetFilePath = Path.Combine(aitBuildFolder, $"{aitBuildName}.ait");
-            
-            File.Copy(altFilePath, targetFilePath, overwrite: true);
-            File.Delete(altFilePath);
-            
-            var msg = $"\u2705 ait 파일 빌드 성공: {productName}-{buildVersion}\n" +
-                         $"- ait 파일 경로 : {targetFilePath}\n";
-            Debug.Log(msg);
+                File.Copy(altFilePath, targetFilePath, overwrite: true);
+                File.Delete(altFilePath);
+                
+                var embed = new JDiscordEmbed
+                {
+                    title = $"\u2705 빌드 성공: ({aitBuildName})\n",
+                    description = $"- **버전**: {buildVersion}\n" +
+                                  $"- **타겟**: AIT\n" +
+                                  $"- **경로** : {targetFilePath}\n",
+                };
+                SendDiscordMessage(null, embed);
+            }
+            catch (Exception e)
+            {
+                var embed = new JDiscordEmbed
+                {
+                    title = $":warning: 빌드 실패 : ({aitBuildName})",
+                    description = $"- **실패 이유** : {e}"
+                };
+                SendDiscordMessage(null, embed);
+
+                Debug.LogException(e);
+                return false;
+            }
 
             return true;
         }
@@ -391,6 +471,12 @@ namespace Accelib.Editor
             CopyFiles(srcTemplateData, targetTemplateData);
 
             Debug.Log("Webgl Template 복사!");
+        }
+        
+        private void SendDiscordMessage(string content, params JDiscordEmbed[] embeds)
+        {
+            if(sendDiscordMessage)
+                DiscordWebhook.SendMsg(discordWebhookUrl, content, embeds);
         }
     }
 }
