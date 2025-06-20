@@ -46,8 +46,10 @@ namespace Accelib.Editor.AppInToss
         
         private void OnEnable()
         {
-            companyName = PlayerSettings.companyName;
-            productName = PlayerSettings.productName;
+            if(string.IsNullOrEmpty(companyName))
+                companyName = PlayerSettings.companyName;
+            if(string.IsNullOrEmpty(productName))
+                productName = PlayerSettings.productName;
             
             UpdateVariables();
         }

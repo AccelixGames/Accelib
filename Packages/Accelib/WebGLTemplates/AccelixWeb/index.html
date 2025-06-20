@@ -23,6 +23,16 @@
     <div id="unity-logo"></div>
   </div>
 
+  <script>
+    window.alert = function(msg) {
+      if (msg && msg.includes("Unity")) {
+        showUnityReloadPopup();
+      } else {
+        window.alert(msg);
+      }
+    };
+  </script>
+
   <script type="module" src="src/appInTossNative.js"></script>
   <script type="module" src="src/appInTossNativeAds.js"></script>
   <script>
@@ -102,31 +112,7 @@
     script.src = loaderUrl;
     script.onload = () => {
       try {
-        const unityPromise = createUnityInstance(canvas, config, (progress) => {
-          document.querySelector("#unity-progress-bar-full").style.width = 100 * progress + "%";
-        }).then((unityInstance) => {
-
-            canvas.unityInstance = unityInstance;
-
-            const logo = document.querySelector("#unity-logo");
-            const bar = document.querySelector("#unity-loading-bar");
-            const bar_full = document.querySelector("#unity-progress-bar-full");
-
-            bar_full.style.transition = "none";
-            bar_full.style.width = "100%";
-
-            logo.classList.add("fade-out");
-            bar.classList.add("fade-out");
-
-            setTimeout(() => {
-              logo.style.display = "none";
-              bar.style.display = "none";
-            }, 200);
-          })
-          .catch((message) => {
-            Sentry.captureException(message);
-            alert(message.message || message);
-          });
+        loadUnity();
       } catch(e) {
         Sentry.captureMessage(`CreateUnityInstance OnLoad Error : ${e.message}`, { level: 'warning' });
       }
@@ -139,7 +125,69 @@
       canvas.style.width = window.innerWidth + 'px';
       canvas.style.height = window.innerHeight + 'px';
     }
+  </script>
+  <script>
+    let unityInstance = null;
+    function loadUnity() {
+      if(unityInstance)
+      {
+        unityInstance.Quit().then(()=>{
+          unityInstance = null;
+        }) 
+      }
+      loadUnityInstance().then(instance => {
+        unityInstance = instance;
+      });
+    }
 
+    function loadUnityInstance() {
+      return createUnityInstance(canvas, config, (progress) => {
+        document.querySelector("#unity-progress-bar-full").style.width = 100 * progress + "%";
+        })
+        .then((unityInstance) => {
+          canvas.unityInstance = unityInstance;
+          const logo = document.querySelector("#unity-logo");
+          const bar = document.querySelector("#unity-loading-bar");
+          const bar_full = document.querySelector("#unity-progress-bar-full");
+
+          bar_full.style.transition = "none";
+          bar_full.style.width = "100%";
+
+          logo.classList.add("fade-out");
+          bar.classList.add("fade-out");
+
+          setTimeout(() => {
+            logo.style.display = "none";
+            bar.style.display = "none";
+          }, 200);
+        })
+        .catch((message) => {
+          Sentry.captureException(message);
+          alert(message.message || message);
+        });
+    }
+
+    function showUnityReloadPopup() {
+      if (document.getElementById("unity-reload-popup")) return;
+        
+        const popup = document.createElement('div');
+        popup.id = 'unity-reload-popup';
+        popup.innerHTML = `
+          <div class="unity-reload-box">
+            <h3>⚠️<br>게임 실행 오류</h3>
+            <p>
+              게임이 예상치 못하게 종료되었습니다.<br>
+              게임을 다시 실행합니다.
+            </p>
+            <button id="unity-reload-confirm" class="unity-reload-button">확인</button>
+          </div>
+      `;
+      document.body.appendChild(popup);
+      document.getElementById("unity-reload-confirm").addEventListener("click", () => {
+        popup.remove();
+        loadUnity();
+      });
+    }
   </script>
 </body>
 </html>

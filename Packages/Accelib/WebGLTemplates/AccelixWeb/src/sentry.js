@@ -12,7 +12,9 @@ Sentry.init({
 
 window.onerror = function (message, source, lineno, colno, error) {
   Sentry.captureException(error || new Error(message));
+  return true;
 };
 window.onunhandledrejection = function (event) {
   Sentry.captureException(event.reason || new Error("Unhandled promise rejection"));
+  event.preventDefault();
 };
