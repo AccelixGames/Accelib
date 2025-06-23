@@ -163,7 +163,6 @@
         })
         .catch((message) => {
           Sentry.captureException(message);
-          alert(message.message || message);
         });
     }
 
