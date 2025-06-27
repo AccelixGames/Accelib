@@ -81,6 +81,32 @@ namespace Accelib.Extensions
             return list;
         }
         
+        // 리스트를 n개씩 끊어서, 각 범위 안에서만 섞는다.
+        public static void ShuffleInChunks<T>(this List<T> list, int chunkSize)
+        {
+            if (chunkSize <= 0)
+                throw new ArgumentException("chunkSize must be greater than 0");
+
+            var count = list.Count;
+
+            for (var i = 0; i < count; i += chunkSize)
+            {
+                var end = Math.Min(i + chunkSize, count);
+                ShuffleRange(list, i, end);
+            }
+        }
+
+        // 리스트의 부분 범위 [start, end) 를 섞는 내부 함수
+        public static void ShuffleRange<T>(this List<T> list, int start, int end)
+        {
+            var rng = new System.Random();
+            for (var i = end - 1; i > start; i--)
+            {
+                var j = rng.Next(start, i + 1);
+                (list[i], list[j]) = (list[j], list[i]);
+            }
+        }
+        
         public static List<T> GetRandomElements<T>(this List<T> list, int n)
         {
             if (list == null) return null;
