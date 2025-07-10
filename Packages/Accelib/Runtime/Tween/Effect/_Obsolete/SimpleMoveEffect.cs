@@ -38,6 +38,12 @@ namespace Accelib.Effect
             }
         }
 
+        public void ClearAnchoredPosition()
+        {
+            _rt ??= GetComponent<RectTransform>();
+            _rt.anchoredPosition =  startPos.anchoredPosition;
+        }
+
         public Tweener EffectIn()
         {
             return _rt?.DOAnchorPos(endPos.anchoredPosition, config.duration)

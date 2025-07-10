@@ -9,26 +9,38 @@ namespace Accelib.Effect.Material
     {
         [SerializeField] private Renderer render;
 
-        [Header("Effect")]
+        [Header("Hit Effect")]
         [SerializeField] private string propertyName = "_HitEffectBlend";
-        [SerializeField, Range(0.001f, 10f)] private float fadeDuration = 0.1f;
+        [SerializeField, Range(0f, 1f)] private float maxBlend = 1f; 
+        [SerializeField, Range(0.001f, 10f)] private float initDuration = 0f;
         [SerializeField, Range(0f, 10f)] private float keepDuration = 0.1f;
+        [SerializeField, Range(0.001f, 10f)] private float outDuration = 0.1f;
         [SerializeField, ReadOnly] private int propertyID;
         [SerializeField, ReadOnly] private float amount;
 
-        private void Awake()
+        protected Renderer Render => render;
+        private Sequence _seq;
+        
+        protected virtual void Awake()
         {
             propertyID = Shader.PropertyToID(propertyName);
         }
 
-        private Sequence DoHit()
+        public Sequence DoHit()
         {
-            var halfDuration = fadeDuration * 0.5f;
-            return DOTween.Sequence()
-                .Append(DOTween.To(() => amount, x => amount = x, 1f, halfDuration))
+            _seq?.Kill();
+            _seq = DOTween.Sequence()
+                .OnStart(() =>
+                {
+                    amount = 0f;
+                    render.material.SetFloat(propertyID, amount);
+                })
+                .Append(DOTween.To(() => amount, x => amount = x, maxBlend, initDuration))
                 .AppendInterval(keepDuration)
-                .Append(DOTween.To(() => amount, x => amount = x, 0f, halfDuration))
+                .Append(DOTween.To(() => amount, x => amount = x, 0f, outDuration))
                 .OnUpdate(() => render.material.SetFloat(propertyID, amount));
+
+            return _seq;
         }
 
         [Button(enabledMode: EButtonEnableMode.Playmode)]
