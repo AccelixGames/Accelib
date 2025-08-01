@@ -38,11 +38,11 @@ namespace Accelib.AccelixWeb.Module.Advertisement.Control
             var resp = ParseResponse(json);
             if (!_adsDict.TryGetValue(resp.unitId, out var ads))
             {
-                Debug.LogError($"[UnitId({resp.unitId})와 일치하는 광고객체를 찾을 수 없습니다] {json}", this);
+                // Debug.LogError($"[UnitId({resp.unitId})와 일치하는 광고객체를 찾을 수 없습니다] {json}", this);
                 return;
             }
 
-            Debug.Log($"[OnLoad] {json}");
+            // Debug.Log($"[OnLoad] {json}");
             ads.OnLoad(resp.code == AdsCode.Loaded);
         }
 
@@ -51,11 +51,11 @@ namespace Accelib.AccelixWeb.Module.Advertisement.Control
             var resp = ParseResponse(json);
             if (!_adsDict.TryGetValue(resp.unitId, out var ads))
             {
-                Debug.LogError($"[UnitId({resp.unitId})와 일치하는 광고객체를 찾을 수 없습니다] {json}", this);
+                // Debug.LogError($"[UnitId({resp.unitId})와 일치하는 광고객체를 찾을 수 없습니다] {json}", this);
                 return;
             }
             
-            Debug.Log($"[OnEvent] {json}");
+            // Debug.Log($"[OnEvent] {json}");
             ads.OnEvent(resp.code);
         }
 
@@ -64,11 +64,11 @@ namespace Accelib.AccelixWeb.Module.Advertisement.Control
             var resp = ParseResponse(json);
             if (!_adsDict.TryGetValue(resp.unitId, out var ads))
             {
-                Debug.LogError($"[UnitId({resp.unitId})와 일치하는 광고객체를 찾을 수 없습니다] {json}", this);
+                // Debug.LogError($"[UnitId({resp.unitId})와 일치하는 광고객체를 찾을 수 없습니다] {json}", this);
                 return;
             }
             
-            Debug.Log($"[OnShow] {json}");
+            // Debug.Log($"[OnShow] {json}");
             ads.OnShow(resp.code == AdsCode.Requested);
         }
 

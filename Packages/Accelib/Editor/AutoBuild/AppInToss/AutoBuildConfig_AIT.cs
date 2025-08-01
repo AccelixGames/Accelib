@@ -78,7 +78,7 @@ namespace Accelib.Editor.AppInToss
         private void SelectAitProjectFolder()
         {
             // 앱인토스의 프로젝트 폴더
-            var path = EditorUtility.OpenFolderPanel("앱인토스 프로젝트 폴더 선택", "", "");
+            var path = EditorUtility.OpenFolderPanel("앱인토스 프로젝트 폴더 선택", aitProjectFolder, "");
 
             if (!string.IsNullOrEmpty(path))
             {
@@ -93,7 +93,7 @@ namespace Accelib.Editor.AppInToss
         private void SelectAitBuildFolder()
         {
             // 앱인토스의 빌드 파일(.ait)을 저장하는 폴더
-            var path = EditorUtility.OpenFolderPanel("앱인토스 빌드 파일 저장 폴더 선택", "", "");
+            var path = EditorUtility.OpenFolderPanel("앱인토스 빌드 파일 저장 폴더 선택", aitBuildFolder, "");
             
             if (!string.IsNullOrEmpty(path))
             {
@@ -115,9 +115,7 @@ namespace Accelib.Editor.AppInToss
         
         private static void OpenFolderInExplorer(string folderPath)
         {
-            if (string.IsNullOrWhiteSpace(folderPath)) return;
-
-            if (!Directory.Exists(folderPath))
+            if (string.IsNullOrWhiteSpace(folderPath) || !Directory.Exists(folderPath))
             {
                 Debug.LogError($"폴더가 존재하지 않습니다: {folderPath}");
                 return;
@@ -163,9 +161,6 @@ namespace Accelib.Editor.AppInToss
         {
             try
             {
-                var message = $":computer: ** WebGL 빌드를 시작합니다!** [{AutoBuildConfig.GetNowTime()}]";
-                SendDiscordMessage(message);
-                
                 PlayerSettings.companyName = companyName;
                 PlayerSettings.productName = productName;
                 PlayerSettings.bundleVersion = appVersion;
@@ -179,6 +174,11 @@ namespace Accelib.Editor.AppInToss
                 var activeScenes = EditorBuildSettings.scenes.Where(scene => scene.enabled).Select(scene => scene.path).ToArray();
                 if (activeScenes.Length <= 0)
                     throw new Exception("BuildSetting에 활성화된 Scene이 없습니다.");
+                
+                // 빌드 시작 메세지 발송
+                var message = $":computer: ** 앱인토스 WebGL 빌드를 시작합니다!** [{AutoBuildConfig.GetNowTime()}]\n" +
+                              $"{productName}({appVersion})";
+                SendDiscordMessage(message);
                 
                 // 현재 씬 모두 저장
                 EditorSceneManager.SaveOpenScenes();
@@ -195,7 +195,7 @@ namespace Accelib.Editor.AppInToss
                     scenes = activeScenes,
                     locationPathName = buildPath,
                     target = BuildTarget.WebGL,
-                    options = BuildOptions.CompressWithLz4HC
+                    options = BuildOptions.CompressWithLz4
                 };
                 
                 // 빌드 폴더 생성
