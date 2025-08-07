@@ -27,7 +27,7 @@ namespace Accelib.Editor.AppInToss
 
         [Header("# 빌드 설정")]
         [SerializeField] private bool isDev;
-        [SerializeField] private int index = 1;
+        [SerializeField, Range(0, 32)] private int buildIndex = 1;
         [SerializeField, ReadOnly] private string buildVersion;
         [SerializeField, ReadOnly] private string buildPath;
         
@@ -62,7 +62,7 @@ namespace Accelib.Editor.AppInToss
         private void UpdateVariables()
         {
             var date = DateTime.Now.ToString("yyMMdd");
-            appVersion = $"{date}-{index:D2}";
+            appVersion = $"{date}-{buildIndex:D2}";
 
             var env = isDev ? "d" : "p";
             buildVersion = $"{env}{appVersion}";
@@ -150,6 +150,11 @@ namespace Accelib.Editor.AppInToss
 
                 // ait 파일 있는 경로 열기
                 OpenAITBuildFolder();
+                
+                // 인덱스 올리기
+                buildIndex += 1;
+                EditorUtility.SetDirty(this);
+                AssetDatabase.SaveAssetIfDirty(this);
             }
             catch (Exception e)
             {

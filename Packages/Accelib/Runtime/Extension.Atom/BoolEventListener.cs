@@ -18,6 +18,11 @@ namespace Accelib.Extension.Atom
         [SerializeField] private UnityEvent<bool> onEvent;
         [SerializeField] private bool reverseValue = false;
 
+#if UNITY_EDITOR
+        [Header("Debug")]
+        [SerializeField] private bool log = false;
+#endif
+
         private void OnEnable() => variable.Changed.Register(OnEventRaised);
         private void OnDisable() => variable.Changed.Unregister(OnEventRaised);
 
@@ -31,6 +36,11 @@ namespace Accelib.Extension.Atom
                     onFalse?.Invoke();
 
                 onEvent?.Invoke(reverseValue ? !value : value);
+
+#if UNITY_EDITOR
+                if(variable && log)
+                    Debug.Log($"{variable.name}: {variable.Value}");
+#endif
             }
             catch (Exception e)
             {
