@@ -81,5 +81,10 @@ namespace Accelib.Extensions
         public static Vector3 SetX(this Vector3 vec, float x) { vec.x = x; return vec; }
         public static Vector3 SetY(this Vector3 vec, float y) { vec.y = y; return vec; }
         public static Vector3 SetZ(this Vector3 vec, float z) { vec.z = z; return vec; }
+
+        public static float Lerp(this in Vector2 v, float normal)
+        {
+            return Mathf.Lerp(v.x, v.y, normal);
+        }
     }
 }
