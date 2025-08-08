@@ -1,4 +1,5 @@
 ﻿using NaughtyAttributes;
+using UnityAtoms.BaseAtoms;
 using UnityEngine;
 
 namespace Accelib.Helper
@@ -8,9 +9,25 @@ namespace Accelib.Helper
     {
         [field: SerializeField] public bool IsEnabled { get;  set; } = false;
         [field: SerializeField] public bool IsDone { get;  set; } = false;
-        [field: SerializeField] public float Time { get; set; } = 0f;
+        [SerializeField] public float _time = 0f;
+
         [field: SerializeField] public float TargetTime { get; private set; } = 0f;
 
+        [Header("Variable")]
+        [SerializeField] private FloatVariable timeLeftVar;
+        [SerializeField] private FloatVariable timeSpentVar;
+
+        public float Time
+        {
+            get => _time;
+            set
+            {
+                _time = value;
+                if (timeLeftVar) timeLeftVar.SetValue(TargetTime - value);
+                if (timeSpentVar) timeSpentVar.SetValue(value);
+            }
+        }
+        
         public float TimeLeft => Mathf.Clamp(TargetTime - Time, 0f, TargetTime);
 
         public float Progress => Mathf.Clamp01(Time / TargetTime);
@@ -29,8 +46,8 @@ namespace Accelib.Helper
         public bool OnTime(bool skipCount = false)
         {
             if (!IsEnabled) return false;
-            
-            if(!skipCount && Time < TargetTime) 
+
+            if (!skipCount && Time < TargetTime) 
                 Time += UnityEngine.Time.deltaTime;
             
             if (Time >= TargetTime)
