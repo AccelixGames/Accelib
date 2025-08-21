@@ -22,14 +22,17 @@ namespace Accelib.Extension.Atom.UI.Base
 
         protected abstract AtomEvent<T2> Changed { get; } 
         protected abstract T2 GetValue { get; }
+
+        protected virtual void Internal_OnUpdated(T2 value)
+        { }
         
-        private void OnEnable()
+        protected virtual void OnEnable()
         {
             Changed?.Register(OnChanged);
             OnChanged(GetValue);
         }
 
-        private void OnDisable() => Changed?.Unregister(OnChanged);
+        protected virtual  void OnDisable() => Changed?.Unregister(OnChanged);
 
         private void OnChanged(T2 v)
         {
