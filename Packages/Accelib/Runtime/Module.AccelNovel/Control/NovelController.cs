@@ -174,7 +174,7 @@ namespace Accelib.Module.AccelNovel.Control
             
             // 시나리오 라벨 재생
             if(currScenario.ShowNotice)
-                scnLabel.SetActiveDelayed(1.5f, currScenario.ScnName).Forget();
+                scnLabel?.SetActiveDelayed(1.5f, currScenario.ScnName).Forget();
             
             // 액션 초기화
             foreach (var (_, controller) in actionControllers) 
@@ -223,8 +223,8 @@ namespace Accelib.Module.AccelNovel.Control
             }
             
             // 스페이스/엔터로 클릭
-            if(Input.GetKeyDown(KeyCode.Space) || Input.GetKeyDown(KeyCode.Return))
-                OnClick();
+            // if(Input.GetKeyDown(KeyCode.Space) || Input.GetKeyDown(KeyCode.Return))
+                // OnClick();
             
             // 오토플레이 조건 검사
             if (!isAutoPlaying.Value) return;
