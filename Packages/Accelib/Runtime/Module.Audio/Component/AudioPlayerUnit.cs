@@ -14,7 +14,7 @@ using UnityEngine.Serialization;
 
 namespace Accelib.Module.Audio.Component
 {
-    internal class AudioPlayerUnit : MonoBehaviour
+    public class AudioPlayerUnit : MonoBehaviour
     {
         [Header("Option")]
         [SerializeField] private EasePairTweenConfig fadeTweenConfig;
@@ -60,7 +60,9 @@ namespace Accelib.Module.Audio.Component
 
         [Header("Sources")]
         [SerializeField, ReadOnly] private List<AudioSourceUnit> units;
-        private AudioSourceUnit DefaultUnit => units[0];
+
+        public AudioSourceUnit DefaultUnit => units[0];
+        public bool IsPlaying => DefaultUnit.Source.isPlaying;
 
         private Sequence _fadeSeq;
         

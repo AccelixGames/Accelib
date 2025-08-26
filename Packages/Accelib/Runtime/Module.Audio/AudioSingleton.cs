@@ -19,6 +19,14 @@ namespace Accelib.Module.Audio
         [SerializeField, SerializedDictionary("채널", "유닛")]
         private SerializedDictionary<AudioChannel, AudioPlayerUnit> players;
 
+        public static bool IsPlaying(AudioChannel channel)
+        {
+            if (!TryGetInstance(out var instance)) return false;
+
+            return instance.GetPlayer(channel).IsPlaying;
+        }
+
+        
         internal static void Play(in AudioRefBase audioRef, bool fade)
         {
             if (!audioRef?.Clip) return;
@@ -62,6 +70,13 @@ namespace Accelib.Module.Audio
             
             instance.GetPlayer(in audioRef)?.SwitchFade(audioRef, skipOnSame);
         }
+        
+        public static AudioPlayerUnit GetPlayerUnit(AudioChannel channel)
+        {
+            if (!TryGetInstance(out var instance)) return null;
+
+            return instance.GetPlayer(channel);
+        }
 
         private AudioPlayerUnit GetPlayer(in AudioRefBase audioRef) => 
             audioRef ? GetPlayer(audioRef.Channel) : null;
@@ -94,5 +109,13 @@ namespace Accelib.Module.Audio
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
         private static void Init() => Initialize();
 #endif
+        
+        public static void StopAllChannel(bool fade)
+        {
+            if (!TryGetInstance(out var instance)) return;
+            
+            foreach (var (_, unit) in instance.players) 
+                unit.Stop(fade);
+        }
     }
 }

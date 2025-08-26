@@ -43,12 +43,12 @@ namespace Accelib.Helper
             return $"{min:00}:{sec:00}";
         }
         
-        public bool OnTime(bool skipCount = false)
+        public bool OnTime(bool skipCount = false, float multiplier = 1f)
         {
             if (!IsEnabled) return false;
 
             if (!skipCount && Time < TargetTime) 
-                Time += UnityEngine.Time.deltaTime;
+                Time += UnityEngine.Time.deltaTime * multiplier;
             
             if (Time >= TargetTime)
             {

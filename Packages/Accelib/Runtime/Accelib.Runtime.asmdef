@@ -20,7 +20,10 @@
         "Accelib.AccelixWeb",
         "Unity.Services.Analytics",
         "Unity.Services.Core",
-        "Unity.Services.Core.Environments"
+        "Unity.Services.Core.Environments",
+        "UniTask.Addressables",
+        "Unity.Addressables",
+        "Unity.ResourceManager"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

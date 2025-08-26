@@ -11,9 +11,8 @@ namespace Accelib.Module.Audio.Data._Base
         public abstract float Volume { get; }
         public abstract bool Loop { get; }
         
-//#if UNITY_EDITOR
         public abstract bool ShowLog { get; }
-//#endif
+
         
         public virtual void Play(bool fade = false)
         {

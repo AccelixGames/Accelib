@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using UnityEngine;
 
-namespace Accelib.Editor.GoogleSheet
+namespace Accelib.EditorTool.GoogleSheet
 {
     public static class CsvReader
     {

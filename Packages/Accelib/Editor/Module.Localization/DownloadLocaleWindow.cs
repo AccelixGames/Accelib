@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Accelib.Editor.GoogleSheet;
+using Accelib.EditorTool.GoogleSheet;
 using Accelib.Logging;
 using Accelib.Module.Localization.Architecture;
 using Accelix.Editor;
