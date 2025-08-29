@@ -24,6 +24,10 @@ namespace Accelib.Module.AccelNovel.Model.SO
         [Header("스크립트")]
         [SerializeField] private List<ScriptLine> scriptLines;
         public IReadOnlyList<ScriptLine> ScriptLines => scriptLines;
+        
+        [Header("Maid 스크립트")]
+        [SerializeField] private List<TempDialogueSO> dialogues;
+        public IReadOnlyList<TempDialogueSO> Dialogues => dialogues;
     }
 
 #if UNITY_EDITOR
@@ -97,6 +101,43 @@ namespace Accelib.Module.AccelNovel.Model.SO
             try
             {
                 await LoadGoogleSheetTask();
+                EditorGUIUtility.PingObject(this);
+            }
+            catch (Exception e)
+            {
+                Deb.LogException(e, this);
+            }
+            finally
+            {
+                EditorUtility.ClearProgressBar();
+            }
+        }
+        
+        // Maid Dialogue -> ScriptLine
+        private async UniTask LoadScriptLines()
+        {
+            scriptLines = new List<ScriptLine>();
+
+            for (int i = 0; i < dialogues.Count; ++i)
+            {
+                scriptLines.Add(new ScriptLine()
+                {
+                    label = "",
+                    voiceKey = "",
+                    characterKey = dialogues[i].player ? "player" : dialogues[i].who,
+                    text = dialogues[i].script
+                });
+            }
+            
+            EditorUtility.SetDirty(this);
+        }
+        
+        [ContextMenu(nameof(LoadDialogue))] [Button]
+        private async UniTaskVoid LoadDialogue()
+        {
+            try
+            {
+                await LoadScriptLines();
                 EditorGUIUtility.PingObject(this);
             }
             catch (Exception e)

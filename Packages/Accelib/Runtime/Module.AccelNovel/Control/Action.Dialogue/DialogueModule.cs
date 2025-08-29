@@ -45,7 +45,7 @@ namespace Accelib.Module.AccelNovel.Control.Action.Dialogue
         [ShowNativeProperty] public bool IsShowingText => textWriter.isShowingText;
 
         // 이벤트 등록
-        private void Awake()
+        protected void Awake()
         {
             // 타입라이터 초기화
             textWriter.onTypewriterStart.AddListener(OnTypewriteStart);
@@ -59,7 +59,7 @@ namespace Accelib.Module.AccelNovel.Control.Action.Dialogue
         }
 
         // 종료시 이벤트 구독 다 해제
-        private void OnDestroy()
+        protected void OnDestroy()
         {
             // 타입라이터 이벤트 해제
             textWriter.onTypewriterStart.RemoveListener(OnTypewriteStart);
@@ -72,7 +72,7 @@ namespace Accelib.Module.AccelNovel.Control.Action.Dialogue
         /// <summary>
         /// 다이어로그를 초기화한다. 
         /// </summary>
-        public void Initialize()
+        public virtual void Initialize()
         {
             // 포지션, 알파값 초기화
             scriptHolder.anchoredPosition = showHideTr[1].anchoredPosition;
@@ -111,7 +111,7 @@ namespace Accelib.Module.AccelNovel.Control.Action.Dialogue
         /// <summary>
         /// 다이어로그 창을 띄운다.
         /// </summary>
-        public Sequence Show(bool show)
+        public virtual Sequence Show(bool show)
         {
             if (isEnabled == show) return null;
             
@@ -159,7 +159,7 @@ namespace Accelib.Module.AccelNovel.Control.Action.Dialogue
             return _seq;
         }
 
-        public void SetNameTag(string characterName)
+        public virtual void SetNameTag(string characterName)
         {
             if (string.IsNullOrEmpty(characterName))
             {
@@ -185,7 +185,7 @@ namespace Accelib.Module.AccelNovel.Control.Action.Dialogue
         /// <summary>
         /// 텍스트 재생을 시작한다.
         /// </summary>
-        public void ShowText(string text)
+        public virtual void ShowText(string text)
         {
             text = text.TrimStart().TrimEnd();
             
@@ -200,7 +200,7 @@ namespace Accelib.Module.AccelNovel.Control.Action.Dialogue
         }
         
         // 텍스트 재생을 스킵한다.
-        public void SkipText() => textWriter.SkipTypewriter();
+        public virtual void SkipText() => textWriter.SkipTypewriter();
 
         // 디버그 함수들
 #if UNITY_EDITOR

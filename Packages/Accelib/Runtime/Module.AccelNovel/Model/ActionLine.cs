@@ -18,5 +18,9 @@ namespace Accelib.Module.AccelNovel.Model
 
         [Header("ETC")]
         public bool isAutoSavePoint = false;
+        
+        [Header("Maid")]
+        public bool stateChange = false;
+        public string stateName;
     }
 }

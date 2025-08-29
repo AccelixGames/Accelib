@@ -70,6 +70,21 @@ namespace Accelib.Module.AccelNovel.Control.Action
                     actionLines.Add(actionLine);
                 }
             }
+
+            // Maid
+            if (scenario.Dialogues?.Count > 0)
+            {
+                var idx = 0;
+                for (int i = 0; i < actionLines.Count; ++i)
+                {
+                    if (actionLines[i].key == "dlg")
+                    {
+                        actionLines[i].stateName = scenario.Dialogues[idx].stateName;
+                        actionLines[i].stateChange = scenario.Dialogues[idx].stateChange;
+                        idx++;
+                    }
+                }
+            }
             
             // 반환
             return actionLines;

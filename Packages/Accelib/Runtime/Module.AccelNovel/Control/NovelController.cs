@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Accelib.Helper;
 using Accelib.Logging;
@@ -322,6 +323,14 @@ namespace Accelib.Module.AccelNovel.Control
             
             // 현재 액션 가져오기
             currAction = actionLines[currIndex];
+            // try
+            // {
+            //     
+            // }
+            // catch (Exception e)
+            // {
+            //     dialogueModule.Show(false);
+            // }
             
             // 액션이 빈 액션이라면, 스킵
             if (!actionControllers.TryGetValue(currAction?.key ?? string.Empty, out currController))
