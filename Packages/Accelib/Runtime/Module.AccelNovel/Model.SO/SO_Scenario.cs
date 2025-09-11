@@ -2,7 +2,9 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Accelib.EditorTool.GoogleSheet;
+using Accelib.EditorTool.Google;
+using Accelib.EditorTool.Google.Control.Sheets;
+using Accelib.EditorTool.Google.Control.Utility;
 using Accelib.Logging;
 using Accelix.Accelib.AccelNovel.Model;
 using Cysharp.Threading.Tasks;
@@ -34,7 +36,7 @@ namespace Accelib.Module.AccelNovel.Model.SO
     public partial class SO_Scenario
     {
         [Header("MetaData")]
-        [SerializeField] private GoogleSheetDownloader sheetDownloader;
+        [SerializeField] private GoogleSheetsDownloader_WebAPI sheetDownloader;
 
         public async UniTask LoadGoogleSheetTask(float? customProgress = null)
         {
@@ -44,7 +46,7 @@ namespace Accelib.Module.AccelNovel.Model.SO
             // Download
             progress = customProgress ?? 0f;
             EditorUtility.DisplayProgressBar(title, $"데이터 다운로드중..({progress:P0})", progress);
-            sheetDownloader.SetFormat(GoogleSheetDownloader.Format.Csv);
+            sheetDownloader.SetFormat(GoogleSheetsDownloader_WebAPI.Format.Csv);
             var csv = await sheetDownloader.DownloadAsync();
 
             // Parse

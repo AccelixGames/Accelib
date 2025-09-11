@@ -1,11 +1,14 @@
-﻿using Cysharp.Threading.Tasks;
+﻿#if UNITY_EDITOR
+using Accelib.EditorTool.Google.Control.Utility;
+using Accelib.EditorTool.Google.Model;
+using Cysharp.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.Networking;
 
-namespace Accelib.EditorTool.GoogleSheet
+namespace Accelib.EditorTool.Google.Control.Sheets
 {
-    [CreateAssetMenu(fileName = "googleSheetDownloader", menuName = "Accelib.Editor/GoogleSheetDownloader", order = 0)]
-    public class GoogleSheetDownloader : ScriptableObject
+    [CreateAssetMenu(fileName = "(Google) SheetDownloader-WebAPI", menuName = "Accelib.Google/SheetDownloader-WebAPI", order = 1)]
+    public class GoogleSheetsDownloader_WebAPI : GoogleSheetsDownloaderBase
     {
         public enum Mode {Default, Website}
         public enum Format {Tsv, Csv}
@@ -13,10 +16,9 @@ namespace Accelib.EditorTool.GoogleSheet
         private const string BaseURL = "https://docs.google.com/spreadsheets/d";
         private const string BaseURLWeb = "https://docs.google.com/spreadsheets/d/e";
 
+        [Header("#다운로드 모드")]
         [SerializeField] private Mode mode;
         [SerializeField] private Format format = Format.Tsv;
-        [SerializeField, TextArea] private string key = "";
-        [SerializeField, TextArea] private string gid;
 
         public Format CurrFormat => format;
         
@@ -29,20 +31,37 @@ namespace Accelib.EditorTool.GoogleSheet
             UnityEditor.AssetDatabase.SaveAssetIfDirty(this);
 #endif
         }
-        
-        public async UniTask<string> DownloadAsync()
+
+        public override async UniTask<JSheetData> DownloadAsSheetDataAsync()
         {
-            if (string.IsNullOrEmpty(key) || string.IsNullOrEmpty(gid))
+            var raw = await DownloadAsync();
+            var sheetData = new JSheetData
             {
-                Debug.LogError("[구글시트] key 혹은 gid가 비어있어, 다운로드할 수 없습니다.", this);
+                range = Range,
+                majorDimension = "ROWS"
+            };
+            
+            if (format == Format.Tsv)
+                sheetData.values = TsvReader.Read(raw);
+            else if (format == Format.Csv) 
+                sheetData.values = CsvReader.Read(raw);
+            
+            return sheetData;
+        }
+
+        public override async UniTask<string> DownloadAsync()
+        {
+            if (string.IsNullOrEmpty(SheetId) || string.IsNullOrEmpty(Range))
+            {
+                Debug.LogError("[구글시트] sheetID 혹은 range가 비어있어, 다운로드할 수 없습니다.", this);
                 return null;
             }
 
             var form = format == Format.Tsv ? "tsv" : "csv"; 
             var url = "";
             url = mode == Mode.Default ? 
-                $"{BaseURL}/{key}/export?format={form}&gid={gid}" : 
-                $"{BaseURLWeb}/{key}/pub?gid={gid}&single=true&output={form}";
+                $"{BaseURL}/{SheetId}/export?format={form}&gid={Range}" : 
+                $"{BaseURLWeb}/{SheetId}/pub?gid={Range}&single=true&output={form}";
             
             Debug.Log($"[구글시트] 데이터 다운로드 시작: {url}", this);
             
@@ -60,3 +79,4 @@ namespace Accelib.EditorTool.GoogleSheet
         }
     }
 }
+#endif

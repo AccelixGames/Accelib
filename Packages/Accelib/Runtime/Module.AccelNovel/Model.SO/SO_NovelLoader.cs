@@ -3,7 +3,8 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using Accelib.EditorTool.GoogleSheet;
+using Accelib.EditorTool.Google.Control.Sheets;
+using Accelib.EditorTool.Google.Control.Utility;
 using Accelib.Logging;
 using Cysharp.Threading.Tasks;
 using NaughtyAttributes;
@@ -18,7 +19,7 @@ namespace Accelib.Module.AccelNovel.Model.SO
         [SerializeField] private SO_NovelConfig config;
         
         [Header("캐릭터")]
-        [SerializeField] private GoogleSheetDownloader charDownloader;
+        [SerializeField] private GoogleSheetsDownloader_WebAPI charDownloader;
         [SerializeField, ReadOnly, TextArea] private string savePath;
 
         [Button]
@@ -52,7 +53,7 @@ namespace Accelib.Module.AccelNovel.Model.SO
                 
                 // Download
                 EditorUtility.DisplayProgressBar(title, "데이터 다운로드중..", 0f);
-                charDownloader.SetFormat(GoogleSheetDownloader.Format.Csv);
+                charDownloader.SetFormat(GoogleSheetsDownloader_WebAPI.Format.Csv);
                 var csv = await charDownloader.DownloadAsync();
 
                 // Parse
