@@ -4,7 +4,7 @@ using UnityEngine.Networking;
 
 namespace Accelib.EditorTool.GoogleSheet
 {
-    [CreateAssetMenu(fileName = "googleSheetDownloader", menuName = "Accelix-GoogleSheetDownloader", order = 0)]
+    [CreateAssetMenu(fileName = "googleSheetDownloader", menuName = "Accelib.Editor/GoogleSheetDownloader", order = 0)]
     public class GoogleSheetDownloader : ScriptableObject
     {
         public enum Mode {Default, Website}
@@ -17,13 +17,17 @@ namespace Accelib.EditorTool.GoogleSheet
         [SerializeField] private Format format = Format.Tsv;
         [SerializeField, TextArea] private string key = "";
         [SerializeField, TextArea] private string gid;
+
+        public Format CurrFormat => format;
         
         public void SetFormat(Format form)
         {
             format = form;
             
+#if UNITY_EDITOR
             UnityEditor.EditorUtility.SetDirty(this);
             UnityEditor.AssetDatabase.SaveAssetIfDirty(this);
+#endif
         }
         
         public async UniTask<string> DownloadAsync()

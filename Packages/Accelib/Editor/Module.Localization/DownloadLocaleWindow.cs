@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Accelib.EditorTool.GoogleSheet;
+using Accelib.Extensions;
 using Accelib.Logging;
 using Accelib.Module.Localization.Architecture;
 using Accelix.Editor;
@@ -13,15 +14,17 @@ namespace Accelib.Editor.Module.Localization
 {
     public class DownloadLocaleWindow : EditorWindow
     {
+        private const int FirstRow = 3;
+        
         private static readonly Vector2 MinSize = new(400, 500);
         private static readonly Vector2 MaxSize = new(800, 500);
 
         private EditorObjectField<GoogleSheetDownloader> _sheetDownloader;
         private EditorObjectField<LocaleSO> _koreanLocale;
         private EditorObjectField<LocaleSO> _englishLocale;
-        // private EditorObjectField<LocaleSO> _japaneseLocale;
-        // private EditorObjectField<LocaleSO> _chineseTraditionalLocale;
-        // private EditorObjectField<LocaleSO> _chineseSimplifiedLocale;
+        private EditorObjectField<LocaleSO> _japaneseLocale;
+        private EditorObjectField<LocaleSO> _chineseTraditionalLocale;
+        private EditorObjectField<LocaleSO> _chineseSimplifiedLocale;
 
         [MenuItem("Accelix/Download Locale")]
         private static void Open()
@@ -39,9 +42,9 @@ namespace Accelib.Editor.Module.Localization
             _sheetDownloader = new EditorObjectField<GoogleSheetDownloader>("Locale Sheet");
             _koreanLocale = new EditorObjectField<LocaleSO>(SystemLanguage.Korean.ToString());
             _englishLocale = new EditorObjectField<LocaleSO>(SystemLanguage.English.ToString());
-            // _japaneseLocale = new EditorObjectField<LocaleSO>(SystemLanguage.Japanese.ToString());
-            // _chineseSimplifiedLocale = new EditorObjectField<LocaleSO>(SystemLanguage.ChineseSimplified.ToString());
-            // _chineseTraditionalLocale = new EditorObjectField<LocaleSO>(SystemLanguage.ChineseTraditional.ToString());
+            _japaneseLocale = new EditorObjectField<LocaleSO>(SystemLanguage.Japanese.ToString());
+            _chineseSimplifiedLocale = new EditorObjectField<LocaleSO>(SystemLanguage.ChineseSimplified.ToString());
+            _chineseTraditionalLocale = new EditorObjectField<LocaleSO>(SystemLanguage.ChineseTraditional.ToString());
 
             Repaint();
         }
@@ -61,10 +64,9 @@ namespace Accelib.Editor.Module.Localization
                 EditorGUILayout.LabelField("언어 데이터 연결", EditorStyles.boldLabel);
                 _koreanLocale.GUILayout("한글");
                 _englishLocale.GUILayout("영어");
-                // _japaneseLocale.GUILayout("일본어");
-                // _chineseSimplifiedLocale.GUILayout("중문(간체)");
-                // _chineseTraditionalLocale.GUILayout("중문(번체)");
-
+                _japaneseLocale.GUILayout("일본어");
+                _chineseSimplifiedLocale.GUILayout("중문(간체)");
+                _chineseTraditionalLocale.GUILayout("중문(번체)");
                 
                 if (GUILayout.Button("다운로드")) 
                     OnClickDownload().Forget();
@@ -74,9 +76,9 @@ namespace Accelib.Editor.Module.Localization
                     _sheetDownloader.SaveOnChanged();
                     _koreanLocale.SaveOnChanged();
                     _englishLocale.SaveOnChanged();
-                    // _japaneseLocale.SaveOnChanged();
-                    // _chineseSimplifiedLocale.SaveOnChanged();
-                    // _chineseTraditionalLocale.SaveOnChanged();
+                    _japaneseLocale.SaveOnChanged();
+                    _chineseSimplifiedLocale.SaveOnChanged();
+                    _chineseTraditionalLocale.SaveOnChanged();
                 
                     Repaint();
                 }
@@ -92,14 +94,13 @@ namespace Accelib.Editor.Module.Localization
         private async UniTask<bool> OnClickDownload()
         {
             if(_sheetDownloader == null) return BeepWarning("구글 시트 다운로더가 없습니다.");
-            if(_koreanLocale == null) return BeepWarning("한글이 연결되지 않았습니다.");
-            if(_englishLocale == null) return BeepWarning("영어가 연결되지 않았습니다.");
-            // if(_japaneseLocale == null) return BeepWarning("일본어가 연결되지 않았습니다.");
-            // if(_chineseSimplifiedLocale == null) return BeepWarning("중국어(간체)가 연결되지 않았습니다.");
-            // if(_chineseTraditionalLocale == null) return BeepWarning("중국어(번체)가 연결되지 않았습니다.");
+            if (_sheetDownloader.asset.CurrFormat is not GoogleSheetDownloader.Format.Csv) return BeepWarning("CSV 모드로 다운로드 해주세요.");
+            if (_koreanLocale == null && _englishLocale == null && _japaneseLocale == null &&
+                _chineseSimplifiedLocale == null && _chineseTraditionalLocale == null)
+                return BeepWarning("연결된 언어 데이터가 없습니다.");
 
             const string dialogueTitle = "로케일 다운로더";
-            EditorUtility.DisplayProgressBar(dialogueTitle, $"tsv 다운로드 중..", 0f);
+            EditorUtility.DisplayProgressBar(dialogueTitle, $"csv 다운로드 중..", 0f);
 
             try
             {
@@ -111,48 +112,38 @@ namespace Accelib.Editor.Module.Localization
 
                 var koDict = new Dictionary<string, string>();
                 var enDict = new Dictionary<string, string>();
-                // var jaDict = new Dictionary<string, string>();
-                // var zhchDict = new Dictionary<string, string>();
-                // var zhtwDict = new Dictionary<string, string>();
+                var jaDict = new Dictionary<string, string>();
+                var zhchDict = new Dictionary<string, string>();
+                var zhtwDict = new Dictionary<string, string>();
 
                 var parsedArray = CsvReader.Read(csv);
                 var rowCount = parsedArray.Count;
                 
-                for (var i = 3; i < rowCount; i++)
+                for (var i = FirstRow; i < rowCount; i++)
                 {
                     // 행 한줄 구하기
                     var parsed = parsedArray[i];
-                    //
-                    // // 13번 아스키 문자 삭제 (이상한 줄바꿈)
-                    // var nullId = rowList.LastIndexOf((char)13);
-                    // if(nullId > 0)
-                    //     rowList = rowList.Remove(nullId, 1);
-                    //
-                    // // 행을 한칸씩 파싱
-                    // var parsed = rowList.Split('\t');
                 
                     // 빈 열 스킵
-                    if (parsed.Count != 4) continue;
                     if (parsed.All(string.IsNullOrEmpty)) continue;
                 
                     // 키
-                    var key = parsed[0];
+                    var key = parsed.GetOrDefault(0);
                     // 노트
-                    var note = parsed[1];
+                    // var note = parsed.GetOrDefault(1);
                     // 각 언어별로 딕셔너리 작성
-                    koDict[key] = parsed[2];
-                    enDict[key] = parsed[3];
-                    // Deb.Log($"{key}: {parsed[2]}, {parsed[3]}");
-                    // jaDict[key] = parsed[4];
-                    // zhchDict[key] = parsed[5];
-                    // zhtwDict[key] = parsed[6];
+                    koDict[key] =   parsed.GetOrDefault(2);
+                    enDict[key] =   parsed.GetOrDefault(3);
+                    jaDict[key] =   parsed.GetOrDefault(4);
+                    zhchDict[key] = parsed.GetOrDefault(5);
+                    zhtwDict[key] = parsed.GetOrDefault(6);
                 }
                 
-                _koreanLocale.asset.FromDictionary(koDict);
-                _englishLocale.asset.FromDictionary(enDict);
-                // _japaneseLocale.asset.FromDictionary(jaDict);
-                // _chineseSimplifiedLocale.asset.FromDictionary(zhchDict);
-                // _chineseTraditionalLocale.asset.FromDictionary(zhtwDict);
+                _koreanLocale?.asset?.FromDictionary(koDict);
+                _englishLocale?.asset?.FromDictionary(enDict);
+                _japaneseLocale?.asset?.FromDictionary(jaDict);
+                _chineseSimplifiedLocale?.asset?.FromDictionary(zhchDict);
+                _chineseTraditionalLocale?.asset?.FromDictionary(zhtwDict);
             }
             catch (Exception e)
             {
@@ -163,7 +154,7 @@ namespace Accelib.Editor.Module.Localization
                 EditorUtility.ClearProgressBar();
             }
             
-            EditorGUIUtility.PingObject(_koreanLocale.asset);
+            EditorGUIUtility.PingObject(_koreanLocale?.asset);
             return true;
         }
 

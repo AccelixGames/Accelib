@@ -21,7 +21,7 @@ namespace Accelix.Editor
         
         public void SaveOnChanged()
         {
-            if (asset == null) return;
+            if (!asset) return;
 
             var newPath = AssetDatabase.GetAssetPath(asset);
             if (assetPath != newPath)

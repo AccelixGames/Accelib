@@ -15,6 +15,7 @@ namespace Accelib.Effect
         [Header("설정")] 
         [SerializeField] private FadeMode startMode = FadeMode.In;
         [SerializeField] private Vector3 disabledScale = Vector3.one * 0.0001f;
+        [SerializeField] private bool ignoreTimeScale = false;
 
         private Sequence _seq;
         
@@ -31,7 +32,8 @@ namespace Accelib.Effect
         public Sequence DoEffectIn()
         {
             _seq?.Kill();
-            _seq = DOTween.Sequence().SetLink(gameObject);
+            _seq = DOTween.Sequence().SetLink(gameObject)
+                .SetUpdate(ignoreTimeScale);
             _seq.AppendCallback(() =>
             {
                 gameObject.SetActive(true);
@@ -50,7 +52,8 @@ namespace Accelib.Effect
             if (!gameObject.activeSelf) return null;
 
             _seq?.Kill();
-            _seq = DOTween.Sequence().SetLink(gameObject);
+            _seq = DOTween.Sequence().SetLink(gameObject)
+                .SetUpdate(ignoreTimeScale);
             _seq.Append(transform.DOScale(disabledScale, config.duration)
                 .SetEase(config.easeB ,config.overshoot)
                 .SetDelay(config.delayB));

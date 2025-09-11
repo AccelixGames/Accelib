@@ -6,7 +6,7 @@ using UnityEngine;
 
 namespace Accelib.Module.Localization.Architecture
 {
-    [CreateAssetMenu(fileName = "(Locale) Name", menuName = "Accelib/LocaleSO")]
+    [CreateAssetMenu(fileName = "(Locale) Name", menuName = "Accelib.Utility/LocaleSO")]
     public class LocaleSO : ScriptableObject
     {
         [field: Header("언어")] 

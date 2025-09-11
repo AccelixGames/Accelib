@@ -1,10 +1,10 @@
 using System.Collections.Generic;
 using Accelib.Core;
 using Accelib.Logging;
-using Accelib.Module.AccelNovel.Control.Resource.Internal;
 using Cysharp.Threading.Tasks;
 using NaughtyAttributes;
 using UnityEngine;
+using Accelib.Module.AccelNovel.Control.Resource.Internal;
 
 namespace Accelib.Module.AccelNovel.Control.Resource
 {
