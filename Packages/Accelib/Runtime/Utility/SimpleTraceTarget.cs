@@ -43,6 +43,11 @@ namespace Accelib.Utility
             transform.position = pos;
         }
 
+        private void Rotate()
+        {
+            transform.rotation = target.rotation;
+        }
+
         private void Update()
         {
             if (mode == UpdateMode.Update) Trace();
