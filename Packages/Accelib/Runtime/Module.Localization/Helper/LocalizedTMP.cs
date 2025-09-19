@@ -79,7 +79,7 @@ namespace Accelib.Module.Localization.Helper
             }
 
             // 텍스트 변경
-            TMP.text = localizedString;
+            TMP.SetText(localizedString);
         }
 
         /// <summary>

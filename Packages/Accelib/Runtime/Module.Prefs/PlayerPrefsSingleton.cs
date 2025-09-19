@@ -18,7 +18,7 @@ namespace Accelib.Module.Prefs
         
         [Header("Debug")]
         [SerializeReference, SerializeField] private List<PrefsVar> _prefsVars = new();
-        [SerializeField, ReadOnly] private bool isInitialized = false;
+        [SerializeField, NaughtyAttributes.ReadOnly] private bool isInitialized = false;
         public bool IsInitialized() => isInitialized;
         
         public int Priority => 100;
