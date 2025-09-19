@@ -18,6 +18,7 @@ namespace Accelib.Effect
         [Header("설정")] 
         [SerializeField] private FadeMode startFadeMode = FadeMode.None;
         [SerializeField] private bool ignoreTimeScale = false;
+        [SerializeField] private bool disableOnFadeOut = false;
 
         private Tweener _tween;
 
@@ -70,8 +71,10 @@ namespace Accelib.Effect
             _tween = group.DOFade(0f, config.durationA)
                 .SetUpdate(ignoreTimeScale)
                 .SetEase(config.easeB)
-                .SetDelay(config.delayB)
-                .OnComplete(() => gameObject.SetActive(false));
+                .SetDelay(config.delayB);
+                
+            if(disableOnFadeOut) 
+                _tween.OnComplete(() => gameObject.SetActive(false));
 
             return _tween;
         }
