@@ -18,31 +18,31 @@ namespace Accelib.Module.AccelNovel.Control.Action.Dialogue
     public class DialogueModule : MonoBehaviour
     {
         [Header("Holder")]
-        [SerializeField] private Canvas canvas;
-        [SerializeField] private RectTransform scriptHolder;
-        [SerializeField] private CanvasGroup scriptCanvasGroup;
+        [SerializeField] protected Canvas canvas;
+        [SerializeField] protected RectTransform scriptHolder;
+        [SerializeField] protected CanvasGroup scriptCanvasGroup;
 
         [Header("Detailed")]
-        [SerializeField] private SimpleFadeEffect nameTagFader;
-        [SerializeField] private TypewriterCore nameTmp;
-        [SerializeField] private TypewriterByCharacter textWriter;
-        [SerializeField] private GameObject indicator;
+        [SerializeField] protected SimpleFadeEffect nameTagFader;
+        [SerializeField] protected TypewriterCore nameTmp;
+        [SerializeField] protected TypewriterByCharacter textWriter;
+        [SerializeField] protected GameObject indicator;
 
         [Header("Tween")]
-        [SerializeField] private RectTransform[] showHideTr;
-        [SerializeField] private EasePairTweenConfig showHideTween;
+        [SerializeField] protected RectTransform[] showHideTr;
+        [SerializeField] protected EasePairTweenConfig showHideTween;
 
         [Header("State")]
-        [SerializeField] private IntVariable textOutputMode;
-        [SerializeField] private FloatVariable textSpd;
-        [SerializeField, ReadOnly] private float waitForNormalChars;
-        [SerializeField, ReadOnly] private float waitMiddle;
-        [SerializeField, ReadOnly] private float waitLong;
-        [SerializeField, ReadOnly] private bool isEnabled;
+        [SerializeField] protected IntVariable textOutputMode;
+        [SerializeField] protected FloatVariable textSpd;
+        [SerializeField, ReadOnly] protected float waitForNormalChars;
+        [SerializeField, ReadOnly] protected float waitMiddle;
+        [SerializeField, ReadOnly] protected float waitLong;
+        [SerializeField, ReadOnly] protected bool isEnabled;
 
-        private Sequence _seq;
-
-        [ShowNativeProperty] public bool IsShowingText => textWriter.isShowingText;
+        protected Sequence _seq;
+        
+        [ShowNativeProperty] public bool IsShowingText => textWriter != null && textWriter.isShowingText;
 
         // 이벤트 등록
         protected void Awake()
@@ -92,7 +92,7 @@ namespace Accelib.Module.AccelNovel.Control.Action.Dialogue
             nameTagFader.gameObject.SetActive(false);
         }
         
-        private void OnTextSpdChanged(float spd)
+        protected void OnTextSpdChanged(float spd)
         {
             // 타입라이터 스피드 변경
             var multiplier = NovelUtility.MultiplierValue(spd);
@@ -104,9 +104,9 @@ namespace Accelib.Module.AccelNovel.Control.Action.Dialogue
         }
         
         // 타입라이터 시작 이벤트
-        private void OnTypewriteStart() => indicator.SetActive(false);
+        protected void OnTypewriteStart() => indicator.SetActive(false);
         // 타입라이트 종료 후 텍스트가 모두 보여졌을 때 실행되는 이벤트
-        private void OnTextShowed() => indicator.SetActive(true);
+        protected void OnTextShowed() => indicator.SetActive(true);
 
         /// <summary>
         /// 다이어로그 창을 띄운다.
@@ -124,7 +124,7 @@ namespace Accelib.Module.AccelNovel.Control.Action.Dialogue
             var ease = show ? showHideTween.easeA : showHideTween.easeB;
             var targetPos = (show ? showHideTr[0] : showHideTr[1]).anchoredPosition;
             var targetAlpha = show ? 1f : 0f;
-
+            
             // 위치 트윈
             _seq.Join(scriptHolder.DOAnchorPosY(targetPos.y, duration).SetEase(ease));
             // 알파 트윈
@@ -153,7 +153,11 @@ namespace Accelib.Module.AccelNovel.Control.Action.Dialogue
             if (!show)
             {
                 // 종료시 캔버스 비활성화
-                _seq.OnComplete(() => canvas.gameObject.SetActive(false));
+                _seq.OnComplete(() =>
+                {
+                    Debug.Log("캔버스 비활성화!");
+                    canvas.gameObject.SetActive(false);
+                });
             }
             
             return _seq;
@@ -161,6 +165,8 @@ namespace Accelib.Module.AccelNovel.Control.Action.Dialogue
 
         public virtual void SetNameTag(string characterName)
         {
+            if(nameTagFader == null || nameTmp == null) return;
+            
             if (string.IsNullOrEmpty(characterName))
             {
                 if (nameTagFader.gameObject.activeSelf)
