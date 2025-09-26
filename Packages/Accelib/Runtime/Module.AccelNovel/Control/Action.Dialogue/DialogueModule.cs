@@ -155,7 +155,6 @@ namespace Accelib.Module.AccelNovel.Control.Action.Dialogue
                 // 종료시 캔버스 비활성화
                 _seq.OnComplete(() =>
                 {
-                    Debug.Log("캔버스 비활성화!");
                     canvas.gameObject.SetActive(false);
                 });
             }

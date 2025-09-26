@@ -1,7 +1,6 @@
 using System.Collections.Generic;
 using NaughtyAttributes;
 using UnityEngine;
-using UnityEngine.Serialization;
 
 namespace Accelib.Module.AccelNovel.Maid
 {
@@ -26,7 +25,7 @@ namespace Accelib.Module.AccelNovel.Maid
         public EFromWhere fromWhere;
     }
     
-    [CreateAssetMenu(fileName = "SO_MaidDialogue", menuName = "Scriptable Objects/SO_MaidDialogue")]
+    [CreateAssetMenu(fileName = "SO_MaidDialogue", menuName = "Maid_Scenario/Dialogue/SO_MaidDialogue")]
     public class SO_MaidDialogue : ScriptableObject
     {
         [field:Header("누가 말하지?")]
@@ -50,7 +49,7 @@ namespace Accelib.Module.AccelNovel.Maid
         [field: SerializeField, ShowIf("moveActor")] public EWhenMove whenMove { get; private set; }
         [field: SerializeField, ShowIf("moveActor"),Tooltip("새 씬을 열어야 하는지?")] public bool useNewScn{ get; private set;}
         private bool scnField => moveActor && useNewScn;
-        [field: SerializeField,ShowIf("scnField"),Scene] public string DialogueScn { get; private set; }
+        [field: SerializeField,ShowIf("scnField"),Scene] public SO_MaidScenarioBase nextScenario { get; private set; }
         
         [field:Header("Actor 추가")]
         [field: SerializeField] public bool addActor { get; private set; }
