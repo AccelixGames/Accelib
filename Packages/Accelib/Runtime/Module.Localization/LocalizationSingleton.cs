@@ -31,7 +31,7 @@ namespace Accelib.Module.Localization
         public void Init()
         {
             var systemLang = Application.systemLanguage;
-            Deb.Log($"시스템 언어: {systemLang}, 저장된 언어: {(SystemLanguage)currLangId.Value}");
+            // Deb.Log($"시스템 언어: {systemLang}, 저장된 언어: {(SystemLanguage)currLangId.Value}");
             
             // 저장된 언어가 없다면,
             if(!IsSupportedLang(CurrLang))
