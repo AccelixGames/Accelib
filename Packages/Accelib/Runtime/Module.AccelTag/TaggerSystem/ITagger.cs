@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Runtime.CompilerServices;
 
@@ -13,18 +14,20 @@ namespace Accelib.Module.AccelTag.TaggerSystem
 
         public bool AnyTagsMatch(in IEnumerable<SO_AccelTag> tags)
         {
+            if (tags == null) return true;
             if (!tags.Any()) return true;
             return tags.Any(HasTag);
         }
-
+        
         public bool AllTagsMatch(in IEnumerable<SO_AccelTag> tags)
         {
-            if (!tags.Any()) return true;
-            return tags.All(HasTag);
+            if (tags == null) return true;
+            return !tags.Any() || tags.All(HasTag);
         }
 
         public bool NoTagsMatch(in IEnumerable<SO_AccelTag> tags)
         {
+            if (tags == null) return true;
             if (!tags.Any()) return true;
             return !tags.Any(HasTag);
         }
