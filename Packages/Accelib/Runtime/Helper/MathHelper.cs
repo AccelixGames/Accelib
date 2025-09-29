@@ -26,12 +26,11 @@ namespace Accelib.Helper
         /// <param name="input">The Quaternion rotation to be scaled.</param>
         /// <param name="scalar">The scale by which to multiply the rotation.</param>
         /// <returns>The scale adjusted Quaternion.</returns>
-        public static Quaternion Multiply(Quaternion input, float scalar)
-        {
-            return new Quaternion(input.x * scalar, input.y * scalar, input.z * scalar, input.w * scalar);
-        }
-        
-         /// <summary>
+        public static Quaternion Multiply(Quaternion input, float scalar) => new(input.x * scalar, input.y * scalar, input.z * scalar, input.w * scalar);
+
+        public static Vector3 Multiply(Vector3 a, Vector3 b) => new(a.x * b.x, a.y * b.y, a.z * b.z);
+
+        /// <summary>
     /// Calculates the axis-wise inverse of a Vector3.
     /// </summary>
     /// <param name="vec">The Vector3 which axes are to be inversed.</param>
