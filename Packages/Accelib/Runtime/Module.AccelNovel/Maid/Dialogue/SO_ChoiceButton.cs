@@ -59,9 +59,9 @@ namespace Accelib.Module.AccelNovel.Maid
 
         public void Selected()
         {
-            Debug.Log($"{name} Selected!!!!!");
+            //Debug.Log($"{name} Selected!!!!!");
             
-            chose = true;
+            //chose = true;
             
             // 이후 씬 연결이 있다면
             if(hasAfterScn)

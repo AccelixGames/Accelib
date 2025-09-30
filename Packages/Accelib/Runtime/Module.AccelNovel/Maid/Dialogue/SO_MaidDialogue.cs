@@ -43,13 +43,15 @@ namespace Accelib.Module.AccelNovel.Maid
         [field:Header("선택지")]
         [field: SerializeField] public bool hasChoice { get; private set; }
         [field:SerializeField, ShowIf("hasChoice")] public List<SO_ChoiceButton> choiceButtons;
-        
-        [field:Header("Actor 이동")]
+
+        private bool move => moveActor || addActor;
+        [field: Header("씬 이동")] 
+        [field: SerializeField, ShowIf("move")] public EWhenMove whenMove { get; private set; }
         [field: SerializeField] public bool moveActor { get; private set; }
-        [field: SerializeField, ShowIf("moveActor")] public EWhenMove whenMove { get; private set; }
         [field: SerializeField, ShowIf("moveActor"),Tooltip("새 씬을 열어야 하는지?")] public bool useNewScn{ get; private set;}
         private bool scnField => moveActor && useNewScn;
-        [field: SerializeField,ShowIf("scnField"),Scene] public SO_MaidScenarioBase nextScenario { get; private set; }
+        [field: SerializeField,ShowIf("scnField"),Scene] public string nextScn { get; private set; }
+        [field: SerializeField,ShowIf("scnField")] public bool usePlayerCam { get; private set; }
         
         [field:Header("Actor 추가")]
         [field: SerializeField] public bool addActor { get; private set; }

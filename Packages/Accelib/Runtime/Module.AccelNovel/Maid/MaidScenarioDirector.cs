@@ -13,6 +13,14 @@ namespace Accelib.Module.AccelNovel.Maid
         Bukuki = 3
     }
 
+    public enum EWhoSpawn
+    {
+        Common = 0,
+        Camera = 1,
+        Player = 2,
+        Maid = 3,
+    }
+
 #region Flags
 
     /// <summary> 음식 오픈 플래그 </summary>
@@ -166,6 +174,7 @@ namespace Accelib.Module.AccelNovel.Maid
         private static readonly List<SO_MaidGiftScenario> GiftScns = new();
         private static readonly List<SO_MaidToyScenario> ToyScns = new();
         
+        
         private static readonly List<SO_MaidStartScenario> StartBuffer = new (capacity: 128);
         private static readonly List<SO_MaidDailyScenario> DailyBuffer = new (capacity: 128);
         private static readonly List<SO_MaidFavorScenario> FavorBuffer = new (capacity: 128);
@@ -204,7 +213,7 @@ namespace Accelib.Module.AccelNovel.Maid
             // 수치 비교
             var figure = filter.Figure;
                 
-            if(figure.Level < f.CurrentFigure.Level) return false;
+            if(figure.Level > f.CurrentFigure.Level) return false;
             
             return true;
         }
@@ -229,9 +238,9 @@ namespace Accelib.Module.AccelNovel.Maid
             // 수치 비교
             var figure = filter.Figure;
                 
-            if(figure.Bond < f.CurrentFigure.Bond) return false;
-            if(figure.Relationship < f.CurrentFigure.Relationship) return false;
-            if(figure.Level < f.CurrentFigure.Level) return false;
+            if(figure.Bond > f.CurrentFigure.Bond) return false;
+            if(figure.Relationship > f.CurrentFigure.Relationship) return false;
+            if(figure.Level > f.CurrentFigure.Level) return false;
             
             return true;
         }
@@ -246,8 +255,8 @@ namespace Accelib.Module.AccelNovel.Maid
             // 수치 비교
             var figure = filter.Figure;
                 
-            if(figure.Relationship < f.CurrentFigure.Relationship) return false;
-            if(figure.Level < f.CurrentFigure.Level) return false;
+            if(figure.Relationship > f.CurrentFigure.Relationship) return false;
+            if(figure.Level > f.CurrentFigure.Level) return false;
             
             return true;
         }
@@ -276,7 +285,7 @@ namespace Accelib.Module.AccelNovel.Maid
                 
             // 플래그 비교
             var requiredFlags = filter.RequiredToys;
-                
+            
             if((requiredFlags & f.CurrentToy) != requiredFlags) return false;
 
             return true;
@@ -388,17 +397,62 @@ namespace Accelib.Module.AccelNovel.Maid
     
     public static partial class MaidScenarioDirector
     {
-        public static Action<SO_MaidScenarioBase> addScenario;
-        public static GameObject mainActor;
+        public static Action<SO_MaidScenarioBase> addScenario; // 대화 추가
+        public static Action<Transform> movePoint; // Actor 좌표 이동
+        public static Action<GameObject> addActor; // Actor 추가
+        public static Action<GameObject> leaveActor; // Actor 떠나기
+        
+        
+        public static GameObject mainActor; // 메인 대화 주인공
+        public static List<GameObject> sceneActors = new(); // 대화에 참여중인 Actor
+        public static List<Transform> preSpawnPoint = new(); // 대화에 참여중인 Actor
+        public static List<Transform> sceneSpawnPoint = new(); // 대화에 참여중인 Actor
         public static int mainUnumber;
+        
+        
         public static void PublishAddScenario(SO_MaidScenarioBase scenario) => addScenario?.Invoke(scenario);
+        public static void PublishMoveScene(Transform t) => movePoint?.Invoke(t);
+        public static void PublishAddActor(GameObject actor)
+        {
+            sceneActors.Add(actor);
+            
+            addActor?.Invoke(actor);
+        }
+
+        public static void LeaveActor(GameObject actor)
+        {
+            sceneActors.Remove(actor);
+            
+            leaveActor?.Invoke(actor);
+        }
 
         public static void SetScenarioMainActor(GameObject actor, int uNum)
         {
             mainActor = actor;
+            sceneActors.Add(actor);
+            
             mainUnumber = uNum;
-        } 
-        
+        }
+
+        public static void ResetScenario()
+        {
+            mainActor = null;
+            sceneActors.Clear();
+            
+            mainUnumber = -1;
+        }
+
+        public static void SetScnSpawnPoints(Transform[] spawnPoints)
+        {
+            sceneSpawnPoint.Clear();
+            sceneSpawnPoint.AddRange(spawnPoints);
+        }
+
+        public static void SetActorPosRot(GameObject actor, Transform spawnPoint)
+        {
+            actor.transform.SetPositionAndRotation(spawnPoint.position, spawnPoint.rotation);
+            
+        }
         
     } 
 
