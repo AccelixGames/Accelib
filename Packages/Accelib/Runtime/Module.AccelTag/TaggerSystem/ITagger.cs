@@ -21,15 +21,23 @@ namespace Accelib.Module.AccelTag.TaggerSystem
         
         public bool AllTagsMatch(in IEnumerable<SO_AccelTag> tags)
         {
-            if (tags == null) return true;
-            return !tags.Any() || tags.All(HasTag);
+            if (tags == null) return true; ;
+            if (!tags.Any()) return true;
+            return tags.All(HasTag);
         }
-
-        public bool NoTagsMatch(in IEnumerable<SO_AccelTag> tags)
+        
+        public bool AnyTagsNoMatch(in IEnumerable<SO_AccelTag> tags)
         {
             if (tags == null) return true;
             if (!tags.Any()) return true;
             return !tags.Any(HasTag);
+        }
+
+        public bool AllTagsNoMatch(in IEnumerable<SO_AccelTag> tags)
+        {
+            if (tags == null) return true;
+            if (!tags.Any()) return true;
+            return !tags.All(HasTag);
         }
     }
 }

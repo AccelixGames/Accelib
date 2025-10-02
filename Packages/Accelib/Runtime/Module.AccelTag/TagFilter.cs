@@ -27,17 +27,17 @@ namespace Accelib.Module.AccelTag
         {
             var allowedResult = allowedRule switch
             {
-                ETagRegex.All => tagger.AllTagsMatch(allowed),
-                ETagRegex.Any => tagger.AnyTagsMatch(allowed),
+                ETagRegex.All => tagger?.AllTagsMatch(allowed),
+                ETagRegex.Any => tagger?.AnyTagsMatch(allowed),
                 _ => true
-            };
+            } ?? allowed.Count <= 0;
             
             var disallowedResult = disallowedRule switch
             {
-                ETagRegex.All => tagger.NoTagsMatch(disallowed),
-                ETagRegex.Any => tagger.NoTagsMatch(disallowed),
+                ETagRegex.All => tagger?.AllTagsNoMatch(disallowed),
+                ETagRegex.Any => tagger?.AnyTagsNoMatch(disallowed),
                 _ => true
-            };
+            } ?? true;
 
             return logic switch
             {

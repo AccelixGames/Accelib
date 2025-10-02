@@ -14,7 +14,7 @@ namespace Accelib.Extensions
             UnityEngine.Random.Range(bounds.min.z, bounds.max.z)
         );
 
-        public static Vector3 InsideBounds(BoxCollider collider) => 
+        public static Vector3 InsideBounds(this BoxCollider collider) => 
             InsideBounds(collider.bounds);
     }
 }
