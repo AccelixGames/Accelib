@@ -23,7 +23,10 @@
         "Unity.Services.Core.Environments",
         "UniTask.Addressables",
         "Unity.Addressables",
-        "Unity.ResourceManager"
+        "Unity.ResourceManager",
+        "ZLinq.Unity",
+        "ZLinq.Unity.UnityCollectoins",
+        "Unity.Collections"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

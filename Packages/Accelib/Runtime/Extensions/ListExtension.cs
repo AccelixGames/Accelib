@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using Accelib.Logging;
 using UnityEngine;
+using ZLinq;
+using ZLinq.Linq;
 
 namespace Accelib.Extensions
 {
@@ -37,19 +39,11 @@ namespace Accelib.Extensions
 
         public static List<T> DeepCopy<T>(this List<T> list) where T : ICloneable => 
             list.Select(item => (T)item.Clone()).ToList();
-
-        public static T GetOrDefault<T>(this List<T> list, int index, T defaultValue = default)
-        {
-            if (list != null && index < list.Count && index >= 0)
-                return list[index];
-            
-            return defaultValue;
-        }
         
         public static T GetOrDefault<T>(this IEnumerable<T> list, int index, T defaultValue = default)
         {
             if (list != null && index < list.Count() && index >= 0)
-                return list.ElementAt(index);
+                return list.ElementAtOrDefault(index);
             
             return defaultValue;
         }
@@ -68,19 +62,9 @@ namespace Accelib.Extensions
             list.AddRange(collection);
         }
         
-        public static List<T> Shuffle<T>(this List<T> list)
-        {
-            for (var i = 0; i < list.Count; ++i)
-            {
-                var random1 = UnityEngine.Random.Range(0, list.Count);
-                var random2 = UnityEngine.Random.Range(0, list.Count);
+        public static List<T> Shuffle<T>(this IEnumerable<T> list) => 
+            list.AsValueEnumerable().Shuffle().ToList();
 
-                (list[random1], list[random2]) = (list[random2], list[random1]);
-            }
-
-            return list;
-        }
-        
         // 리스트를 n개씩 끊어서, 각 범위 안에서만 섞는다.
         public static void ShuffleInChunks<T>(this List<T> list, int chunkSize)
         {
@@ -127,15 +111,14 @@ namespace Accelib.Extensions
 
         public static T GetRandom<T>(this IEnumerable<T> enumerable)
         {
-            return enumerable == null ? default : enumerable.ToList().GetRandom();
-        }
+            if(enumerable == null) return default;
 
-        public static T GetRandom<T>(this List<T> list)
-        {
-            if (list is not { Count: > 0 }) return default;
+            var vEnum = enumerable.AsValueEnumerable();
+            var count = vEnum.Count();
+            if (count <= 0) return default;
             
-            var id = UnityEngine.Random.Range(0, list.Count);
-            return list[id];
+            var id = UnityEngine.Random.Range(0, count);
+            return vEnum.ElementAtOrDefault(id);
         }
 
         public static string ToString<T>(this IEnumerable<T> enumerable, string separator = ",") => 
@@ -143,5 +126,35 @@ namespace Accelib.Extensions
         
         public static string ToString<T>(this List<T> enumerable, string separator = ",") => 
             string.Join(separator, enumerable);
+        
+        public static bool UnorderedEquals<T>(this IEnumerable<T> a, in IEnumerable<T> b)
+        {
+            if (a == null || b == null)
+                return false;
+
+            return UnorderedEquals(a.AsValueEnumerable(), b.AsValueEnumerable());
+        }
+        
+        private static bool UnorderedEquals<T>(this ValueEnumerable<FromEnumerable<T>, T> compA,
+            ValueEnumerable<FromEnumerable<T>, T> compB)
+        {
+            // 개수가 다르면 종료
+            if (compA.Count() != compB.Count())
+                return false;
+
+            var cnt = new Dictionary<T, int>();
+            
+            foreach (var s in compA)
+                if (!cnt.TryAdd(s, 1))
+                    cnt[s]++;
+            
+            foreach (var s in compB)
+                if (cnt.ContainsKey(s))
+                    cnt[s]--;
+                else
+                    return false;
+            
+            return cnt.Values.AsValueEnumerable().All(c => c == 0);
+        }
     }
 }

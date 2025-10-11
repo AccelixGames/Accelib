@@ -40,7 +40,8 @@ namespace Accelib.Effect
 
         public Tweener FadeIn(bool clearOnStart = true)
         {
-            group = GetComponent<CanvasGroup>();
+            if (!group && !TryGetComponent(out group))
+                return _tween;
             
             if (clearOnStart)
             {
@@ -59,7 +60,8 @@ namespace Accelib.Effect
         
         public Tweener FadeOut(bool clearOnStart = true)
         {
-            group = GetComponent<CanvasGroup>();
+            if (!group && !TryGetComponent(out group))
+                return _tween;
             
             if (clearOnStart)
             {

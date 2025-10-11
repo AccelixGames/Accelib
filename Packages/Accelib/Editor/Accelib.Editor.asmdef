@@ -12,7 +12,9 @@
         "UnityAtoms.UnityAtomsCore.Editor",
         "UnityAtoms.UnityAtomsBaseAtoms.Editor",
         "UnityAtoms.UnityAtomsBaseAtoms.Runtime",
-        "UnityAtoms.UnityAtomsCore.Runtime"
+        "UnityAtoms.UnityAtomsCore.Runtime",
+        "ZLinq.Unity",
+        "ZLinq.Unity.UnityCollectoins"
     ],
     "includePlatforms": [
         "Editor"
