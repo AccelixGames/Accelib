@@ -87,5 +87,10 @@ namespace Accelib.Helper
         }
 
         public void AddTargetTime(float value) => TargetTime += value;
+
+        public void SetProgress(float progress)
+        {
+            Time = TargetTime * progress;
+        }
     }
 }

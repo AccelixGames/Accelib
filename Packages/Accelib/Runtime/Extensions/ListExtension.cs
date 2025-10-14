@@ -149,7 +149,7 @@ namespace Accelib.Extensions
                     cnt[s]++;
             
             foreach (var s in compB)
-                if (cnt.ContainsKey(s))
+                if (s != null && cnt.ContainsKey(s))
                     cnt[s]--;
                 else
                     return false;
