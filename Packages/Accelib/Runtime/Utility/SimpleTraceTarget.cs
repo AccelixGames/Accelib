@@ -15,10 +15,13 @@ namespace Accelib.Utility
         [SerializeField] private UpdateMode mode;
         [SerializeField] private Vector3 pivot;
         
-        [Header("Lock")]
+        [Header("Lock Pos")]
         [SerializeField] private bool lockX;
         [SerializeField] private bool lockY;
         [SerializeField] private bool lockZ;
+        
+        [Header("Lock Rot")]
+        [SerializeField] private bool lockRot;
 
         [Header("UseMinMax")]
         [SerializeField] private bool useMinMax = false;
@@ -33,6 +36,12 @@ namespace Accelib.Utility
         
         private void Trace()
         {
+            Rotation();
+            Position();
+        }
+
+        private void Position()
+        {
             var pos = transform.position;
             var tPos = target.position + pivot;
 
@@ -43,9 +52,14 @@ namespace Accelib.Utility
             transform.position = pos;
         }
 
-        private void Rotate()
+        private void Rotation()
         {
-            transform.rotation = target.rotation;
+            if (lockRot) return;
+            
+            var rot = transform.rotation;
+            var tRot = target.rotation;
+            
+            transform.rotation = tRot;
         }
 
         private void Update()
