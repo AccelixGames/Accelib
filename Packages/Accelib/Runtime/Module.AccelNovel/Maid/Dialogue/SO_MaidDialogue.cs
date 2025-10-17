@@ -30,11 +30,15 @@ namespace Accelib.Module.AccelNovel.Maid
     {
         [field:Header("누가 말하지?")]
         [field: SerializeField] public bool isPlayer { get; private set; }
+        [field: SerializeField, HideIf("isPlayer")] public string whoLocalKey { get; private set; }
         [field: SerializeField, HideIf("isPlayer")] public string who { get; private set; }
 
         [Header("애니메이션 재생 필요 정보")] 
         [SerializeField, ReadOnly] public int uNumber;
-        
+
+        [field: Header("대화 후 시스템 값 변화(ex: 인연도)")] 
+        [field: SerializeField] public bool changeSystemValue {get; private set;}
+        [field: SerializeField, ShowIf("changeSystemValue")] public int changeValue {get; private set;}
         
         [field:Header("감정변화")]
         [field: SerializeField] public bool stateChange { get; private set; }
@@ -62,9 +66,10 @@ namespace Accelib.Module.AccelNovel.Maid
         [field: SerializeField, ShowIf("useBGM")] public string bgmKey { get; private set; }
         [field: SerializeField] public bool useVoice { get; private set; }
         [field: SerializeField, ShowIf("useVoice")] public string voiceKey { get; private set; }
-        
-        [Header("텍스트")] 
-        [SerializeField, ResizableTextArea] public string text;
+
+        [field:Header("텍스트")] 
+        [field:SerializeField] public string localKey{ get; private set; }
+        [field:SerializeField, ResizableTextArea] public string text { get; private set; }
 
         
 

@@ -8,6 +8,8 @@ namespace Accelib.Module.AccelNovel.Maid
     public class SO_ChoiceButton : ScriptableObject
     {
         [SerializeField, Tooltip("이미 선택 됐던 선택지인지")] public bool chose;
+        [field: Header("버튼 텍스트")]
+        [field: SerializeField] public string localKey { get; private set; }
         [field: SerializeField,  TextArea] public string text { get; private set; }
         
         [Header("씬 이동")] 
@@ -70,7 +72,7 @@ namespace Accelib.Module.AccelNovel.Maid
             // todo 그냥 떠나기 라면 캐릭터 간단한 감정표현
             if (isExit)
             {
-                Debug.Log($"{name} Exit, {MaidScenarioDirector.mainActor} 표정 + 감정 텍스트!");
+                //Debug.Log($"{name} Exit, {MaidScenarioDirector.mainActor} 표정 + 감정 텍스트!");
             }
         }
     }

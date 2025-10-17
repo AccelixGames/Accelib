@@ -1,0 +1,45 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e381d72e7abd19a45aaff745a88fe938, type: 3}
+  m_Name: SO_ChoiceButton
+  m_EditorClassIdentifier: Accelib.Runtime::Accelib.Module.AccelNovel.Maid.SO_ChoiceButton
+  chose: 0
+  <text>k__BackingField: 
+  hasAfterScn: 0
+  <nextScenario>k__BackingField: {fileID: 0}
+  isExit: 0
+  dailyFilter: 0
+  <DFilter>k__BackingField:
+    MaidName: 0
+    Figure:
+      Bond: 0
+      Relationship: 0
+      Level: 0
+    RequiredFlags: 0
+    ForbiddenFlags: 0
+    FoodFlags: 0
+  favorFilter: 0
+  <FFilter>k__BackingField:
+    MaidName: 0
+    Figure:
+      Relationship: 0
+      Level: 0
+  giftFilter: 0
+  <GFilter>k__BackingField:
+    MaidName: 0
+    RequiredGifts: 0
+  toyFilter: 0
+  <TFilter>k__BackingField:
+    MaidName: 0
+    RequiredToys: 0
+  <hasIcon>k__BackingField: 0
+  <sideIcon>k__BackingField: {fileID: 0}

@@ -8,7 +8,7 @@ namespace Accelib.Module.AccelNovel.Maid
     public abstract class SO_MaidScenarioBase : ScriptableObject, IScenarioWithKey
     {
         [Header("인게임 관련")] 
-        [SerializeField, ReadOnly, Tooltip("이미 봤던 시나리오인지 체크")] public bool hasSeen;
+        [SerializeField, ReadOnly, Tooltip("이전에도 봤던 시나리오인지 체크")] public bool hasSeen;
         
         
         [Header("시나리오 정보")]
