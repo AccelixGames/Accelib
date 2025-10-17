@@ -129,15 +129,16 @@ namespace Accelib.Editor.Module.Localization
                     if (parsed.All(string.IsNullOrEmpty)) continue;
                 
                     // 키
-                    var key = parsed.GetOrDefault(0);
+                    var keyId = 2;
+                    var key = parsed.GetOrDefault(keyId);
                     // 노트
                     // var note = parsed.GetOrDefault(1);
                     // 각 언어별로 딕셔너리 작성
-                    koDict[key] =   parsed.GetOrDefault(2);
-                    enDict[key] =   parsed.GetOrDefault(3);
-                    jaDict[key] =   parsed.GetOrDefault(4);
-                    zhchDict[key] = parsed.GetOrDefault(5);
-                    zhtwDict[key] = parsed.GetOrDefault(6);
+                    koDict[key] = parsed.GetOrDefault(keyId + 1);
+                    enDict[key] = parsed.GetOrDefault(keyId + 2);
+                    jaDict[key] = parsed.GetOrDefault(keyId + 3);
+                    zhchDict[key] = parsed.GetOrDefault(keyId + 4);
+                    zhtwDict[key] = parsed.GetOrDefault(keyId + 5);
                 }
                 
                 _koreanLocale?.asset?.FromDictionary(koDict);

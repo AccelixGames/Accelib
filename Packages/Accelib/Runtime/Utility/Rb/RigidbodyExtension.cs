@@ -39,10 +39,14 @@ namespace Accelix.GameSystem.Utility.Rb
             if(!data.automaticCenterOfMass)
                 rb.centerOfMass = data.centerOfMass;
             rb.automaticCenterOfMass = data.automaticCenterOfMass;
-            
-            if(!data.automaticInertiaTensor)
+
+            if (!data.automaticInertiaTensor)
+            {
                 rb.inertiaTensor = data.inertiaTensor;
+                rb.inertiaTensorRotation = data.inertiaTensorRotation;
+            }
             rb.automaticInertiaTensor = data.automaticInertiaTensor;
+            // rb.ResetInertiaTensor();
             
             rb.useGravity = data.useGravity;
             rb.isKinematic = data.isKinematic;
@@ -53,8 +57,6 @@ namespace Accelix.GameSystem.Utility.Rb
 
             rb.includeLayers = data.includeLayers;
             rb.excludeLayers = data.excludeLayers;
-            
-            rb.inertiaTensorRotation = data.inertiaTensorRotation;
         }
     }
 }
