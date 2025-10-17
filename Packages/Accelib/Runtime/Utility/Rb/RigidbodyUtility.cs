@@ -1,8 +1,9 @@
 ﻿using Accelib.Extensions;
+using Accelix.GameSystem.Utility.Rb;
 using NaughtyAttributes;
 using UnityEngine;
 
-namespace Accelix.GameSystem.Utility.Rb
+namespace Accelib.Utility.Rb
 {
     public class RigidbodyUtility : MonoBehaviour
     {
