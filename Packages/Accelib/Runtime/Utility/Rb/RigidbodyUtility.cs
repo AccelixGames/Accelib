@@ -14,6 +14,7 @@ namespace Accelib.Utility.Rb
         
         [Tooltip("AddForce가 적용될 객체 번호")]
         [SerializeField] private int primaryIndex = 0;
+        [SerializeField] private bool ignoreRemoval = false;
 
         [Header("# 타겟 리지드바디")]
         [SerializeField] private Rigidbody[] rigidbodies;
@@ -45,6 +46,8 @@ namespace Accelib.Utility.Rb
 
         public void Toggle(bool enable)
         {
+            if (ignoreRemoval) return;
+            
             if (enable)
             {
                 for (var i = 0; i < rbDataArray.Length; i++)
