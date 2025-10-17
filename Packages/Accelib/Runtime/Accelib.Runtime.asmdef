@@ -26,7 +26,8 @@
         "Unity.ResourceManager",
         "ZLinq.Unity",
         "ZLinq.Unity.UnityCollectoins",
-        "Unity.Collections"
+        "Unity.Collections",
+        "Unity.InputSystem"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],
