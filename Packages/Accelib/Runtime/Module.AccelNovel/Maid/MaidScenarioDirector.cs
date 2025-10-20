@@ -208,7 +208,10 @@ namespace Accelib.Module.AccelNovel.Maid
             var filter = sFilter;
                 
             // 대상 누군지
-            if(filter.MaidName != f.MaidName) return false;
+            if (filter.MaidName != EMaidName.Common)
+            {
+                if(filter.MaidName != f.MaidName) return false;
+            }
                 
             // 수치 비교
             var figure = filter.Figure;

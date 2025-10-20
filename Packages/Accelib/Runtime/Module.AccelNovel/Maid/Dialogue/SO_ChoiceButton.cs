@@ -1,13 +1,17 @@
 using NaughtyAttributes;
 using UnityEngine;
-using UnityEngine.Serialization;
 
 namespace Accelib.Module.AccelNovel.Maid
 {
     [CreateAssetMenu(fileName = "SO_ChoiceButton", menuName = "Maid_Scenario/Dialogue/SO_ChoiceButton")]
     public class SO_ChoiceButton : ScriptableObject
     {
+        [field: SerializeField] public bool inActiveButton {get; private set;}
+        [field: SerializeField] public string warningText {get; private set;}
+        [field: SerializeField] public string warningTextLocalKey {get; private set;}
+        
         [SerializeField, Tooltip("이미 선택 됐던 선택지인지")] public bool chose;
+        
         [field: Header("버튼 텍스트")]
         [field: SerializeField] public string localKey { get; private set; }
         [field: SerializeField,  TextArea] public string text { get; private set; }
@@ -43,13 +47,41 @@ namespace Accelib.Module.AccelNovel.Maid
 
         private bool IsShow()
         {
-            if (dailyFilter) return MaidScenarioDirector.DailyFilter(DFilter, MaidScenarioDirector.CurrentFilter);
-            
-            if (favorFilter) return MaidScenarioDirector.FavorFilter(FFilter, MaidScenarioDirector.CurrentFilter);
-            
-            if (giftFilter) return MaidScenarioDirector.GiftFilter(GFilter, MaidScenarioDirector.CurrentFilter);
-            
-            if (toyFilter) return MaidScenarioDirector.ToyFilter(TFilter, MaidScenarioDirector.CurrentFilter);
+            if (dailyFilter)
+            {
+                var dF = MaidScenarioDirector.DailyFilter(DFilter, MaidScenarioDirector.CurrentFilter);
+                
+                //inActiveButton = !dF;
+                
+                if(!dF) return false;
+            }
+
+            if (favorFilter)
+            {
+                var fF = MaidScenarioDirector.FavorFilter(FFilter, MaidScenarioDirector.CurrentFilter);
+                
+                //inActiveButton = !fF;
+                
+                if(!fF) return false;
+            }
+
+            if (giftFilter)
+            {
+                var gF = MaidScenarioDirector.GiftFilter(GFilter, MaidScenarioDirector.CurrentFilter);
+                
+                //inActiveButton = !gF;
+                
+                if(!gF) return false;
+            }
+
+            if (toyFilter)
+            {
+                var tF = MaidScenarioDirector.ToyFilter(TFilter, MaidScenarioDirector.CurrentFilter);
+                
+                //inActiveButton = !tF;
+                
+                if(!tF) return false;
+            }
 
             return true;
         }
