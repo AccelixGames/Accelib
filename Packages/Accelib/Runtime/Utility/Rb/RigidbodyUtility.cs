@@ -11,10 +11,12 @@ namespace Accelib.Utility.Rb
         [SerializeField] private bool alwaysReinitialize = false;
         [SerializeField] private bool autoFindRigidBody = false;
         [SerializeField] private bool autoFindCollider = false;
-        
-        [Tooltip("AddForce가 적용될 객체 번호")]
-        [SerializeField] private int primaryIndex = 0;
         [SerializeField] private bool ignoreRemoval = false;
+
+        [Header("# 힘 전달 옵션")]
+        [SerializeField] private bool addForceToAllRb;
+        [Tooltip("AddForce가 적용될 객체 번호")]
+        [SerializeField, HideIf(nameof(addForceToAllRb))] private int primaryIndex = 0;
 
         [Header("# 타겟 리지드바디")]
         [SerializeField] private Rigidbody[] rigidbodies;
@@ -39,9 +41,16 @@ namespace Accelib.Utility.Rb
         
         public void AddForce(Vector3 force, ForceMode impulse)
         {
-            var rb = rigidbodies.GetOrDefault(primaryIndex); 
-            if (rb != null)
-                rb.AddForce(force, impulse);
+            if (addForceToAllRb)
+            {
+                foreach (var rbL in rigidbodies) 
+                    rbL?.AddForce(force, impulse);
+            }
+            else
+            {
+                var rb = rigidbodies.GetOrDefault(primaryIndex); 
+                rb?.AddForce(force, impulse);    
+            }
         }
 
         public void Toggle(bool enable)
