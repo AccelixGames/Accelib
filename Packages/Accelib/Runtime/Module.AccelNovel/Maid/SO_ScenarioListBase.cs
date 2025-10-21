@@ -1,10 +1,11 @@
 using System.Collections.Generic;
 using System.Linq;
+using NaughtyAttributes;
 using UnityEngine;
 
 namespace Accelib.Module.AccelNovel.Maid
 {
-    public abstract class SO_ScenarioListBase<TScenario> : ScriptableObject where TScenario : ScriptableObject, IScenarioWithKey
+    public abstract class SO_ScenarioListBase<TScenario> : ScriptableObject where TScenario : SO_MaidScenarioBase
     {
         [SerializeField] private List<TScenario> scenarios = new();
         
@@ -61,29 +62,40 @@ namespace Accelib.Module.AccelNovel.Maid
             var seen = new HashSet<string>();
             for (int i = 0; i < scenarios.Count; ++i)
             {
-                var scn = scenarios[i];
-
-                if (scn == null)
-                {
-                    Debug.LogError($"{name}의 시나리오 [{i}]가 null 입니다!!!", this);
-                    continue;
-                }
-
-                if (string.IsNullOrEmpty(scn.ScnKey))
-                {
-                    Debug.LogError($"{name}의 시나리오 [{i}]의 ScnKey가 비어있습니다!!!", this);
-                    continue;
-                }
-
-                if (!seen.Add(scn.ScnKey))
-                {
-                    Debug.LogError($"{name}에 중복된 ScnKey가 있습니다!!!! {scn.ScnKey}", this);
-                }
+                // var scn = scenarios[i];
+                //
+                // if (scn == null)
+                // {
+                //     Debug.LogError($"{name}의 시나리오 [{i}]가 null 입니다!!!", this);
+                //     continue;
+                // }
+                //
+                // if (string.IsNullOrEmpty(scn.ScnKey))
+                // {
+                //     Debug.LogError($"{name}의 시나리오 [{i}]의 ScnKey가 비어있습니다!!!", this);
+                //     continue;
+                // }
+                //
+                // if (!seen.Add(scn.ScnKey))
+                // {
+                //     Debug.LogError($"{name}에 중복된 ScnKey가 있습니다!!!! {scn.ScnKey}", this);
+                // }
             }
             
             _cache = null;
             EnsureCache();
         }
+
+        // [ContextMenu(nameof(ResetSeen))][Button]
+        // public void ResetSeen()
+        // {
+        //     foreach (var s in scenarios)
+        //     {
+        //         s.ResetHasSeen();
+        //         s.ResetTodaySeen();
+        //         s.ResetStartSeen();
+        //     }
+        // }
 #endif
     }
 }

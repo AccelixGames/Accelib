@@ -226,7 +226,10 @@ namespace Accelib.Module.AccelNovel.Maid
             var filter = dFilter;
                 
             // 대상 누군지
-            if(filter.MaidName != f.MaidName) return false;
+            if (filter.MaidName != EMaidName.Common)
+            {
+                if(filter.MaidName != f.MaidName) return false;
+            }
                 
             // Daily 오픈 플래그 조건
             var requiredFlags = filter.RequiredFlags;
@@ -253,7 +256,10 @@ namespace Accelib.Module.AccelNovel.Maid
             var filter = fFilter;
                 
             // 대상 누군지
-            if(filter.MaidName != f.MaidName) return false;
+            if (filter.MaidName != EMaidName.Common)
+            {
+                if(filter.MaidName != f.MaidName) return false;
+            }
                 
             // 수치 비교
             var figure = filter.Figure;
@@ -269,7 +275,10 @@ namespace Accelib.Module.AccelNovel.Maid
             var filter = gFilter;
                 
             // 대상 누군지
-            if(filter.MaidName != f.MaidName) return false;
+            if (filter.MaidName != EMaidName.Common)
+            {
+                if(filter.MaidName != f.MaidName) return false;
+            }
                 
             // 플래그 비교
             var requiredFlags = filter.RequiredGifts;
@@ -284,7 +293,10 @@ namespace Accelib.Module.AccelNovel.Maid
             var filter = tFilter;
                 
             // 대상 누군지
-            if(filter.MaidName != f.MaidName) return false;
+            if (filter.MaidName != EMaidName.Common)
+            {
+                if(filter.MaidName != f.MaidName) return false;
+            }
                 
             // 플래그 비교
             var requiredFlags = filter.RequiredToys;

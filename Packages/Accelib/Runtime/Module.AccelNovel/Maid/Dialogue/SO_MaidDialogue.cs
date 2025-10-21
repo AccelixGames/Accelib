@@ -46,7 +46,8 @@ namespace Accelib.Module.AccelNovel.Maid
         
         [field:Header("선택지")]
         [field: SerializeField] public bool hasChoice { get; private set; }
-        [field:SerializeField, ShowIf("hasChoice")] public List<SO_ChoiceButton> choiceButtons;
+        //[field:SerializeField, ShowIf("hasChoice")] public List<SO_ChoiceButton> choiceButtons;
+        [field:SerializeField, ShowIf("hasChoice")] public List<SO_ChoiceButtonList> choiceButtonLists;
 
         private bool move => moveActor || addActor;
         [field: Header("씬 이동")] 
