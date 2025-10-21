@@ -8,6 +8,6 @@ namespace Accelib.Module.Reference
         [SerializeField] private SO_Reference<T> reference;
 
         protected virtual void Awake() => reference.Register(GetComponent<T>());
-        protected virtual  void OnDestroy() => reference.UnRegister(GetComponent<T>());
+        protected virtual void OnDestroy() => reference.UnRegister(GetComponent<T>());
     }
 }
