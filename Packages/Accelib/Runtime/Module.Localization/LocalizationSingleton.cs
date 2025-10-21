@@ -44,7 +44,7 @@ namespace Accelib.Module.Localization
                 currLangId.Value = (int)locales[0].Language;
 
             // 로케일 변경
-            UpdateLocale();
+            UpdateLocale(true);
 
             isInitialized = true;
         }
@@ -66,7 +66,7 @@ namespace Accelib.Module.Localization
             currLangId.Value = (int)language;
             
             // 로케일 변경
-            UpdateLocale();
+            UpdateLocale(false);
         }
 
         public static string GetLocalizedStringStatic(string key, Object ctx = null) => Instance?.GetLocalizedString(key, ctx) ?? NullString;
@@ -91,7 +91,7 @@ namespace Accelib.Module.Localization
         }
 
         // 로케일 값을 업데이트 한다.
-        private void UpdateLocale()
+        private void UpdateLocale(bool isInit)
         {
             // 로케일 변경
             // Deb.Log($"Update Locale to {CurrLang}({currLangId.Value})");
@@ -104,6 +104,8 @@ namespace Accelib.Module.Localization
                 if (!monoBehaviour.TryGetComponent<ILocaleChangedEventListener>(out var listener)) continue;
                 // 리스너가 비활 상태라면, 넘기기
                 if (!listener.IsEnabled) continue;
+                // 리스너가 Enable 이벤트를 받지 않는다면, 넘기기
+                if (isInit && !listener.LoadOnEnable) continue;
                 
                 // 로케일 문자열 가져와서,
                 var localizedString = GetLocalizedString(listener.LocaleKey, monoBehaviour);

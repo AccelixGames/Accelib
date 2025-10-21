@@ -1,4 +1,5 @@
-﻿using Accelib.Module.Localization.Architecture;
+﻿using System;
+using Accelib.Module.Localization.Architecture;
 using Accelib.Module.Localization.Helper.Formatter;
 using NaughtyAttributes;
 using TMPro;
@@ -12,6 +13,8 @@ namespace Accelib.Module.Localization.Helper
     [RequireComponent(typeof(TMP_Text))]
     public class LocalizedTMP : MonoBehaviour, ILocaleChangedEventListener
     {
+        [field: SerializeField] public TMP_Text TMP { get; private set; }
+        
         // 언어 키
         [Header("키")]
         [SerializeField] private string key;
@@ -25,22 +28,19 @@ namespace Accelib.Module.Localization.Helper
         
         public string LocaleKey => key;
         public bool IsEnabled => enabled;
-
-        // TMP
-        public TMP_Text TMP { get; private set; }
+        public bool LoadOnEnable => loadOnEnable;
 
         // TMP 캐싱 
         private void Awake()
         {
-            TMP = GetComponent<TMP_Text>();
+            TMP ??= GetComponent<TMP_Text>();
             _formatter = GetComponent<ILocalizedFormatter>();
         }
 
         private void OnEnable()
         {
-            if (!loadOnEnable) return;
-
-            Reload();
+            if (loadOnEnable) 
+                Reload();
         }
         
         [Button("다시 로드", EButtonEnableMode.Playmode)]
@@ -90,5 +90,7 @@ namespace Accelib.Module.Localization.Helper
             key = otherKey;
             return Reload();
         }
+
+        private void Reset() => TMP = GetComponent<TMP_Text>();
     }
 }

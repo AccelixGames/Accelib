@@ -15,6 +15,7 @@ namespace Accelib.Module.Localization.Helper
         
         public string LocaleKey { get; }
         public bool IsEnabled => enabled;
+        public bool LoadOnEnable => true;
 
         private void Start()
         {
