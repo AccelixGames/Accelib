@@ -30,6 +30,8 @@ namespace Accelib.Module.Localization
 
         public void Init()
         {
+            if (isInitialized) return;
+            
             var systemLang = Application.systemLanguage;
             // Deb.Log($"시스템 언어: {systemLang}, 저장된 언어: {(SystemLanguage)currLangId.Value}");
             
@@ -50,7 +52,7 @@ namespace Accelib.Module.Localization
         }
 
         /// <summary>언어를 변경한다.</summary>
-        public void ChangeLanguage(SystemLanguage language)
+        private void ChangeLanguage(SystemLanguage language)
         {
             // 동일한 언어로 변경하려고 할 경우, 종료
             if(CurrLang == language) return;
@@ -69,22 +71,21 @@ namespace Accelib.Module.Localization
             UpdateLocale(false);
         }
 
-        public static string GetLocalizedStringStatic(string key, Object ctx = null) => Instance?.GetLocalizedString(key, ctx) ?? NullString;
-
-        public static LocaleFontData GetFontAssetStatic() => Instance?.currLocale?.FontData;
-
         /// <summary>키값에 알맞는 로컬라이징 문자열을 가져온다.</summary>
-        public string GetLocalizedString(string key, Object ctx = null)
+        private string GetLocalizedString(string key, Object ctx = null)
         {
-            if(!currLocale || string.IsNullOrEmpty(key))
+            if (currLocale?.TextDict == null)
+            {
+                Deb.LogWarning($"Locale이 또는 TextDict이 아직 로드되지 않았습니다. 현재 로케일({currLocale})", ctx);
                 return NullString;
+            }
             
             // 값 가져오기 실패할 경우,
-            if (!currLocale.TextDict.TryGetValue(key, out var result))
+            if (string.IsNullOrEmpty(key) || !currLocale.TextDict.TryGetValue(key, out var result))
             {
                 // NULL 리턴
                 Deb.LogWarning($"키({key})의 로컬라이징 값을 가져올 수 없습니다. 현재 언어({CurrLang})", ctx);
-                result = NullString;
+                return NullString;
             }
             
             return result;
@@ -113,10 +114,46 @@ namespace Accelib.Module.Localization
                 listener.OnLocaleUpdated(localizedString, currLocale?.FontData);
             } 
         }
+
+        public static void ChangeLanguageStatic(SystemLanguage language, Object ctx = null)
+        {
+            if (!Instance)
+            {
+                Deb.LogWarning("Instance가 null입니다.", ctx);
+                return;
+            }
+            
+            Instance.Init();
+            Instance.ChangeLanguage(language);
+        }
+        
+        public static string GetLocalizedStringStatic(string key, Object ctx = null)
+        {
+            if (!Instance)
+            {
+                Deb.LogWarning("Instance가 null입니다.", ctx);
+                return NullString;
+            }
+            
+            Instance.Init();
+            return Instance.GetLocalizedString(key, ctx);
+        }
+
+        public static LocaleFontData GetFontAssetStatic(Object ctx = null)
+        {
+            if (!Instance)
+            {
+                Deb.LogWarning("Instance가 null입니다.", ctx);
+                return null;
+            }
+            
+            Instance.Init();
+            return Instance.currLocale.FontData;
+        }
         
 #if UNITY_EDITOR
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
-        private static void InitSingleton() => Instance = null;
+        private static void InitSingleton() => Initialize();
 #endif
     }
 }

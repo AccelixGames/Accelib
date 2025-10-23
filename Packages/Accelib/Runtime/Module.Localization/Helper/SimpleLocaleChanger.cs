@@ -12,6 +12,6 @@ namespace Accelib.Module.Localization.Helper
         [SerializeField] private SystemLanguage language = SystemLanguage.Korean;
         
         [Button("언어 변경하기", EButtonEnableMode.Playmode)]
-        public void ChangeLanguage() => LocalizationSingleton.Instance?.ChangeLanguage(language);
+        public void ChangeLanguage() => LocalizationSingleton.ChangeLanguageStatic(language);
     }
 }

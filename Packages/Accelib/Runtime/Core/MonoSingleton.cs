@@ -8,7 +8,7 @@ namespace Accelib.Core
     {
         [SerializeField] private bool dontDestroyOnLoad = false;
         
-        public static T Instance { get; protected set; }
+        public static T Instance { get; private set; }
 
         public static bool TryGetInstance(out T instance)
         {
