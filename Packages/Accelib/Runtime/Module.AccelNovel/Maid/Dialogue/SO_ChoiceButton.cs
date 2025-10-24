@@ -133,7 +133,7 @@ namespace Accelib.Module.AccelNovel.Maid
 
                 if (pickedScenario != null)
                 {
-                    pickedScenario.hasSeen = true;
+                    //pickedScenario.hasSeen = true;
                     MaidScenarioDirector.PublishAddScenario(pickedScenario);
                 }
                 else
