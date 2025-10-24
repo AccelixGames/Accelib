@@ -19,9 +19,9 @@ namespace Accelib.Module.Transition.Effect
         [SerializeField] private CanvasGroup loadingGroup;
         [SerializeField, Range(0.01f, 5f)] private float canvasGroupDuration = 0.2f;
         
-        [Header("Audio")]
-        [SerializeField] private AudioRefSO fadeStartSfx;
-        [SerializeField] private AudioRefSO fadeEndSfx;
+        // [Header("Audio")]
+        // [SerializeField] private AudioRefSO fadeStartSfx;
+        // [SerializeField] private AudioRefSO fadeEndSfx;
         
         private Sequence _seq;
         
@@ -39,8 +39,8 @@ namespace Accelib.Module.Transition.Effect
             
             _seq?.Kill();
             _seq = DOTween.Sequence().SetLink(gameObject)
-                .Append(target.DOFade(1f, duration).SetEase(easeStart))
-                .JoinCallback(() => fadeStartSfx?.PlayOneShot());
+                .Append(target.DOFade(1f, duration).SetEase(easeStart));
+                // .JoinCallback(() => fadeStartSfx?.PlayOneShot());
             
             if (loadingGroup)
                 _seq.Append(loadingGroup.DOFade(1f, canvasGroupDuration));
@@ -53,8 +53,8 @@ namespace Accelib.Module.Transition.Effect
         {
             _seq?.Kill();
             _seq = DOTween.Sequence().SetLink(gameObject)
-                .Append(target.DOFade(0f, duration).SetEase(easeEnd))
-                .JoinCallback(() => fadeEndSfx?.PlayOneShot());
+                .Append(target.DOFade(0f, duration).SetEase(easeEnd));
+                // .JoinCallback(() => fadeEndSfx?.PlayOneShot());
 
             if (loadingGroup)
                 _seq.Join(loadingGroup.DOFade(0f, canvasGroupDuration));
