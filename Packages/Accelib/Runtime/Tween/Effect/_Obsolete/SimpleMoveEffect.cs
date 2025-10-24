@@ -18,6 +18,7 @@ namespace Accelib.Effect
         [SerializeField] private AutoStart autoStartMode = AutoStart.False;
 
         private RectTransform _rt;
+        private Tweener _tween;
 
         private void Awake()
         {
@@ -27,15 +28,8 @@ namespace Accelib.Effect
         private void OnEnable()
         {
             if (autoStartMode == AutoStart.In)
-            {
-                _rt.anchoredPosition = startPos.anchoredPosition;
                 EffectIn();
-            }
-            else if(autoStartMode == AutoStart.Out)
-            {
-                _rt.anchoredPosition = endPos.anchoredPosition;
-                EffectOut();
-            }
+            else if(autoStartMode == AutoStart.Out) EffectOut();
         }
 
         public void ClearAnchoredPosition()
@@ -44,17 +38,25 @@ namespace Accelib.Effect
             _rt.anchoredPosition =  startPos.anchoredPosition;
         }
 
-        public Tweener EffectIn()
+        public Tweener EffectIn(bool clearOnStart = true)
         {
-            return _rt?.DOAnchorPos(endPos.anchoredPosition, config.duration)
-                .SetEase(config.easeA)
+            if (clearOnStart) 
+                _rt.anchoredPosition = startPos.anchoredPosition;
+            
+            _tween?.Kill();
+            return _tween = _rt.DOAnchorPos(endPos.anchoredPosition, config.duration)
+                .SetEase(config.easeA, overshoot: config.overshoot)
                 .SetDelay(config.delayA);
         }
 
-        public Tweener EffectOut()
+        public Tweener EffectOut(bool clearOnStart = true)
         {
-            return _rt?.DOAnchorPos(startPos.anchoredPosition, config.duration)
-                .SetEase(config.easeB)
+            if(clearOnStart)
+                _rt.anchoredPosition = endPos.anchoredPosition;
+            
+            _tween?.Kill();
+            return _tween = _rt?.DOAnchorPos(startPos.anchoredPosition, config.duration)
+                .SetEase(config.easeB , overshoot: config.overshoot)
                 .SetDelay(config.delayB);
         }
     }
