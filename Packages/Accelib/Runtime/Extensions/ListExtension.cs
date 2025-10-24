@@ -129,32 +129,39 @@ namespace Accelib.Extensions
         
         public static bool UnorderedEquals<T>(this IEnumerable<T> a, in IEnumerable<T> b)
         {
-            if (a == null || b == null)
-                return false;
-
+            if (a == null || b == null) return false;
+            
             return UnorderedEquals(a.AsValueEnumerable(), b.AsValueEnumerable());
         }
         
         private static bool UnorderedEquals<T>(this ValueEnumerable<FromEnumerable<T>, T> compA,
             ValueEnumerable<FromEnumerable<T>, T> compB)
         {
-            // 개수가 다르면 종료
-            if (compA.Count() != compB.Count())
-                return false;
-
-            var cnt = new Dictionary<T, int>();
-            
-            foreach (var s in compA)
-                if (!cnt.TryAdd(s, 1))
-                    cnt[s]++;
-            
-            foreach (var s in compB)
-                if (s != null && cnt.ContainsKey(s))
-                    cnt[s]--;
-                else
+            try
+            {
+                // 개수가 다르면 종료
+                if (compA.Count() != compB.Count())
                     return false;
-            
-            return cnt.Values.AsValueEnumerable().All(c => c == 0);
+
+                var countDict = new Dictionary<T, int>();
+
+                foreach (var s in compA)
+                    if (!countDict.TryAdd(s, 1))
+                        countDict[s] += 1;
+
+                foreach (var s in compB)
+                    if (s != null && countDict.ContainsKey(s))
+                        countDict[s]--;
+                    else
+                        return false;
+
+                return countDict.Values.AsValueEnumerable().All(c => c == 0);
+            }
+            catch (Exception e)
+            {
+                Debug.LogException(e);
+                return false;
+            }
         }
     }
 }
