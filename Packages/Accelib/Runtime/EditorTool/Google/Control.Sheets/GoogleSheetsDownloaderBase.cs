@@ -16,7 +16,7 @@ namespace Accelib.EditorTool.Google.Control.Sheets
         public string SheetId => sheetId;
         public string Range => range;
 
-        public abstract UniTask<JSheetData> DownloadAsSheetDataAsync();
+        public abstract UniTask<JSheet> DownloadAsSheetDataAsync();
         
         public abstract UniTask<string> DownloadAsync();
         

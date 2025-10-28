@@ -14,5 +14,31 @@ namespace Accelib.Module.Reference.Model
         protected const int BaseOrder = 100;
         protected const string _M = "Accelix.Ref/";
         protected const string _F = "(Ref) ";
+
+
+        private void OnEnable()
+        {
+#if UNITY_EDITOR
+            if (UnityEditor.EditorSettings.enterPlayModeOptionsEnabled)
+            {
+                UnityEditor.EditorApplication.playModeStateChanged -= HandlePlayModeStateChange;
+                UnityEditor.EditorApplication.playModeStateChanged += HandlePlayModeStateChange;
+            }
+#endif
+            
+            SetInitialValues();
+        }
+
+        private void OnDisable() => SetInitialValues();
+        
+#if UNITY_EDITOR
+        private void HandlePlayModeStateChange(UnityEditor.PlayModeStateChange state)
+        {
+            if (state == UnityEditor.PlayModeStateChange.ExitingEditMode)
+                SetInitialValues();
+        }
+#endif
+        
+        protected abstract void SetInitialValues();
     }
 }

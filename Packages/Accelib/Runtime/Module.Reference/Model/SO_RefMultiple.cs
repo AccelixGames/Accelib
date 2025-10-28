@@ -13,6 +13,8 @@ namespace Accelib.Module.Reference.Model
         [SerializeField] private ReferenceProvideMode mode = ReferenceProvideMode.Random;
         [SerializeField, ReadOnly] private List<T> referenceList = new();
 
+        public IReadOnlyList<T> ReferenceList => referenceList;
+        
         public override T Reference => mode switch
         {
             ReferenceProvideMode.Random => referenceList.GetRandom(),
@@ -34,9 +36,6 @@ namespace Accelib.Module.Reference.Model
         }
 
         public override bool UnRegister(T target) => referenceList.Remove(target);
-        
-        private void OnEnable() => referenceList = new List<T>();
-        private void OnDisable() => referenceList = new List<T>();
 
         private enum ReferenceProvideMode
         {
@@ -49,5 +48,7 @@ namespace Accelib.Module.Reference.Model
         protected const string FileNamePrefix = _F + "Multiple-";
         
         protected const int Order = BaseOrder + 50;
+
+        protected override void SetInitialValues() => referenceList = new List<T>();
     }
 }

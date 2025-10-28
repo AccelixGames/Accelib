@@ -35,13 +35,11 @@ namespace Accelib.Module.Reference.Model
             return true;
         }
         
-
-        private void OnEnable() => reference = null;
-        private void OnDisable() => reference = null;
-        
         protected const string MenuNamePrefix = _M + "Single-";
         protected const string FileNamePrefix = _F + "Single-";
         
         protected const int Order = BaseOrder;
+
+        protected override void SetInitialValues() => reference = null;
     }
 }

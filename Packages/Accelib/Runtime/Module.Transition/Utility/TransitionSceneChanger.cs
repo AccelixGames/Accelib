@@ -27,6 +27,7 @@ namespace Accelib.Module.Transition.Utility
         [SerializeField] private LoadSceneMode loadMode = LoadSceneMode.Single;
         [SerializeField, Range(0, 128)] private int frameDelay = 0;
         [SerializeField] private bool fadeOutBgm = false;
+        [SerializeField] private bool gc;
 
         [Header("Current")]
         [SerializeField, ReadOnly] private bool isLocked = false;
@@ -35,9 +36,9 @@ namespace Accelib.Module.Transition.Utility
         private void OnDisable() => isLocked = false;
 
         [Button(enabledMode: EButtonEnableMode.Playmode)]
-        public void Change(bool gc = false) => ChangeAsync(gc).Forget();
-
-        public async UniTask ChangeAsync(bool gc = false)
+        public void Change() => ChangeAsync().Forget();
+        
+        public async UniTask ChangeAsync()
         {
             // 잠금 체크 및 설정
             if(isLocked) return;

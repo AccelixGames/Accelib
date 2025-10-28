@@ -9,12 +9,14 @@ namespace Accelib.Module.UI.Utility
 
         private void OnEnable()
         {
-            if(targetCamera == null)
-                targetCamera = Camera.main;
+            if (!targetCamera) targetCamera = Camera.main;
         }
 
         private void LateUpdate()
         {
+            if (!targetCamera) targetCamera = Camera.main;
+            if (!targetCamera) return;
+            
             transform.rotation = targetCamera.transform.rotation;
         }
     }

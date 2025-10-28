@@ -32,7 +32,7 @@ namespace Accelib.Extension.Atom.UI.Base
             OnChanged(GetValue);
         }
 
-        protected virtual  void OnDisable() => Changed?.Unregister(OnChanged);
+        protected virtual void OnDisable() => Changed?.Unregister(OnChanged);
 
         private void OnChanged(T2 v)
         {
@@ -50,6 +50,12 @@ namespace Accelib.Extension.Atom.UI.Base
             return string.Format(format, v);
         }
         
+        public void SetFormat(string fm)
+        {
+            format = fm;
+            OnChanged(GetValue);
+        }
+
 #if UNITY_EDITOR
         private void Reset() => tmp = GetComponent<TMP_Text>();
         protected virtual void OnValidate() => preview = GetText(GetValue);

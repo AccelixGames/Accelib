@@ -16,7 +16,7 @@ namespace Accelib.Editor.Module.Localization
 {
     public class DownloadLocaleWindow : EditorWindow
     {
-        private const int FirstRow = 2;
+        private const int FirstRow = 4;
         
         private static readonly Vector2 MinSize = new(400, 500);
         private static readonly Vector2 MaxSize = new(800, 500);
@@ -116,29 +116,30 @@ namespace Accelib.Editor.Module.Localization
                 var jaDict = new Dictionary<string, string>();
                 var zhchDict = new Dictionary<string, string>();
                 var zhtwDict = new Dictionary<string, string>();
-
-                var parsedArray = sheet.values;
-                var rowCount = parsedArray.Count;
                 
-                for (var i = FirstRow; i < rowCount; i++)
+                foreach (var range in sheet.valueRanges)
                 {
-                    // 행 한줄 구하기
-                    var parsed = parsedArray[i];
+                    var parsedArray = range.values;
+                    for (var i = FirstRow; i < parsedArray.Count; i++)
+                    {
+                        // 행 한줄 구하기
+                        var parsed = parsedArray[i];
                 
-                    // 빈 열 스킵
-                    if (parsed.All(string.IsNullOrEmpty)) continue;
+                        // 빈 열 스킵
+                        if (parsed.All(string.IsNullOrEmpty)) continue;
                 
-                    // 키
-                    var keyId = 2;
-                    var key = parsed.GetOrDefault(keyId);
-                    // 노트
-                    // var note = parsed.GetOrDefault(1);
-                    // 각 언어별로 딕셔너리 작성
-                    koDict[key] = parsed.GetOrDefault(keyId + 1);
-                    enDict[key] = parsed.GetOrDefault(keyId + 2);
-                    jaDict[key] = parsed.GetOrDefault(keyId + 3);
-                    zhchDict[key] = parsed.GetOrDefault(keyId + 4);
-                    zhtwDict[key] = parsed.GetOrDefault(keyId + 5);
+                        // 키
+                        var keyId = 2;
+                        var key = parsed.GetOrDefault(keyId);
+                        if (string.IsNullOrEmpty(key)) continue;
+                        
+                        // 각 언어별로 딕셔너리 작성
+                        koDict[key] = parsed.GetOrDefault(keyId + 1);
+                        enDict[key] = parsed.GetOrDefault(keyId + 2);
+                        jaDict[key] = parsed.GetOrDefault(keyId + 3);
+                        zhchDict[key] = parsed.GetOrDefault(keyId + 4);
+                        zhtwDict[key] = parsed.GetOrDefault(keyId + 5);
+                    }
                 }
                 
                 _koreanLocale?.asset?.FromDictionary(koDict);
@@ -149,6 +150,7 @@ namespace Accelib.Editor.Module.Localization
             }
             catch (Exception e)
             {
+                Debug.LogException(e, this);
                 return BeepWarning(e.Message);
             }
             finally

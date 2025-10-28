@@ -86,6 +86,8 @@ namespace Accelib.Helper
             IsEnabled = false;
         }
 
+        public void Pause(bool isPause) => IsEnabled = !isPause;
+
         public void AddTargetTime(float value) => TargetTime += value;
 
         public void SetProgress(float progress)

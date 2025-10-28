@@ -1,4 +1,5 @@
 ﻿#if UNITY_EDITOR
+using System.Collections.Generic;
 using Accelib.EditorTool.Google.Control.Utility;
 using Accelib.EditorTool.Google.Model;
 using Cysharp.Threading.Tasks;
@@ -32,7 +33,7 @@ namespace Accelib.EditorTool.Google.Control.Sheets
 #endif
         }
 
-        public override async UniTask<JSheetData> DownloadAsSheetDataAsync()
+        public override async UniTask<JSheet> DownloadAsSheetDataAsync()
         {
             var raw = await DownloadAsync();
             var sheetData = new JSheetData
@@ -45,8 +46,12 @@ namespace Accelib.EditorTool.Google.Control.Sheets
                 sheetData.values = TsvReader.Read(raw);
             else if (format == Format.Csv) 
                 sheetData.values = CsvReader.Read(raw);
-            
-            return sheetData;
+
+            return new JSheet
+            {
+                spreadsheetId = SheetId,
+                valueRanges = new List<JSheetData>() { sheetData }
+            };
         }
 
         public override async UniTask<string> DownloadAsync()
