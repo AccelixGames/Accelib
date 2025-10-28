@@ -1,4 +1,5 @@
-﻿using Accelib.EditorTool.Google.Control.Auth;
+﻿#if UNITY_EDITOR
+using Accelib.EditorTool.Google.Control.Auth;
 using Accelib.EditorTool.Google.Model;
 using Cysharp.Threading.Tasks;
 using Newtonsoft.Json;
@@ -46,11 +47,6 @@ namespace Accelib.EditorTool.Google.Control.Sheets
             Debug.Log("[구글시트] 데이터 다운로드 성공!\n" + json, this);
             return json;
         }
-
-        [System.Serializable]
-        private class Wrapper
-        {
-            
-        }
     }
 }
+#endif

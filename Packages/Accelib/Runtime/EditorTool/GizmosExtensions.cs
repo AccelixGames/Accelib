@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace Accelib.Editor.Tool
+namespace Accelib.EditorTool
 {
    public static class GizmosExtensions {
 	   
