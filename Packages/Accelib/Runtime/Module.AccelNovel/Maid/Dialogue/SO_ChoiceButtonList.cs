@@ -8,6 +8,7 @@ namespace Accelib.Module.AccelNovel.Maid
     public class SO_ChoiceButtonList : ScriptableObject
     {
         [field: Header("일일 제한")] 
+        [field: SerializeField] public bool todayLimit { get; private set; }
         [field: SerializeField] public bool todaySeen;
         
         [field:Header("등장 가능한 버튼들")]
@@ -26,7 +27,7 @@ namespace Accelib.Module.AccelNovel.Maid
 
         public SO_ChoiceButton PickedButton()
         {
-            if (todaySeen) return null;
+            if (todayLimit && todaySeen) return null;
             
             firstFilteredButtonList.Clear();
             secondFilteredButtonList.Clear();
