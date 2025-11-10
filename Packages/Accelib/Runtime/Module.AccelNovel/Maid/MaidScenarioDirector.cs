@@ -10,7 +10,9 @@ namespace Accelib.Module.AccelNovel.Maid
         Common = 0,
         Omong = 1,
         Minyung = 2,
-        Bukuki = 3
+        Bukuki = 3,
+        Jegal = 4,
+        Mogugu = 5,
     }
 
     public enum EWhoSpawn
