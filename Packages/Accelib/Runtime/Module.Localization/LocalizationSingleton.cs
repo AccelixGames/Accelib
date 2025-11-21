@@ -107,6 +107,8 @@ namespace Accelib.Module.Localization
                 if (!listener.IsEnabled) continue;
                 // 리스너가 Enable 이벤트를 받지 않는다면, 넘기기
                 if (isInit && !listener.LoadOnEnable) continue;
+                // 리스너의 키가 비어있다면, 종료
+                if (string.IsNullOrEmpty(listener.LocaleKey)) continue;
                 
                 // 로케일 문자열 가져와서,
                 var localizedString = GetLocalizedString(listener.LocaleKey, monoBehaviour);
