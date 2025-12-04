@@ -1,12 +1,13 @@
-﻿using UnityEngine;
+﻿#if UNITY_EDITOR
+using UnityEngine;
 
-namespace Accelib.Editor.GizmoExtension
+namespace Accelib.GizmoExtension
 {
     [RequireComponent(typeof(BoxCollider))]
     public class BoxColliderGizmo : MonoBehaviour
     {
-        #if UNITY_EDITOR
         [SerializeField] private BoxCollider boxCollider = null;
+        [SerializeField] private Color color =  Color.white;
         
         private void Reset()
         {
@@ -17,7 +18,7 @@ namespace Accelib.Editor.GizmoExtension
         {
             if (!enabled) return;
         
-            Gizmos.color = Color.green;
+            Gizmos.color = color;
             
             var size = transform.lossyScale;
             size.x *= boxCollider.size.x;
@@ -27,6 +28,6 @@ namespace Accelib.Editor.GizmoExtension
 
             Gizmos.DrawWireCube(transform.position + boxCollider.center, size);
         }
-        #endif
     }
 }
+#endif
