@@ -14,6 +14,7 @@ namespace Accelib.Module.Localization.Helper
         [SerializeField] private UnityEvent<string> onLocaleChanged = new();
         
         public string LocaleKey => key;
+        public int FontIndex => 0;
         public bool IsEnabled => enabled;
         public bool LoadOnEnable => loadOnEnable;
         

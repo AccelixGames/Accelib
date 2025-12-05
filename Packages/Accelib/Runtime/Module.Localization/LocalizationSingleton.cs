@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using Accelib.Core;
+using Accelib.Extensions;
 using Accelib.Logging;
 using Accelib.Module.Initialization.Base;
 using Accelib.Module.Localization.Architecture;
@@ -113,8 +114,14 @@ namespace Accelib.Module.Localization
                 // 로케일 문자열 가져와서,
                 var localizedString = GetLocalizedString(listener.LocaleKey, monoBehaviour);
                 // 업데이트 해주기
-                listener.OnLocaleUpdated(localizedString, currLocale?.FontData);
+                listener.OnLocaleUpdated(localizedString, GetFontData(listener.FontIndex));
             } 
+        }
+
+        private LocaleFontData GetFontData(int id = 0)
+        {
+            var list = currLocale.FontDataList;
+            return list.GetOrDefault(id, list[0]);
         }
 
         public static void ChangeLanguageStatic(SystemLanguage language, Object ctx = null)
@@ -141,7 +148,7 @@ namespace Accelib.Module.Localization
             return Instance.GetLocalizedString(key, ctx);
         }
 
-        public static LocaleFontData GetFontAssetStatic(Object ctx = null)
+        public static LocaleFontData GetFontAssetStatic(int id = 0, Object ctx = null)
         {
             if (!Instance)
             {
@@ -149,8 +156,11 @@ namespace Accelib.Module.Localization
                 return null;
             }
             
+            // 인스턴스 초기화
             Instance.Init();
-            return Instance.currLocale.FontData;
+            
+            // 반환
+            return Instance.GetFontData(id);
         }
         
 #if UNITY_EDITOR

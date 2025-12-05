@@ -12,8 +12,9 @@ namespace Accelib.Module.Localization.Helper
     {
         [field:SerializeField, ReadOnly] public Image Image { get; private set; }
         [SerializeField] SerializedDictionary<SystemLanguage, Sprite> localizedImages = new ();
-        
-        public string LocaleKey { get; }
+
+        public string LocaleKey => string.Empty;
+        public int FontIndex => 0;
         public bool IsEnabled => enabled;
         public bool LoadOnEnable => true;
 

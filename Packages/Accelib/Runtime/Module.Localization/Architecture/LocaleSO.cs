@@ -11,7 +11,8 @@ namespace Accelib.Module.Localization.Architecture
     {
         [field: Header("언어")] 
         [field: SerializeField] public SystemLanguage Language { get; private set; }
-        [field: SerializeField] public LocaleFontData FontData { get; private set; }
+        // [field: SerializeField] protected LocaleFontData FontData { get; private set; }
+        [SerializeField] private List<LocaleFontData> fontDataList = new();
         
         [field: Header("통계")]
         [field: SerializeField, ReadOnly] public int Count { get; private set; }
@@ -20,6 +21,8 @@ namespace Accelib.Module.Localization.Architecture
         [field: SerializeField]
         [field: SerializedDictionary("Key", "Text")]
         public SerializedDictionary<string, string> TextDict { get; private set; }
+        
+        public IReadOnlyList<LocaleFontData> FontDataList => fontDataList;
 
         #if UNITY_EDITOR
         public void FromDictionary(Dictionary<string, string> dict)

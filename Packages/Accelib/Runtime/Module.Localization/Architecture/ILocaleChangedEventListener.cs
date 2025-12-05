@@ -7,6 +7,7 @@
     {
         // 언어 키
         public string LocaleKey { get; }
+        public int FontIndex { get; }
         
         // 활성화 여부
         public bool IsEnabled { get; }

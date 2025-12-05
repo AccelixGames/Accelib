@@ -18,7 +18,8 @@ namespace Accelib.Module.Localization.Helper
         // 언어 키
         [Header("키")]
         [SerializeField] private string key;
-        [SerializeField] private int fontMaterialId;
+        [SerializeField] private int fontId = 0;
+        [SerializeField] private int fontMaterialId = 0;
 
         [Header("옵션")]
         [SerializeField] private bool loadOnEnable = true;
@@ -27,6 +28,7 @@ namespace Accelib.Module.Localization.Helper
         private ILocalizedFormatter _formatter;
         
         public string LocaleKey => key;
+        public int FontIndex => fontId;
         public bool IsEnabled => enabled;
         public bool LoadOnEnable => loadOnEnable;
 
