@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using NaughtyAttributes;
 using UnityEngine;
@@ -44,6 +45,15 @@ namespace Accelib.Module.AccelNovel.Maid
             if(continuous) return;
             
             todaySeen = false;
+            
+            foreach (var d in dialogues)
+            {
+                //if (d.choiceButtonLists?.Count > 0)
+                if (d.hasChoice)
+                {
+                    d.ResetToday();
+                }
+            }
         }
 
         public void StartSeen()
@@ -71,6 +81,16 @@ namespace Accelib.Module.AccelNovel.Maid
             
             return this;
         }
-        
+
+        private void OnValidate()
+        {
+            if (dialogues.Count > 0)
+            {
+                foreach (var d in dialogues)
+                {
+                   d.SetParentScenario(this); 
+                }
+            }
+        }
     }
 }

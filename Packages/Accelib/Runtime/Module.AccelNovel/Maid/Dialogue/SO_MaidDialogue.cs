@@ -32,6 +32,7 @@ namespace Accelib.Module.AccelNovel.Maid
         [field: SerializeField] public bool isPlayer { get; private set; }
         [field: SerializeField, HideIf("isPlayer")] public string whoLocalKey { get; private set; }
         [field: SerializeField, HideIf("isPlayer")] public string who { get; private set; }
+        [field: SerializeField] public SO_MaidScenarioBase parentScenario { get;private set; }
 
         [Header("애니메이션 재생 필요 정보")] 
         [SerializeField, ReadOnly] public int uNumber;
@@ -43,8 +44,8 @@ namespace Accelib.Module.AccelNovel.Maid
         [field:Header("감정변화")]
         [field: SerializeField] public bool stateChange { get; private set; }
         [field: SerializeField, ShowIf("stateChange")] public string stateKey { get; private set; }
-        
-        [field:Header("선택지")]
+
+        [field: Header("선택지")] 
         [field: SerializeField] public bool hasChoice { get; private set; }
         //[field:SerializeField, ShowIf("hasChoice")] public List<SO_ChoiceButton> choiceButtons;
         [field:SerializeField, ShowIf("hasChoice")] public List<SO_ChoiceButtonList> choiceButtonLists;
@@ -72,7 +73,18 @@ namespace Accelib.Module.AccelNovel.Maid
         [field:SerializeField] public string localKey{ get; private set; }
         [field:SerializeField, ResizableTextArea] public string text { get; private set; }
 
-        
 
+        public void ResetToday()
+        {
+            foreach (var btn in choiceButtonLists)
+            {
+                btn.ResetTodaySeen();
+            }
+        }
+
+        public void SetParentScenario(SO_MaidScenarioBase scenario)
+        {
+            parentScenario = scenario;
+        }
     }
 }
