@@ -7,15 +7,23 @@ using AYellowpaper.SerializedCollections;
 using Cysharp.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
+using UnityEngine.ResourceManagement.AsyncOperations;
 
 namespace Accelib.Module.AccelNovel.Control.Resource.Internal
 {
+    internal interface IResourceHandle
+    {
+        public UniTask Load(IEnumerable<string> keys);
+        public void ReleaseAll();
+    }
+    
     [Serializable]
-    internal class ResourceHandle<T> where T : UnityEngine.Object
+    internal class ResourceHandle<T> : IResourceHandle where T : UnityEngine.Object
     {
         [Header("Option")]
         [SerializeField] private bool isLocked = false;
         [SerializeField] private SerializedDictionary<string, T> dict;
+        private Dictionary<string, AsyncOperationHandle<T>> _handles;
 
         [Header("Debug")]
         [SerializeField] private bool showLog = false;
@@ -64,7 +72,7 @@ namespace Accelib.Module.AccelNovel.Control.Resource.Internal
             }
 
             // 모든 태스크 대기
-            await tasks;
+            await UniTask.WhenAll(tasks);
             
             // 잠금 해제
             isLocked = false;
@@ -76,15 +84,20 @@ namespace Accelib.Module.AccelNovel.Control.Resource.Internal
             {
                 // 로드
                 var handle = Addressables.LoadAssetAsync<T>(key);
-                var task = handle.ToUniTask(cancellationToken: _cts.Token, autoReleaseWhenCanceled: true);
-                dict[key] = await task;
+                //var hand = Addressables.LoadAssetAsync<T>(key);
+                //var task = handle.ToUniTask(cancellationToken: _cts.Token, autoReleaseWhenCanceled: true);
+                //dict[key] = await task;
+                _handles[key] = handle;
+                dict[key] = await handle.ToUniTask(cancellationToken:_cts.Token);
             }
             catch (Exception)
             {
                 if(showLog) Deb.LogWarning($"로드 실패: {key}");
+                throw;
             }
         }
-        
+
+        private List<string> skeys;
         public void ReleaseAll()
         {
             isLocked = false;
@@ -93,12 +106,20 @@ namespace Accelib.Module.AccelNovel.Control.Resource.Internal
             _cts?.Dispose();
             _cts = null;
             
-            if (dict is not { Count: > 0 }) return;
+            // if (dict is not { Count: > 0 }) return;
+            //
+            // foreach (var (_, value) in dict) 
+            //     Addressables.Release(value);
+
+            if (_handles is { Count: > 0 })
+            {
+                foreach (var (_,h) in _handles)
+                    if(h.IsValid()) Addressables.Release(h);
+                
+                _handles.Clear();
+            }
             
-            foreach (var (_, value) in dict) 
-                Addressables.Release(value);
-            
-            dict.Clear();
+            dict?.Clear();
         }
     }
 }
