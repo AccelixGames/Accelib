@@ -47,6 +47,7 @@ namespace Accelib.Module.AccelNovel.Control.Resource.Internal
             // 딕셔너리 생성
             _cts = new CancellationTokenSource();
             dict ??= new SerializedDictionary<string, T>();
+            _handles ??= new Dictionary<string, AsyncOperationHandle<T>>();
             
             // 작업
             var tasks = new List<UniTask>();
@@ -90,9 +91,9 @@ namespace Accelib.Module.AccelNovel.Control.Resource.Internal
                 _handles[key] = handle;
                 dict[key] = await handle.ToUniTask(cancellationToken:_cts.Token);
             }
-            catch (Exception)
+            catch (Exception e)
             {
-                if(showLog) Deb.LogWarning($"로드 실패: {key}");
+                if(showLog) Deb.LogWarning($"로드 실패: {key}\n{e}");
                 throw;
             }
         }
