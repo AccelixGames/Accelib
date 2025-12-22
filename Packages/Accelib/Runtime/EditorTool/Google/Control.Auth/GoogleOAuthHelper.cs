@@ -6,7 +6,7 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Web;
 using Cysharp.Threading.Tasks;
-using NaughtyAttributes;
+using Sirenix.OdinInspector;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.Networking;
@@ -32,6 +32,7 @@ namespace Accelib.EditorTool.Google.Control.Auth
         [SerializeField, TextArea, ReadOnly] private string accessToken;
         [SerializeField, TextArea, ReadOnly] private string refreshToken;
         [SerializeField, TextArea, ReadOnly] private string updatedAt;
+        [SerializeField, TextArea, ReadOnly] private string tokenExpiry;
         
         private const string AuthUrl = "https://accounts.google.com/o/oauth2/v2/auth";
         private const string TokenUrl = "https://oauth2.googleapis.com/token";
@@ -39,8 +40,8 @@ namespace Accelib.EditorTool.Google.Control.Auth
         
         private string PrefsKey_AccessToken => $"GSHEETS_ACCESS_TOKEN-{clientId}";
         private string PrefsKey_RefreshToken => $"GSHEETS_REFRESH_TOKEN-{clientId}";
-        private string PrefsKey_TokenExpiry => $"GSHEETS_TOKEN_EXPIRY-{clientId}";
         private string PrefsKey_UpdatedAt => $"GSHEETS_UPDATED_AT-{clientId}";
+        private string PrefsKey_TokenExpiry => $"GSHEETS_TOKEN_EXPIRY-{clientId}";
 
         private static string SuccessHtml(string code) => $"<html><body><h3>OAuth Success({code})</h3><p>You can now close this tab and go back to Unity.</p></body></html>";
         private static string FailedHtml(string error) => $"<html><body><h3>OAuth Failed</h3><p>Error: {error}</p></body></html>";
@@ -54,6 +55,7 @@ namespace Accelib.EditorTool.Google.Control.Auth
             accessToken = EditorPrefs.GetString(PrefsKey_AccessToken, "");
             refreshToken = EditorPrefs.GetString(PrefsKey_RefreshToken, "");
             updatedAt = EditorPrefs.GetString(PrefsKey_UpdatedAt, "");
+            tokenExpiry = EditorPrefs.GetString(tokenExpiry, "");
             var isExpired = IsTokenExpired();
             
             // 토큰이 비어있지 않고, 아직 기간이 남았다면,
@@ -176,6 +178,7 @@ namespace Accelib.EditorTool.Google.Control.Auth
 
             EditorPrefs.SetString(PrefsKey_AccessToken, token.access_token);
             var expiry = DateTime.UtcNow.AddSeconds(token.expires_in);
+            tokenExpiry = expiry.ToString("yyyy-MM-dd HH:mm:ss");
             EditorPrefs.SetString(PrefsKey_TokenExpiry, expiry.Ticks.ToString());
             
             updatedAt = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
@@ -260,6 +263,7 @@ namespace Accelib.EditorTool.Google.Control.Auth
             }
 
             var expiry = DateTime.UtcNow.AddSeconds(token.expires_in);
+            tokenExpiry = expiry.ToString("yyyy-MM-dd HH:mm:ss");
             EditorPrefs.SetString(PrefsKey_TokenExpiry, expiry.Ticks.ToString());
 
             // 반환
@@ -285,14 +289,14 @@ namespace Accelib.EditorTool.Google.Control.Auth
             public string token_type;
         }
 
-        [Button("토큰 가져오기(테스트)", EButtonEnableMode.Editor)]
-        private async UniTaskVoid Internal_GetAccessToken()
+        [Button("토큰 가져오기(테스트)")]
+        private async void Internal_GetAccessToken()
         {
             var token = await GetValidAccessToken();
             Debug.Log($"AccessToken: {token}");
         }
 
-        [Button("토큰 비우기", EButtonEnableMode.Editor)]
+        [Button("토큰 비우기")]
         public void Clear()
         {
             accessToken = null;
