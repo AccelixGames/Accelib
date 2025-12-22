@@ -97,7 +97,8 @@ namespace Accelib.Module.AccelNovel.Control.Resource
             _handles.TryAdd(typeof(GameObject), gameObjectHandle);
         }
         
-        public UniTask Load<T>(IEnumerable<string> keys) where T : UnityEngine.Object
+        
+        public UniTask SetResouceHandler<T>(IEnumerable<string> keys) where T : UnityEngine.Object
         {
             EnsureHandles();
 
@@ -112,7 +113,7 @@ namespace Accelib.Module.AccelNovel.Control.Resource
             return h.Load(keys);
         }
         
-        public async UniTask<bool> Load(params ILoadRequest[] requests)
+        public async UniTask<bool> AddressableLoad(params ILoadRequest[] requests)
         {
             try
             {
@@ -131,7 +132,20 @@ namespace Accelib.Module.AccelNovel.Control.Resource
             
             return true;
         }
+        
+        /// <summary> 단일 타입 어드레서블 언로드 </summary>
+        /// <typeparam name="T"> 언로드 할 타입(UnityEngine.Object) </typeparam>
+        [Button]
+        [ContextMenu(nameof(ReleaseResourceType))]
+        public void ReleaseResourceType<T>()where T : UnityEngine.Object
+        {
+            if(_handles.TryGetValue(typeof(T), out IResourceHandle h))
+            {
+                h?.ReleaseAll();
+            }
+        }
 
+        /// <summary> 모든 어드레서블 언로드 </summary>
         [Button]
         [ContextMenu(nameof(ReleaseAll))]
         public void ReleaseAll()
@@ -161,7 +175,7 @@ namespace Accelib.Module.AccelNovel.Control.Resource
         private readonly IEnumerable<string> _keys;
         public LoadRequest(IEnumerable<string> keys) => _keys = keys;
 
-        public UniTask Execute(ResourceProvider provider) => provider.Load<T>(_keys);
+        public UniTask Execute(ResourceProvider provider) => provider.SetResouceHandler<T>(_keys);
     }
 
 }

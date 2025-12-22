@@ -97,8 +97,7 @@ namespace Accelib.Module.AccelNovel.Control.Resource.Internal
                 throw;
             }
         }
-
-        private List<string> skeys;
+        
         public void ReleaseAll()
         {
             isLocked = false;
