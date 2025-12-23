@@ -28,17 +28,16 @@ namespace Accelib.Module.Localization.Helper
         public string Reload()
         {
             // 현지화된 텍스트 가져오기
-            var localizedString = LocalizationSingleton.GetLocalizedStringStatic(LocaleKey, this);
-            var fontAsset = LocalizationSingleton.GetFontAssetStatic();
+            var localizedString = LocalizationSingleton.GetLocalizedString(LocaleKey, this);
             
             // 업데이트 이벤트 호출
-            OnLocaleUpdated(localizedString, fontAsset);
+            OnLocaleUpdated(localizedString);
             
             // 반환
             return localizedString;
         }
         
-        public void OnLocaleUpdated(string localizedString, LocaleFontData fontAsset)
+        public void OnLocaleUpdated(string localizedString)
         {
             onLocaleChanged.Invoke(localizedString);
         }

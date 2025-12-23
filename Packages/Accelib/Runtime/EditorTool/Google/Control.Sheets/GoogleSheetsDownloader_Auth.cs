@@ -5,6 +5,7 @@ using Accelib.EditorTool.Google.Control.Auth;
 using Accelib.EditorTool.Google.Model;
 using Cysharp.Threading.Tasks;
 using Newtonsoft.Json;
+using Sirenix.OdinInspector;
 using UnityEngine;
 using UnityEngine.Networking;
 
@@ -63,6 +64,13 @@ namespace Accelib.EditorTool.Google.Control.Sheets
 
             Debug.Log("[구글시트] 데이터 다운로드 성공!\n" + json, this);
             return json;
+        }
+
+        [Button]
+        private async void Test_Download()
+        {
+            var res = await DownloadAsync();
+            Debug.Log(res, this);
         }
     }
 }

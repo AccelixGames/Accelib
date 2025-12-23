@@ -13,5 +13,10 @@ namespace Accelib.Utility
             if(id >= 0 && id < events.Length)
                 events[id]?.Invoke();
         }
+
+        public void SetDisable()
+        {
+            gameObject.SetActive(false);
+        }
     }
 }

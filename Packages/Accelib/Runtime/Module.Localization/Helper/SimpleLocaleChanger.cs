@@ -1,4 +1,4 @@
-﻿using NaughtyAttributes;
+﻿using Sirenix.OdinInspector;
 using UnityEngine;
 
 namespace Accelib.Module.Localization.Helper
@@ -11,7 +11,7 @@ namespace Accelib.Module.Localization.Helper
         [Tooltip("변경할 언어")]
         [SerializeField] private SystemLanguage language = SystemLanguage.Korean;
         
-        [Button("언어 변경하기", EButtonEnableMode.Playmode)]
-        public void ChangeLanguage() => LocalizationSingleton.ChangeLanguageStatic(language);
+        [Button("언어 변경", ButtonSizes.Large)]
+        public void ChangeLanguage() => LocalizationSingleton.ChangeLanguage(language);
     }
 }

@@ -1,10 +1,8 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
 using Accelib.Core;
 using Accelib.Module.Transition.Effect;
 using DG.Tweening;
-using NaughtyAttributes;
-using UnityAtoms.BaseAtoms;
+using Sirenix.OdinInspector;
 using UnityEngine;
 
 namespace Accelib.Module.Transition
@@ -82,10 +80,10 @@ namespace Accelib.Module.Transition
         }
 
 #if UNITY_EDITOR
-        [Button(enabledMode: EButtonEnableMode.Playmode)]
+        [Button]
         public void TrStart() => Transition(true);
 
-        [Button(enabledMode: EButtonEnableMode.Playmode)]
+        [Button]
         public void TrEnd() => Transition(false);
 #endif
     }

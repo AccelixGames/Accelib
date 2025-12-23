@@ -14,6 +14,6 @@
         public bool LoadOnEnable { get; }
         
         // 언어 변경시 호출될 메소드
-        public void OnLocaleUpdated(string localizedString, LocaleFontData fontAsset);
+        public void OnLocaleUpdated(string localizedString);
     }
 }

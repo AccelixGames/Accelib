@@ -9,10 +9,16 @@ namespace Accelib.Utility
     public class SimpleAnimatorSetTrigger : MonoBehaviour
     {
         [SerializeField, AnimatorParam(nameof(_animator), AnimatorControllerParameterType.Trigger)] private string triggerName;
+        [SerializeField] private bool resetTriggerOnEnable;
         
         private Animator _animator;
 
         private void Awake() => _animator = GetComponent<Animator>();
+
+        private void OnEnable()
+        {
+            if(resetTriggerOnEnable) ResetTrigger();
+        }
 
         [Button(enabledMode: EButtonEnableMode.Playmode)]
         public void SetTrigger()=> _animator.SetTrigger(triggerName);

@@ -6,10 +6,10 @@ using UnityEngine.EventSystems;
 
 namespace Accelib.Module.UI.Utility
 {
-    [RequireComponent(typeof(Animator))]
     public class AnimationButton : MonoBehaviour, IPointerClickHandler, IPointerEnterHandler, IPointerExitHandler
     {
         [Header("상태")]
+        [SerializeField, ReadOnly] private Animator anim;
         [SerializeField] private bool isEnabled = true;
         [SerializeField, Range(0.01f, 10f)] private float clickDuration = 1f;
         [SerializeField, Range(0.01f, 5f)] private float speedMultiplier = 1f;
@@ -25,9 +25,7 @@ namespace Accelib.Module.UI.Utility
         [SerializeField] public UnityEvent onPointerHover = new();
 
         [Header("Debug")]
-#pragma warning disable CS0219
         [SerializeField] private bool showDebValue = false;
-        [SerializeField, ReadOnly, ShowIf(nameof(showDebValue))] private Animator anim;
         [SerializeField, ReadOnly, ShowIf(nameof(showDebValue))] private Timer timer;
         [SerializeField, ReadOnly, ShowIf(nameof(showDebValue))] private int paramHover;
         [SerializeField, ReadOnly, ShowIf(nameof(showDebValue))] private int paramClick;
@@ -52,7 +50,7 @@ namespace Accelib.Module.UI.Utility
         
         private void Awake()
         {
-            anim = GetComponent<Animator>();
+            anim ??= GetComponent<Animator>();
             
             paramHover = Animator.StringToHash(animBoolHover);
             paramClick = Animator.StringToHash(animBoolClick);

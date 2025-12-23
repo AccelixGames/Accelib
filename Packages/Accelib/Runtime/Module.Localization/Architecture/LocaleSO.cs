@@ -1,47 +1,54 @@
 ﻿using System.Collections.Generic;
+using Accelib.Extensions;
 using Accelib.Logging;
 using AYellowpaper.SerializedCollections;
-using NaughtyAttributes;
+using Sirenix.OdinInspector;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace Accelib.Module.Localization.Architecture
 {
     [CreateAssetMenu(fileName = "(Locale) Name", menuName = "Accelib.Utility/LocaleSO")]
     public class LocaleSO : ScriptableObject
     {
-        [field: Header("언어")] 
-        [field: SerializeField] public SystemLanguage Language { get; private set; }
-        // [field: SerializeField] protected LocaleFontData FontData { get; private set; }
+        [Title("# 언어")]
+        [SerializeField] private SystemLanguage language;
         [SerializeField] private List<LocaleFontData> fontDataList = new();
-        
-        [field: Header("통계")]
-        [field: SerializeField, ReadOnly] public int Count { get; private set; }
-        
-        [field: Header("딕셔너리")]
-        [field: SerializeField]
-        [field: SerializedDictionary("Key", "Text")]
-        public SerializedDictionary<string, string> TextDict { get; private set; }
-        
-        public IReadOnlyList<LocaleFontData> FontDataList => fontDataList;
+        [SerializeField] private LocaleFontData fallbackFont;
 
-        #if UNITY_EDITOR
+        [Title("# 값")] 
+        [SerializeField, ReadOnly] private int count;
+        [SerializeField, SerializedDictionary("Key", "Text")] private SerializedDictionary<string, string> textDict;
+
+        public SystemLanguage Language => language;
+        public LocaleFontData GetFontData(int index) => fontDataList?.GetOrDefault(index, fallbackFont);
+
+        public bool TryGetValue(string key, out string value)
+        {
+            textDict ??=  new SerializedDictionary<string, string>(textDict);
+            return textDict.TryGetValue(key, out value);
+        }
+
+#if UNITY_EDITOR
+        public IEnumerable<string> GetKeys() => textDict?.Keys;
+        public IReadOnlyList<LocaleFontData> GetFontDataList() => fontDataList;
+        
         public void FromDictionary(Dictionary<string, string> dict)
         {
             if(dict is not { Count: > 0 }) return;
 
-            Count = 0;
+            count = 0;
             
-            TextDict = new SerializedDictionary<string, string>(dict);
-            TextDict.Clear();
+            textDict ??= new SerializedDictionary<string, string>(dict);
             foreach (var (key, value) in dict) 
-                if(!TextDict.TryAdd(key, value))
+                if(!textDict.TryAdd(key, value))
                     Deb.LogError($"Duplicate({key}): {value}");
             
-            Count = dict.Count;
+            count = dict.Count;
             
             UnityEditor.EditorUtility.SetDirty(this);
             UnityEditor.AssetDatabase.SaveAssetIfDirty(this);
         }
-        #endif
+#endif
     }
 }

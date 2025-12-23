@@ -12,7 +12,7 @@ namespace Accelib.Module.Localization.Helper
         [Button("언어 토글하기", EButtonEnableMode.Playmode)]
         public void ToggleLanguage()
         {
-            LocalizationSingleton.ChangeLanguageStatic(LocalizationSingleton.Instance.CurrLang == languageA
+            LocalizationSingleton.ChangeLanguage(LocalizationSingleton.Instance.CurrLang == languageA
                 ? languageB
                 : languageA);
         }

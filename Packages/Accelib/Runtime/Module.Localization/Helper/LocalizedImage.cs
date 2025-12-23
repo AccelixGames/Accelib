@@ -55,7 +55,7 @@ namespace Accelib.Module.Localization.Helper
             }
         }
 
-        public void OnLocaleUpdated(string localizedString, LocaleFontData fontAsset)
+        public void OnLocaleUpdated(string localizedString)
         {
             Load();
         }

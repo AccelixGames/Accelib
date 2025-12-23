@@ -1,7 +1,7 @@
 ﻿using System;
-using Accelib.Module.Localization.Architecture;
+using Accelib.Logging;
 using Accelib.Module.Localization.Helper.Formatter;
-using NaughtyAttributes;
+using Sirenix.OdinInspector;
 using TMPro;
 using UnityEngine;
 
@@ -11,26 +11,28 @@ namespace Accelib.Module.Localization.Helper
     /// 언어 변경에 대응하는 TMP
     /// </summary>
     [RequireComponent(typeof(TMP_Text))]
-    public class LocalizedTMP : MonoBehaviour, ILocaleChangedEventListener
+    public class LocalizedTMP : LocalizedMonoBehaviour
     {
         [field: SerializeField] public TMP_Text TMP { get; private set; }
         
         // 언어 키
         [Header("키")]
+        [ValueDropdown("GetAllKey", AppendNextDrawer = true)]
         [SerializeField] private string key;
+        [ValueDropdown("GetAllFont", AppendNextDrawer = true)]
         [SerializeField] private int fontId = 0;
+        [ValueDropdown("GetAllFontMaterial", AppendNextDrawer = true)]
         [SerializeField] private int fontMaterialId = 0;
 
-        [Header("옵션")]
+        [Header("옵션")] 
         [SerializeField] private bool loadOnEnable = true;
         [SerializeField] private bool useFormatter = false;
         
         private ILocalizedFormatter _formatter;
         
-        public string LocaleKey => key;
-        public int FontIndex => fontId;
-        public bool IsEnabled => enabled;
-        public bool LoadOnEnable => loadOnEnable;
+        public override string LocaleKey => key;
+        public override int FontIndex => fontId;
+        public override bool LoadOnEnable => loadOnEnable;
 
         // TMP 캐싱 
         private void Awake()
@@ -41,35 +43,42 @@ namespace Accelib.Module.Localization.Helper
 
         private void OnEnable()
         {
-            if (loadOnEnable) 
+            if (LoadOnEnable) 
                 Reload();
         }
         
-        [Button("다시 로드", EButtonEnableMode.Playmode)]
+        [Button("다시 로드", DisplayParameters = false, DrawResult = false)]
         public string Reload()
         {
             // 현지화된 텍스트 가져오기
-            var localizedString = LocalizationSingleton.GetLocalizedStringStatic(LocaleKey, this);
-            var fontAsset = LocalizationSingleton.GetFontAssetStatic();
+            var localizedString = LocalizationSingleton.GetLocalizedString(LocaleKey, this);
             
             // 업데이트 이벤트 호출
-            OnLocaleUpdated(localizedString, fontAsset);
+            OnLocaleUpdated(localizedString);
             
             // 반환
             return TMP.text;
         }
 
-        public void OnLocaleUpdated(string localizedString, LocaleFontData fontAsset)
+        /// <summary>키 변경</summary>
+        public string ChangeKey(string otherKey)
+        {
+            key = otherKey;
+            return Reload();
+        }
+        
+        public override void OnLocaleUpdated(string localizedString)
         {
             // TMP가 NULL 일 경우, 종료
             TMP ??= GetComponent<TMP_Text>();
             if (!TMP) return;
 
-            if (fontAsset?.FontAsset)
+            // 폰트 업데이트
+            var fontData = LocalizationSingleton.GetFontData(fontId);
+            if (fontData?.FontAsset)
             {
-                TMP.font = fontAsset.FontAsset;
-                if (fontAsset.FontMaterials != null && fontAsset.FontMaterials.Count > fontMaterialId) 
-                    TMP.fontMaterial = fontAsset.FontMaterials[fontMaterialId];
+                TMP.font = fontData.FontAsset;
+                TMP.fontMaterial = fontData.GetMaterial(fontMaterialId);
             }
             
             // 포맷 적용
@@ -82,17 +91,30 @@ namespace Accelib.Module.Localization.Helper
 
             // 텍스트 변경
             TMP.SetText(localizedString);
+            Deb.Log("Update Locale", this);
         }
 
-        /// <summary>
-        /// 키 변경
-        /// </summary>
-        public string ChangeKey(string otherKey)
+
+        private void Reset()
         {
-            key = otherKey;
-            return Reload();
+            TMP = GetComponent<TMP_Text>();
+
+#if UNITY_EDITOR
+            Deb_SyncFont();
+#endif
         }
 
-        private void Reset() => TMP = GetComponent<TMP_Text>();
+#if UNITY_EDITOR
+        [BoxGroup("# Debug")]
+        [Button("TMP에 Preview 적용", DisplayParameters = false, DrawResult = false)]
+        private void Deb_UpdateTMP() => TMP.text = TextPreview;
+
+        [BoxGroup("# Debug")]
+        [Button("TMP에서 Font 읽기", DisplayParameters = false, DrawResult = false)]
+        private void Deb_SyncFont()
+        {
+            (fontId, fontMaterialId) = GetFontID(TMP.font, TMP.fontSharedMaterial);
+        }
+#endif
     }
 }

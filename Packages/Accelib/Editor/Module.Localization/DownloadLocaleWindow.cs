@@ -42,11 +42,11 @@ namespace Accelib.Editor.Module.Localization
         private void Initialize()
         {
             _sheetDownloader = new EditorObjectField<GoogleSheetsDownloaderBase>("Locale Sheet");
-            _koreanLocale = new EditorObjectField<LocaleSO>(SystemLanguage.Korean.ToString());
-            _englishLocale = new EditorObjectField<LocaleSO>(SystemLanguage.English.ToString());
-            _japaneseLocale = new EditorObjectField<LocaleSO>(SystemLanguage.Japanese.ToString());
-            _chineseSimplifiedLocale = new EditorObjectField<LocaleSO>(SystemLanguage.ChineseSimplified.ToString());
-            _chineseTraditionalLocale = new EditorObjectField<LocaleSO>(SystemLanguage.ChineseTraditional.ToString());
+            _koreanLocale = new EditorObjectField<LocaleSO>(nameof(SystemLanguage.Korean));
+            _englishLocale = new EditorObjectField<LocaleSO>(nameof(SystemLanguage.English));
+            _japaneseLocale = new EditorObjectField<LocaleSO>(nameof(SystemLanguage.Japanese));
+            _chineseSimplifiedLocale = new EditorObjectField<LocaleSO>(nameof(SystemLanguage.ChineseSimplified));
+            _chineseTraditionalLocale = new EditorObjectField<LocaleSO>(nameof(SystemLanguage.ChineseTraditional));
 
             Repaint();
         }
