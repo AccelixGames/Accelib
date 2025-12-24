@@ -4,6 +4,7 @@ using Accelib.Module.Localization.Helper.Formatter;
 using Sirenix.OdinInspector;
 using TMPro;
 using UnityEngine;
+using UnityEngine.SocialPlatforms;
 
 namespace Accelib.Module.Localization.Helper
 {
@@ -51,7 +52,9 @@ namespace Accelib.Module.Localization.Helper
         public string Reload()
         {
             // 현지화된 텍스트 가져오기
-            var localizedString = LocalizationSingleton.GetLocalizedString(LocaleKey, this);
+            var localizedString = string.Empty;
+            if(!string.IsNullOrEmpty(LocaleKey))
+                localizedString = LocalizationSingleton.GetLocalizedString(LocaleKey, this);
             
             // 업데이트 이벤트 호출
             OnLocaleUpdated(localizedString);
@@ -91,7 +94,7 @@ namespace Accelib.Module.Localization.Helper
 
             // 텍스트 변경
             TMP.SetText(localizedString);
-            Deb.Log("Update Locale", this);
+            // Deb.Log("Update Locale", this);
         }
 
 

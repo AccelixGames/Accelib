@@ -21,12 +21,13 @@ namespace Accelib.Module.SceneManagement
         private void OnEnable() => isLocked = false;
         private void OnDisable() => isLocked = false;
         
-        public async UniTask ChangeAsync(AssetReference sceneAsset)
+        public async UniTask<SceneInstance?> ChangeAsync(AssetReference sceneAsset)
         {
             // 잠금 체크 및 설정
-            if (isLocked) return;
+            if (isLocked) return null;
             isLocked = true;
 
+            SceneInstance? result = null; 
             var defaultLoadPriority = Application.backgroundLoadingPriority;
 
             try
@@ -47,7 +48,7 @@ namespace Accelib.Module.SceneManagement
                 GarbageCollect();
 
                 // 씬 로드
-                var sceneInstance = await Addressables.LoadSceneAsync(sceneAsset, LoadSceneMode.Additive);
+                result = await Addressables.LoadSceneAsync(sceneAsset, LoadSceneMode.Additive);
 
                 // 빈 씬 언로드
                 SceneManager.UnloadSceneAsync(emptyScene);
@@ -60,6 +61,8 @@ namespace Accelib.Module.SceneManagement
             {
                 Application.backgroundLoadingPriority = defaultLoadPriority;
             }
+            
+            return result;
         }
         
         private void GarbageCollect()
