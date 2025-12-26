@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Accelib.EditorTool.Google.Control.Auth;
 using Accelib.EditorTool.Google.Model;
 using Accelib.EditorTool.Google.Model.Metadata;
@@ -7,6 +8,7 @@ using Newtonsoft.Json;
 using Sirenix.OdinInspector;
 using UnityEngine;
 using UnityEngine.Networking;
+using Object = UnityEngine.Object;
 
 namespace Accelib.EditorTool.Google.Control.Sheets
 {
@@ -42,7 +44,9 @@ namespace Accelib.EditorTool.Google.Control.Sheets
             }
             
             // 범위 가져오기
-            await GetRanges(accessToken);
+            var rangeUrl =  $"{BaseURL}/{SheetId}";
+            ranges.Clear();
+            ranges = await GetRanges(rangeUrl, accessToken, this);
             
             // URL 생성 후 요청
             var url =  $"{BaseURL}/{SheetId}/values:batchGet?";
@@ -64,11 +68,10 @@ namespace Accelib.EditorTool.Google.Control.Sheets
             return json;
         }
 
-        private async UniTask GetRanges(string accessToken)
+        public static async UniTask<List<string>> GetRanges(string url, string accessToken, Object ctx = null)
         {
             // URL 생성 후 요청
-            var url =  $"{BaseURL}/{SheetId}";
-            Debug.Log($"[구글시트] 범위 요청: {url}", this);
+            Debug.Log($"[구글시트] 범위 요청: {url}", ctx);
             
             using var www = UnityWebRequest.Get(url);
             www.SetRequestHeader("Authorization", "Bearer " + accessToken);
@@ -77,31 +80,48 @@ namespace Accelib.EditorTool.Google.Control.Sheets
             var json = www.downloadHandler.text;
             if (www.result != UnityWebRequest.Result.Success)
             {
-                Debug.LogError($"[구글시트] 다운로드 실패: {www.error}\n{json}", this);
-                return;
+                Debug.LogError($"[구글시트] 다운로드 실패: {www.error}\n{json}", ctx);
+                return null;
             }
             
             var metadata = JsonConvert.DeserializeObject<JSheetMetadata>(json);
-            ranges.Clear();
+            var result = new List<string>();
             foreach (var sheet in metadata.sheets)
             {
                 var title = sheet.properties.title;
                 if(title.StartsWith('@')) continue;
                 if(title.StartsWith('!')) continue;
 
-                ranges.Add(title);
+                result.Add(title);
             }
+
+            return result;
         }
-        
-        [Button]
-        private async void Test_Download()
+
+        public static async UniTask<JSheet> DownloadAsSheetDataAsyncStatic(string sheetId, List<string> ranges, string accessToken, Object ctx = null)
         {
-            var res = await DownloadAsSheetDataAsync();
-            foreach (var resValueRange in res.valueRanges)
-            {
-                Debug.Log("범위: " + resValueRange.range, this);
-            }
-            //Debug.Log(res, this);
+            if (string.IsNullOrEmpty(sheetId))
+                throw new NullReferenceException("[구글시트] SheetId 혹은 Range가 비어있어, 다운로드할 수 없습니다.");
+            
+            // AccessToken 가져오기
+            if (string.IsNullOrEmpty(accessToken))
+                throw new NullReferenceException("[구글시트] AccessToken 가져오기 실패");
+            
+            // URL 생성 후 요청
+            var url =  $"{BaseURL}/{sheetId}/values:batchGet?";
+            foreach (var range in ranges) url += $"ranges={range}&";
+            Debug.Log($"[구글시트] 데이터 다운로드 시작: {url}", ctx);
+            
+            using var www = UnityWebRequest.Get(url);
+            www.SetRequestHeader("Authorization", "Bearer " + accessToken);
+            await www.SendWebRequest();
+
+            var json = www.downloadHandler.text;
+            if (www.result != UnityWebRequest.Result.Success)
+                throw new NullReferenceException("[구글시트] 다운로드 실패: {www.error}\n{json}");
+
+            //Debug.Log("[구글시트] 데이터 다운로드 성공!\n" + json, ctx);
+            return JsonConvert.DeserializeObject<JSheet>(json);
         }
     }
 }
