@@ -40,6 +40,7 @@ namespace Accelib.Module.Localization.Architecture
             count = 0;
             
             textDict ??= new SerializedDictionary<string, string>(dict);
+            textDict.Clear();
             foreach (var (key, value) in dict) 
                 if(!textDict.TryAdd(key, value))
                     Deb.LogError($"Duplicate({key}): {value}");
