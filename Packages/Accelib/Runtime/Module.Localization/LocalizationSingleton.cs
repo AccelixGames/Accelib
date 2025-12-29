@@ -117,38 +117,41 @@ namespace Accelib.Module.Localization
 
         public static void ChangeLanguage(SystemLanguage language, Object ctx = null)
         {
-            if (!Instance)
+            var inst = GetInstanceSafe();
+            if (!inst)
             {
                 Deb.LogWarning("Instance가 null입니다.", ctx);
                 return;
             }
             
-            Instance.Internal_Init();
-            Instance.Internal_ChangeLanguage(language);
+            inst.Internal_Init();
+            inst.Internal_ChangeLanguage(language);
         }
         
         public static string GetLocalizedString(string key, Object ctx = null)
         {
-            if (!Instance)
+            var inst = GetInstanceSafe();
+            if (!inst)
             {
                 Deb.LogWarning("Instance가 null입니다.", ctx);
                 return NullString;
             }
             
-            Instance.Internal_Init();
-            return Instance.Internal_GetLocalizedString(key, ctx);
+            inst.Internal_Init();
+            return inst.Internal_GetLocalizedString(key, ctx);
         }
 
         public static LocaleFontData GetFontData(int id, Object ctx = null)
         {
-            if (!Instance)
+            var inst = GetInstanceSafe();
+            if (!inst)
             {
                 Deb.LogWarning("Instance가 null입니다.", ctx);
                 return null;
             }
             
-            Instance.Internal_Init();
-            return Instance._currLocale.GetFontData(id);
+            inst.Internal_Init();
+            return inst._currLocale.GetFontData(id);
         }
         
 #if UNITY_EDITOR

@@ -10,6 +10,13 @@ namespace Accelib.Core
         
         public static T Instance { get; private set; }
 
+        public static T GetInstanceSafe()
+        {
+            if (Instance) return Instance;
+            Instance = FindAnyObjectByType<T>();
+            return Instance;
+        }
+        
         public static bool TryGetInstance(out T instance)
         {
             if (!Instance)
