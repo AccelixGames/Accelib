@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using UnityEditor;
 using UnityEngine;
 
@@ -11,12 +12,28 @@ namespace Accelix.Editor
         public T asset;
         public string assetPath;
 
-        public EditorObjectField(string baseKey)
+        public EditorObjectField(string baseKey, bool autoLoad = false)
         {
             key = baseKey;
 
             assetPath = EditorPrefs.GetString(baseKey, "");
-            asset = string.IsNullOrEmpty(assetPath) ? null : AssetDatabase.LoadAssetAtPath<T>(assetPath);
+            if(!string.IsNullOrEmpty(assetPath))
+                asset = string.IsNullOrEmpty(assetPath) ? null : AssetDatabase.LoadAssetAtPath<T>(assetPath);
+            else if (autoLoad)
+            {
+                var guids = AssetDatabase.FindAssetGUIDs($"t:{typeof(T).Name}");
+                foreach (var guid in guids)
+                {
+                    asset = AssetDatabase.LoadAssetByGUID<T>(guid);
+
+                    if (asset != null)
+                    {
+                        assetPath = AssetDatabase.GUIDToAssetPath(guid);
+                        EditorPrefs.SetString(key, assetPath);
+                        break;
+                    }
+                }
+            }
         }
         
         public void SaveOnChanged()
