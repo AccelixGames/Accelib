@@ -25,6 +25,8 @@ namespace Accelib.EditorTool.Google.Control.Auth
         [SerializeField, TextArea] private List<string> scopes = new()
         {
             "https://www.googleapis.com/auth/spreadsheets.readonly",
+            "https://www.googleapis.com/auth/drive.metadata.readonly",
+            "https://www.googleapis.com/auth/drive.readonly",
         };
         [SerializeField] private int port = 45871;
 

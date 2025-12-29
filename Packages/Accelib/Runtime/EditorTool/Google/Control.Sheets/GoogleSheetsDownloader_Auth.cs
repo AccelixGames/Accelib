@@ -53,6 +53,7 @@ namespace Accelib.EditorTool.Google.Control.Sheets
             
             using var www = UnityWebRequest.Get(url);
             www.SetRequestHeader("Authorization", "Bearer " + accessToken);
+            www.timeout = 5;
             await www.SendWebRequest();
 
             var json = www.downloadHandler.text;
