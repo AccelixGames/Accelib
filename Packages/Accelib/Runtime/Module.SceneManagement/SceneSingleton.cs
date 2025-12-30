@@ -49,6 +49,7 @@ namespace Accelib.Module.SceneManagement
 
                 // 씬 로드
                 result = await Addressables.LoadSceneAsync(sceneAsset, LoadSceneMode.Additive);
+                await result?.ActivateAsync();
 
                 // 빈 씬 언로드
                 SceneManager.UnloadSceneAsync(emptyScene);
