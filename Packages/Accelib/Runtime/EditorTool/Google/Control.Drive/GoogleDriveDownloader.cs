@@ -1,4 +1,5 @@
-﻿using System;
+﻿#if UNITY_EDITOR
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Accelib.EditorTool.Google.Control.Auth;
@@ -7,6 +8,7 @@ using Cysharp.Threading.Tasks;
 using Newtonsoft.Json;
 using Sirenix.OdinInspector;
 using Sirenix.Serialization;
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.Networking;
 
@@ -41,19 +43,22 @@ namespace Accelib.EditorTool.Google.Control.Drive
             Debug.Log("---[구글드라이브] Sync 시작!---");
             
             rootFolder = new GoogleDriveEntry_Folder(rootFolderId, "root");
-            await RecursiveQueryAsync(accessToken, rootFolder, 0);
+            await Internal_RecursiveQueryAsync(accessToken, rootFolder, 0);
+            
+            EditorUtility.SetDirty(this);
+            AssetDatabase.SaveAssets();
             
             Debug.Log("---[구글드라이브] Sync 종료!---");
         }
 
-        private async UniTask RecursiveQueryAsync(string accessToken, GoogleDriveEntry_Folder parent, int depth)
+        private async UniTask Internal_RecursiveQueryAsync(string accessToken, GoogleDriveEntry_Folder parent, int depth)
         {
             // 깊이가 너무 깊어졌다면, 종료
             if (depth >= MaxRecursiveDepth)
                 return;
 
             // 현재 깊이의 폴더 탐색
-            parent.children = await ReadFolderAsync(accessToken, parent.id);
+            parent.children = await Internal_ReadFolderAsync(accessToken, parent.id);
             parent.children.Sort((a,b) => string.Compare(a.MimeType, b.MimeType, StringComparison.Ordinal));
             
             // 자식을 순회하며 탐색
@@ -61,15 +66,15 @@ namespace Accelib.EditorTool.Google.Control.Drive
             foreach (var child in parent.children)
             {
                 if (child is GoogleDriveEntry_SpreadSheet childSpreadSheet)
-                    taskList.Add(ReadSpreadSheetAsync(accessToken, childSpreadSheet));
+                    taskList.Add(Internal_ReadSpreadSheetAsync(accessToken, childSpreadSheet));
                 else if (child is GoogleDriveEntry_Folder childFolder) 
-                    taskList.Add(RecursiveQueryAsync(accessToken, childFolder, depth + 1));
+                    taskList.Add(Internal_RecursiveQueryAsync(accessToken, childFolder, depth + 1));
             }
             
             await UniTask.WhenAll(taskList);
         }
 
-        private async UniTask ReadSpreadSheetAsync(string accessToken, GoogleDriveEntry_SpreadSheet spreadSheet)
+        private async UniTask Internal_ReadSpreadSheetAsync(string accessToken, GoogleDriveEntry_SpreadSheet spreadSheet)
         {
             try
             {
@@ -105,7 +110,7 @@ namespace Accelib.EditorTool.Google.Control.Drive
             }
         }
 
-        private async UniTask<List<GoogleDriveEntry>> ReadFolderAsync(string accessToken, string folder)
+        private async UniTask<List<GoogleDriveEntry>> Internal_ReadFolderAsync(string accessToken, string folder)
         {
             try
             {
@@ -228,3 +233,4 @@ namespace Accelib.EditorTool.Google.Control.Drive
         }
     }
 }
+#endif

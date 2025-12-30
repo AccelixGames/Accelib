@@ -1,11 +1,11 @@
-﻿using System;
+﻿#if UNITY_EDITOR
+using System;
 using System.Collections.Generic;
 using Accelib.EditorTool.Google.Control.Auth;
 using Accelib.EditorTool.Google.Model;
 using Accelib.EditorTool.Google.Model.Metadata;
 using Cysharp.Threading.Tasks;
 using Newtonsoft.Json;
-using Sirenix.OdinInspector;
 using UnityEngine;
 using UnityEngine.Networking;
 using Object = UnityEngine.Object;
@@ -125,3 +125,4 @@ namespace Accelib.EditorTool.Google.Control.Sheets
         }
     }
 }
+#endif
