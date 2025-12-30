@@ -24,6 +24,7 @@ namespace Accelib.EditorTool.Google.Control.Drive
         [OdinSerialize] private GoogleDriveEntry_Folder rootFolder;
         
         public IReadOnlyList<GoogleDriveEntry> RootEntry => rootFolder.children;
+        public string URL => $"{DriveBaseURL}{rootFolderId}";
 
         private const int MaxPageIteration = 5;
         private const int MaxRecursiveDepth = 3;
