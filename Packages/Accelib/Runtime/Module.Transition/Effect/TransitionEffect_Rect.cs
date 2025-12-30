@@ -1,35 +1,27 @@
-﻿using Accelib.Module.Audio.Data;
-using DG.Tweening;
-using NaughtyAttributes;
+﻿using DG.Tweening;
+using Sirenix.OdinInspector;
 using UnityEngine;
-using UnityEngine.Serialization;
 
 namespace Accelib.Module.Transition.Effect
 {
-    /// <summary>
-    /// 페이드 이펙트
-    /// </summary>
-    internal class TransitionEffect_Fade : TransitionEffect
+    internal class TransitionEffect_Rect : TransitionEffect
     {
         [Header("Effect")]
-        [FormerlySerializedAs("group")]
-        [SerializeField] private CanvasGroup target;
+        [SerializeField] private RectTransform rt;
+        [SerializeField] private RectTransform leftStart;
+        [SerializeField] private RectTransform leftEnd;
+        [SerializeField] private RectTransform rightStart;
+        [SerializeField] private RectTransform rightEnd;
         
         [Header("Loading Group")]
         [SerializeField] private CanvasGroup loadingGroup;
         [SerializeField, Range(0.01f, 5f)] private float canvasGroupDuration = 0.2f;
         
-        // [Header("Audio")]
-        // [SerializeField] private AudioRefSO fadeStartSfx;
-        // [SerializeField] private AudioRefSO fadeEndSfx;
-        
         private Sequence _seq;
         
-        [Button]
         public override Sequence StartTransition()
         {
             canvas.gameObject.SetActive(true);
-            target.alpha = 0;
             
             if (loadingGroup)
             {
@@ -38,34 +30,42 @@ namespace Accelib.Module.Transition.Effect
             }
             
             _seq?.Kill();
-            _seq = DOTween.Sequence().SetLink(gameObject)
-                .Append(target.DOFade(1f, duration).SetEase(easeStart));
-                // .JoinCallback(() => fadeStartSfx?.PlayOneShot());
+            _seq = DoRect(rt, leftStart, leftEnd);
             
             if (loadingGroup)
                 _seq.Append(loadingGroup.DOFade(1f, canvasGroupDuration));
-
+            
             return _seq;
         }
 
-        [Button]
         public override Sequence EndTransition()
         {
             _seq?.Kill();
-            _seq = DOTween.Sequence().SetLink(gameObject)
-                .Append(target.DOFade(0f, duration).SetEase(easeEnd));
-                // .JoinCallback(() => fadeEndSfx?.PlayOneShot());
-
+            _seq = DOTween.Sequence();
+            
             if (loadingGroup)
                 _seq.Join(loadingGroup.DOFade(0f, canvasGroupDuration));
-            _seq.OnComplete(() =>
+            
+            _seq.Join(DoRect(rt, rightStart, rightEnd));
+            _seq.onComplete += () =>
             {
                 canvas.gameObject.SetActive(false);
                 if (loadingGroup)
                     loadingGroup.gameObject.SetActive(false);
-            });
-
+            };
             return _seq;
+        }
+
+        private Sequence DoRect(RectTransform taret, RectTransform start, RectTransform end)
+        {
+            taret.anchorMin = start.anchorMin;
+            taret.anchorMax = start.anchorMax;
+            taret.pivot = start.pivot;
+            taret.anchoredPosition = start.anchoredPosition;
+            taret.sizeDelta = start.sizeDelta;
+            
+            return DOTween.Sequence().SetLink(gameObject)
+                .Join(taret.DOSizeDelta(end.sizeDelta, duration).SetEase(easeStart));
         }
     }
 }
