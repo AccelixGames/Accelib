@@ -24,10 +24,11 @@ namespace Accelib.EditorTool.Google.Control.Drive
         [OdinSerialize] private GoogleDriveEntry_Folder rootFolder;
         
         public IReadOnlyList<GoogleDriveEntry> RootEntry => rootFolder.children;
-        public string URL => $"{DriveBaseURL}{rootFolderId}";
+        public string FolderURL => $"{DriveBaseURL}/{rootFolderId}";
 
         private const int MaxPageIteration = 5;
         private const int MaxRecursiveDepth = 3;
+        private const string FolderBaseURL = "https://drive.google.com/drive/u/0/folders";
         private const string DriveBaseURL = "https://www.googleapis.com/drive/v3/files?";
         private const string SheetBaseURL = "https://sheets.googleapis.com/v4/spreadsheets";
 
