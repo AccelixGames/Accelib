@@ -2,11 +2,12 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Threading;
 using Accelib.Editor.Architecture;
 using Accelib.Editor.AutoBuild.Steamwork;
 using Accelib.Editor.Steamwork;
 using Accelib.Editor.Utility.Discord;
-using NaughtyAttributes;
+using Sirenix.OdinInspector;
 using UnityEditor;
 using UnityEditor.Build.Profile;
 using UnityEditor.SceneManagement;
@@ -17,42 +18,60 @@ namespace Accelib.Editor
     [CreateAssetMenu(fileName = "AutoBuildConfig", menuName = "Accelib/AutoBuildConfig", order = 0)]
     public class AutoBuildConfig : ScriptableObject
     {
+        private static string Key(string key) => $"Accelix.{nameof(AutoBuildConfig)}.{key}";
         private static string SDKPathKey => $"{nameof(AutoBuildConfig)}_SDKPath";
         
-        [Header("메신저 옵션")]
+        [TitleGroup("#디스코드 메세지")]
         [SerializeField] private bool sendDiscordMessage = true;
+        [TitleGroup("#디스코드 메세지"), EnableIf(nameof(sendDiscordMessage))]
         [SerializeField, TextArea] private string discordWebhookUrl = "https://discord.com/api/webhooks/1312969930349740043/LjGysdGxpCjvdJT7YPK8d95YF9Nq9zikqO2sytt2GW7khn6LTrAJoAGTa7QXQDv_Q5c4";
 
-        [Header("계정 및 앱")]
-        [SerializeField] private string username;
+        [TitleGroup("#계정 및 앱")]
+        [InfoBox("계정명을 입력해주세요!", InfoMessageType.Error, visibleIfMemberName:nameof(IsUsernameInvalid))]
+        [ShowInInspector, PropertyOrder(-1)]
+        private string Username
+        {
+            get => EditorPrefs.GetString(Key(nameof(Username)));
+            set => EditorPrefs.SetString(Key(nameof(Username)), value);
+        }   
+        [TitleGroup("#계정 및 앱")]
         [SerializeField] private List<AppConfig> apps;
 
-        [Header("Stage")] 
-        [SerializeField] private bool skipBuild = false;
-        [SerializeField] private bool skipUpload = false;
-        
-        [Header("빌드 옵션")]
-        [SerializeField, ReadOnly] private string sdkPath;
+        [TitleGroup("#빌드 옵션")]
         [SerializeField, ReadOnly] private string appName;
+        [TitleGroup("#빌드 옵션")]
         [SerializeField, ReadOnly] private string versionText;
+        [TitleGroup("#빌드 옵션")]
+        [SerializeField, ReadOnly] private int versionNumber;
+        [TitleGroup("#빌드 옵션")]
+        [FolderPath(AbsolutePath = true, RequireExistingPath = true)]
+        [SerializeField] private string sdkPath = "C:/WorkSpace/github.com/steamwork-sdk";
+        [TitleGroup("#빌드 옵션")]
+        [OnValueChanged(nameof(BuildVersionText), InvokeOnInitialize = true, InvokeOnUndoRedo = true)]
         [SerializeField] private Vector3Int version = new (1, 0, 0);
+        
+        [TitleGroup("#빌드")]
+        [SerializeField] private bool skipBuild = false;
+        [TitleGroup("#빌드")]
+        [SerializeField] private bool skipUpload = false;
+        [TitleGroup("#빌드")]
         [SerializeField, TextArea] private string patchNote;
-        
-        [Button]
-        public void LoadSDKPath()
-        {
-            var path = EditorUtility.OpenFolderPanel("Select steamwork folder", "", "");
 
-            if (!string.IsNullOrEmpty(path))
-            {
-                sdkPath = path;
-                    
-                EditorPrefs.SetString(SDKPathKey, sdkPath);
-                EditorUtility.SetDirty(this);
-            }
-        }
+        private bool IsUsernameInvalid => string.IsNullOrEmpty(Username) || Username.Length <= 2;
+
+        private void BuildVersionText()
+        {
+            versionText = $"{version.x}.{version.y:D2}.{version.z:D2}";
+            versionNumber = (version.x * 10000 + version.y * 100 + version.z);
+            
+            PlayerSettings.bundleVersion = versionText;
+            PlayerSettings.Android.bundleVersionCode = versionNumber;
+            PlayerSettings.iOS.buildNumber = versionNumber.ToString();
+            PlayerSettings.macOS.buildNumber = versionNumber.ToString();
+        } 
         
-        [Button]
+        [TitleGroup("#빌드")]
+        [Button(DirtyOnClick = false, Name="빌드")]
         public void StartBuildProcess()
         {
             // 초기 플레이어 캐싱
@@ -72,13 +91,7 @@ namespace Accelib.Editor
                 EditorSceneManager.SaveOpenScenes();
                 
                 // 버전 설정
-                var versionStr = $"{version.x}.{version.y:D2}.{version.z:D2}";
-                var versionNumber = (version.x * 10000 + version.y * 100 + version.z);
-                PlayerSettings.bundleVersion = versionStr;
-                versionText = versionStr;
-                PlayerSettings.Android.bundleVersionCode = versionNumber;
-                PlayerSettings.iOS.buildNumber = versionNumber.ToString();
-                PlayerSettings.macOS.buildNumber = versionNumber.ToString();
+                BuildVersionText();
                 
                 // 스택트레이스 초기화
                 SetLogTypes(StackTraceLogType.None);
@@ -92,6 +105,7 @@ namespace Accelib.Editor
 
                 // 앱을 순회하며,
                 appName = Application.productName;
+                var note = string.IsNullOrEmpty(patchNote) ? "빈 패치노트" : patchNote;
                 foreach (var app in apps)
                 {
                     // 앱 경로 구하기
@@ -101,11 +115,12 @@ namespace Accelib.Editor
                     var scriptPath = Path.Combine(appPath, "scripts");
 
                     // 패치노트
-                    var patchNotePreInfo = $"[{app.name}({versionStr})-";
+                    var patchNotePreInfo = $"[{app.name}({versionText})-";
                     
                     // 디포를 순회하며,
-                    foreach (var depot in app.depots)
+                    for (var i = 0; i < app.depots.Count; i++)
                     {
+                        var depot = app.depots[i];
                         if (!depot.includeInBuild) continue;
 
                         // Platform
@@ -117,24 +132,26 @@ namespace Accelib.Editor
                         var depotVdfPath = Path.Combine(scriptPath, $"depot_{depot.depotID}.vdf");
                         var depotContent = DepotUtility.GetDepotContent(appName, depot.depotID, buildPath);
                         DepotUtility.CreateFile(depotVdfPath, depotContent);
-                        
+
                         // 빌드 정보 추가
                         buildInfos.Add(new BuildInfo
                         {
                             app = app,
                             depot = depot,
-                            versionStr = versionStr,
+                            versionStr = versionText,
                             versionNumber = versionNumber.ToString(),
                             buildPath = Path.Combine(buildPath, fileName)
                         });
-                        
+
                         // 패치노트
-                        patchNotePreInfo += $"{platform}, ";
+                        patchNotePreInfo += $"{platform}";
+                        if (i < app.depots.Count - 1)
+                            patchNotePreInfo += ", ";
                     }
-                    
+
                     // 앱 빌드 스크립트 생성
                     var appVdfPath = Path.Combine(scriptPath, $"app_{app.appID}.vdf");
-                    var desc = $"{patchNotePreInfo}]  " + patchNote;
+                    var desc = $"{patchNotePreInfo}]\n" + note;
                     var logPath = Path.Combine(baseLogPath, "v" + versionNumber);
                     var appContent = DepotUtility.GetAppContent(app.appID, desc, logPath, app.liveBranch, app.depots);
                     DepotUtility.CreateFile(appVdfPath, appContent);
@@ -154,13 +171,15 @@ namespace Accelib.Editor
 
                 // 플랫폼으로 빌드 풀 정렬
                 buildInfos.Sort((a, b) => a.depot.buildTarget.CompareTo(b.depot.buildTarget));
-
+                var builderMsg = $"*{Username} | {versionText} | {note}*\n";
+                
                 if (!skipBuild)
                 {
                     // 디스코드 메세지 생성
                     var msg = $":computer: **빌드를 시작합니다!** [{GetNowTime()}]\n";
+                    msg += builderMsg;
                     foreach (var buildInfo in buildInfos)
-                        msg += $"- {buildInfo.app.name} | {buildInfo.depot.buildTarget} | {buildInfo.versionStr}\n";
+                        msg += $"- {buildInfo.app.name} | {buildInfo.depot.buildTarget}\n";
                     if(sendDiscordMessage)
                         DiscordWebhook.SendMsg(discordWebhookUrl, msg);
 
@@ -172,20 +191,26 @@ namespace Accelib.Editor
                     // StackTrace Revert
                     SetLogTypes(StackTraceLogType.ScriptOnly);
                 }
+                
+                Thread.Sleep(10);
 
                 if (!skipUpload)
                 {
+                    if (IsUsernameInvalid)
+                        throw new Exception("올바르지 않은 Username: " + Username);
+                    
                     // 업로드 시작을 알림
                     if (sendDiscordMessage)
                     {
                         var uploadStartContent = $":arrow_heading_up: **스팀웍스 업로드를 시작합니다!** [{GetNowTime()}]\n";
+                        uploadStartContent += builderMsg;
                         foreach (var uploadInfo in uploadInfos)
                             uploadStartContent += $"- {uploadInfo.app.name}({uploadInfo.app.appID}) | 브랜치({uploadInfo.app.liveBranch})\n";
                         DiscordWebhook.SendMsg(discordWebhookUrl, uploadStartContent);
                     }
                     
                     // 업로드 시작
-                    TerminalUtility.OpenTerminal(sdkPath, username, uploadInfos);
+                    TerminalUtility.OpenTerminal(sdkPath, Username, uploadInfos);
                 
                     // 종료!
                     foreach (var uploadInfo in uploadInfos)
@@ -222,6 +247,21 @@ namespace Accelib.Editor
                 // 스택트레이스 되돌리기
                 SetLogTypes(StackTraceLogType.ScriptOnly);
             }
+        }
+
+        [TitleGroup("#빌드")]
+        [Button(DirtyOnClick = false, Name="SteamCMD 열기(첫 로그인용)")]
+        public void StartSteamCmd()
+        {
+            // 기본 경로 구하기
+            var basePath = Path.Combine(sdkPath, "tools", "ContentBuilder");
+            var platform = Application.platform;
+            if (platform == RuntimePlatform.WindowsEditor)
+                basePath = Path.Combine(basePath, "builder", "steamcmd.exe");
+            else if (platform == RuntimePlatform.OSXEditor)
+                basePath = Path.Combine(basePath, "builder_osx", "steamcmd.sh");
+            
+            EditorUtility.OpenWithDefaultApp(basePath);
         }
 
         private void Internal_Build(in BuildInfo buildInfo)

@@ -30,7 +30,7 @@ namespace Accelib.Module.Transition.Effect
             }
             
             _seq?.Kill();
-            _seq = DoRect(rt, leftStart, leftEnd);
+            _seq = DoRect(rt, leftStart, leftEnd, true);
             
             if (loadingGroup)
                 _seq.Append(loadingGroup.DOFade(1f, canvasGroupDuration));
@@ -46,7 +46,7 @@ namespace Accelib.Module.Transition.Effect
             if (loadingGroup)
                 _seq.Join(loadingGroup.DOFade(0f, canvasGroupDuration));
             
-            _seq.Join(DoRect(rt, rightStart, rightEnd));
+            _seq.Join(DoRect(rt, rightStart, rightEnd, false));
             _seq.onComplete += () =>
             {
                 canvas.gameObject.SetActive(false);
@@ -56,16 +56,30 @@ namespace Accelib.Module.Transition.Effect
             return _seq;
         }
 
-        private Sequence DoRect(RectTransform taret, RectTransform start, RectTransform end)
+        private Sequence DoRect(RectTransform target, RectTransform start, RectTransform end, bool isStart)
         {
-            taret.anchorMin = start.anchorMin;
-            taret.anchorMax = start.anchorMax;
-            taret.pivot = start.pivot;
-            taret.anchoredPosition = start.anchoredPosition;
-            taret.sizeDelta = start.sizeDelta;
-            
-            return DOTween.Sequence().SetLink(gameObject)
-                .Join(taret.DOSizeDelta(end.sizeDelta, duration).SetEase(easeStart));
+            target.anchorMin = start.anchorMin;
+            target.anchorMax = start.anchorMax;
+            target.pivot = start.pivot;
+            target.anchoredPosition = start.anchoredPosition;
+            target.sizeDelta = start.sizeDelta;
+
+            var sizeTween = target.DOSizeDelta(end.sizeDelta, duration);
+            if (isStart)
+            {
+                if(easeStart == Ease.Unset)
+                    sizeTween.SetEase(easeStartCurve);
+                else
+                    sizeTween.SetEase(easeStart);
+            }
+            else
+            {
+                if(easeEnd == Ease.Unset)
+                    sizeTween.SetEase(easeEndCurve);
+                else
+                    sizeTween.SetEase(easeEnd);
+            }
+            return DOTween.Sequence().SetLink(gameObject).Join(sizeTween);
         }
     }
 }

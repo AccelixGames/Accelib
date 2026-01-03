@@ -24,7 +24,9 @@ namespace Accelib.Module.Transition
         {
             currIndex = 0;
         }
-
+    
+        [HorizontalGroup("# 테스트")]
+        [Button("트렌지션 시작", DrawResult = false, DisplayParameters = true, Style = ButtonStyle.FoldoutButton)]
         public static Sequence StartTransition(int index = 0)
         {
             if (!Instance) 
@@ -34,6 +36,8 @@ namespace Accelib.Module.Transition
             return Instance.Transition(true);
         }
 
+        [HorizontalGroup("# 테스트")]
+        [Button("트렌지션 종료", DrawResult = false, DisplayParameters = true, Style = ButtonStyle.FoldoutButton)]
         public static Sequence EndTransition()
         {
             if (!Instance) 
@@ -78,13 +82,5 @@ namespace Accelib.Module.Transition
             
             return _seq;
         }
-
-#if UNITY_EDITOR
-        [Button]
-        public void TrStart() => Transition(true);
-
-        [Button]
-        public void TrEnd() => Transition(false);
-#endif
     }
 }
