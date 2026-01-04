@@ -1,10 +1,7 @@
-﻿using System;
-using Accelib.Logging;
-using Accelib.Module.Localization.Helper.Formatter;
+﻿using Accelib.Module.Localization.Helper.Formatter;
 using Sirenix.OdinInspector;
 using TMPro;
 using UnityEngine;
-using UnityEngine.SocialPlatforms;
 
 namespace Accelib.Module.Localization.Helper
 {
@@ -12,6 +9,7 @@ namespace Accelib.Module.Localization.Helper
     /// 언어 변경에 대응하는 TMP
     /// </summary>
     [RequireComponent(typeof(TMP_Text))]
+    [DisallowMultipleComponent]
     public class LocalizedTMP : LocalizedMonoBehaviour
     {
         [field: SerializeField] public TMP_Text TMP { get; private set; }
@@ -21,8 +19,10 @@ namespace Accelib.Module.Localization.Helper
         [ValueDropdown("GetAllKey", AppendNextDrawer = true)]
         [SerializeField] private string key;
         [ValueDropdown("GetAllFont", AppendNextDrawer = true)]
+        [SuffixLabel("@Internal_GetCurrFontName()", Overlay = true)]
         [SerializeField] private int fontId = 0;
         [ValueDropdown("GetAllFontMaterial", AppendNextDrawer = true)]
+        [SuffixLabel("@Internal_GetCurrFontMaterialName(fontMaterialId)", Overlay = true)]
         [SerializeField] private int fontMaterialId = 0;
 
         [Header("옵션")] 
@@ -30,10 +30,12 @@ namespace Accelib.Module.Localization.Helper
         [SerializeField] private bool useFormatter = false;
         
         private ILocalizedFormatter _formatter;
+        public ILocalizedFormatter Formatter => _formatter;
         
         public override string LocaleKey => key;
         public override int FontIndex => fontId;
         public override bool LoadOnEnable => loadOnEnable;
+        public override bool UseFormatter => useFormatter;
 
         // TMP 캐싱 
         private void Awake()
@@ -88,7 +90,7 @@ namespace Accelib.Module.Localization.Helper
             if (useFormatter)
             {
                 var args = _formatter?.GetArgs();
-                if (args != null)
+                if (args is { Length: > 0 })
                     localizedString = string.Format(localizedString, args);
             }
 

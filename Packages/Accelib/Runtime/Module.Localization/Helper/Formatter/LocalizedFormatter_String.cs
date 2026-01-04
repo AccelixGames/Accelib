@@ -7,5 +7,10 @@ namespace Accelib.Module.Localization.Helper.Formatter
         [SerializeField] private string[] args;
         
         public object[] GetArgs() => args;
+        
+        public void SetArgs(params object[] a)
+        {
+            args = a as string[];
+        }
     }
 }

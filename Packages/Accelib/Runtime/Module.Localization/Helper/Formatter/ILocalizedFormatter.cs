@@ -3,5 +3,7 @@
     public interface ILocalizedFormatter
     {
         public object[] GetArgs();
+
+        public void SetArgs(params object[] args);
     }
 }
