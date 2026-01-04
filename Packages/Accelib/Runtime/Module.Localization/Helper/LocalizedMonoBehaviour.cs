@@ -5,7 +5,6 @@ using Accelib.Extensions;
 using Accelib.Module.Localization.Architecture;
 using Accelib.Module.Localization.Helper.Formatter;
 using Sirenix.OdinInspector;
-using Sirenix.OdinInspector.Editor;
 using TMPro;
 using UnityEditor;
 using UnityEngine;
