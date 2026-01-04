@@ -30,7 +30,6 @@ namespace Accelib.Module.Localization.Helper
         [SerializeField] private bool useFormatter = false;
         
         private ILocalizedFormatter _formatter;
-        public ILocalizedFormatter Formatter => _formatter;
         
         public override string LocaleKey => key;
         public override int FontIndex => fontId;
@@ -88,15 +87,31 @@ namespace Accelib.Module.Localization.Helper
             
             // 포맷 적용
             if (useFormatter)
-            {
-                var args = _formatter?.GetArgs();
-                if (args is { Length: > 0 })
-                    localizedString = string.Format(localizedString, args);
-            }
+                localizedString = FormatString(localizedString);
 
             // 텍스트 변경
             TMP.SetText(localizedString);
-            // Deb.Log("Update Locale", this);
+        }
+
+        public void SetFormat(params object[] args)
+        {
+            SetFormatWithoutNotify(args);
+            TMP.SetText(FormatString(TMP.text));
+        }
+        
+        public void SetFormatWithoutNotify(params object[] args)
+        {
+            _formatter ??= GetComponent<ILocalizedFormatter>();
+            _formatter?.SetArgs(args);
+        }
+
+        private string FormatString(string origin)
+        {
+            var args = _formatter?.GetArgs();
+            if (args is { Length: > 0 })
+                origin = string.Format(origin, args);
+
+            return origin;
         }
 
 

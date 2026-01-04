@@ -10,7 +10,11 @@ namespace Accelib.Module.Localization.Helper.Formatter
         
         public void SetArgs(params object[] a)
         {
-            args = a as string[];
+            args = new string[a.Length];
+            for (var i = 0; i < a.Length; i++)
+            {
+                args[i] = a[i].ToString();
+            }
         }
     }
 }
