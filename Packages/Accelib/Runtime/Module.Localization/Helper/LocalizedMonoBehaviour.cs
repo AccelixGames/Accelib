@@ -18,7 +18,6 @@ namespace Accelib.Module.Localization.Helper
         public abstract int FontIndex { get; }
         public virtual bool IsEnabled => enabled;
         public abstract bool LoadOnEnable { get; }
-        public virtual bool UseFormatter => false;
         public abstract void OnLocaleUpdated(string localizedString);
                 
 #if UNITY_EDITOR
@@ -41,12 +40,9 @@ namespace Accelib.Module.Localization.Helper
                 if (string.IsNullOrEmpty(LocaleKey) || !_localeAsset) return string.Empty;
                 if (!_localeAsset.TryGetValue(LocaleKey, out var value)) return string.Empty;
 
-                if (UseFormatter)
-                {
-                    var args = GetComponent<ILocalizedFormatter>()?.GetArgs();
-                    if (args is { Length: > 0 })
-                        value = string.Format(value, args);
-                }
+                var args = GetComponent<ILocalizedFormatter>()?.GetArgs();
+                if (args is { Length: > 0 })
+                    value = string.Format(value, args);
                 
                 return value;
             }

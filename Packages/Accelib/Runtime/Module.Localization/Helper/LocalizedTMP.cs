@@ -27,14 +27,12 @@ namespace Accelib.Module.Localization.Helper
 
         [Header("옵션")] 
         [SerializeField] private bool loadOnEnable = true;
-        [SerializeField] private bool useFormatter = false;
         
         private ILocalizedFormatter _formatter;
         
         public override string LocaleKey => key;
         public override int FontIndex => fontId;
         public override bool LoadOnEnable => loadOnEnable;
-        public override bool UseFormatter => useFormatter;
 
         // TMP 캐싱 
         private void Awake()
@@ -84,25 +82,18 @@ namespace Accelib.Module.Localization.Helper
                 TMP.font = fontData.FontAsset;
                 TMP.fontMaterial = fontData.GetMaterial(fontMaterialId);
             }
-            
-            // 포맷 적용
-            if (useFormatter)
-                localizedString = FormatString(localizedString);
 
             // 텍스트 변경
-            TMP.SetText(localizedString);
+            TMP.SetText(FormatString(localizedString));
+            // Debug.Log("OnLocaleUpdated: " + TMP.text, TMP);
         }
 
         public void SetFormat(params object[] args)
         {
-            SetFormatWithoutNotify(args);
-            TMP.SetText(FormatString(TMP.text));
-        }
-        
-        public void SetFormatWithoutNotify(params object[] args)
-        {
             _formatter ??= GetComponent<ILocalizedFormatter>();
             _formatter?.SetArgs(args);
+
+            Reload();
         }
 
         private string FormatString(string origin)
