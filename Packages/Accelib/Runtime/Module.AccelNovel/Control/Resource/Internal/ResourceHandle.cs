@@ -117,6 +117,7 @@ namespace Accelib.Module.AccelNovel.Control.Resource.Internal
                     if(h.IsValid()) Addressables.Release(h);
                 
                 _handles.Clear();
+                Deb.Log($"{typeof(T)} Resource Handle Clear");
             }
             
             dict?.Clear();
