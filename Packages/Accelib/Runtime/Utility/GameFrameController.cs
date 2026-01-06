@@ -1,6 +1,6 @@
 ﻿#pragma warning disable CS0414
 
-using NaughtyAttributes;
+using Sirenix.OdinInspector;
 using UnityEngine;
 
 namespace Accelib.Utility
