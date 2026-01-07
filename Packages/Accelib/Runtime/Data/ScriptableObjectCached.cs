@@ -1,14 +1,16 @@
-﻿using System.IO;
-using System.Linq;
+﻿using System.Linq;
 using Sirenix.OdinInspector;
 using UnityEditor;
 using UnityEngine;
 
 namespace Accelib.Data
 {
-    public abstract class ScriptableObjectCached<T> : ScriptableObject where T : ScriptableObject
+    public abstract class ScriptableObjectCached<T> : ScriptableObject, IPreviewNameProvider where T : ScriptableObject
     {
 #if  UNITY_EDITOR
+        [field: SerializeField, LabelText("에셋 이름"), PropertyOrder(float.MinValue + 1)]
+        public string EditorPreviewName { get; private set; }
+        
         private static T _editorInstance;
         [ShowInInspector, LabelText("에디터 에셋"), PropertyOrder(float.MinValue)] public static T EditorInstance
         {

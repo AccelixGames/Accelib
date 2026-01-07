@@ -1,4 +1,5 @@
 ﻿using System.Linq;
+using Accelib.Data;
 using Accelib.Editor.CustomWindow.Core;
 using Accelib.Editor.CustomWindow.LevelDesign.Model;
 using Sirenix.OdinInspector;
@@ -33,8 +34,13 @@ namespace Accelib.Editor.CustomWindow.LevelDesign
             if (config)
             {
                 foreach (var layout in config.MenuLayouts)
-                foreach (var o in layout.dataList.Where(o => o)) 
-                    tree.Add($"{layout.label}/{o.name}", o);
+                foreach (var o in layout.dataList.Where(o => o))
+                {
+                    var assetName = o.name;
+                    if (o is IPreviewNameProvider provider)
+                        assetName = provider.EditorPreviewName;
+                    tree.Add($"{layout.label}/{assetName}", o);
+                }
             }
             
             // 첫 오브젝트 선택
