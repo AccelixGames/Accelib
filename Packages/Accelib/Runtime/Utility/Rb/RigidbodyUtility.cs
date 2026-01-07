@@ -1,6 +1,6 @@
 ﻿using Accelib.Extensions;
 using Accelix.GameSystem.Utility.Rb;
-using NaughtyAttributes;
+using Sirenix.OdinInspector;
 using UnityEngine;
 
 namespace Accelib.Utility.Rb
@@ -84,10 +84,16 @@ namespace Accelib.Utility.Rb
             }
         }
 
-        [Button(enabledMode: EButtonEnableMode.Playmode)] 
+        public void SetMaterial(PhysicsMaterial mat)
+        {
+            foreach (var col in colliders) 
+                col.material = mat;
+        }
+
+        [Button()] 
         public void SetEnabled() => Toggle(true);
         
-        [Button(enabledMode:EButtonEnableMode.Playmode)] 
+        [Button()] 
         public void SetDisabled() => Toggle(false);
 
 #if UNITY_EDITOR
