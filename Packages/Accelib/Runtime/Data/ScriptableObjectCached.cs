@@ -7,9 +7,10 @@ namespace Accelib.Data
 {
     public abstract class ScriptableObjectCached<T> : ScriptableObject, IPreviewNameProvider where T : ScriptableObject
     {
-#if  UNITY_EDITOR
         [field: SerializeField, LabelText("에셋 이름"), PropertyOrder(float.MinValue + 1)]
         public string EditorPreviewName { get; private set; }
+        
+#if  UNITY_EDITOR
         
         private static T _editorInstance;
         [ShowInInspector, LabelText("에디터 에셋"), PropertyOrder(float.MinValue)] public static T EditorInstance
