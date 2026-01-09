@@ -1,0 +1,16 @@
+OVDF v1.0
+Accelib.Module.Transition.TransitionSingleton, Accelib.Runtime
+
+# "# 테스트"
+* [Sirenix.OdinInspector.HorizontalGroupAttribute]
+	Title = "# 테스트"
+
+# EndTransition()
+* [Sirenix.OdinInspector.ButtonAttribute]
+	drawResult = True
+	drawResultIsSet = True
+
+# StartTransition(int)
+* [Sirenix.OdinInspector.ButtonAttribute]
+	drawResult = True
+	drawResultIsSet = True

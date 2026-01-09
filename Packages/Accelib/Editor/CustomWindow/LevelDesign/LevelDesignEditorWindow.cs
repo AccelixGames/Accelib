@@ -2,6 +2,7 @@
 using Accelib.Data;
 using Accelib.Editor.CustomWindow.Core;
 using Accelib.Editor.CustomWindow.LevelDesign.Model;
+using Accelib.EditorTool.Provider;
 using Sirenix.OdinInspector;
 using Sirenix.OdinInspector.Editor;
 using Sirenix.Utilities.Editor;
@@ -39,7 +40,10 @@ namespace Accelib.Editor.CustomWindow.LevelDesign
                     var assetName = o.name;
                     if (o is IPreviewNameProvider provider)
                         assetName = provider.EditorPreviewName;
-                    tree.Add($"{layout.label}/{assetName}", o);
+                    if( o is IPreviewIconProvider iconProvider)
+                        tree.Add($"{layout.label}/{assetName}", o, iconProvider.EditorPreviewIcon);
+                    else
+                        tree.Add($"{layout.label}/{assetName}", o);
                 }
             }
             

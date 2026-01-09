@@ -1,4 +1,4 @@
-﻿namespace Accelib.Data
+﻿namespace Accelib.EditorTool.Provider
 {
     public interface IPreviewNameProvider
     {

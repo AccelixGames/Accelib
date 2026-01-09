@@ -1,0 +1,10 @@
+OVDF v1.0
+Accelib.EditorTool.Google.Control.Drive.GoogleDriveDownloader, Accelib.Runtime
+
+# rootFolder
+- [UnityEngine.HeaderAttribute]
++ [Sirenix.OdinInspector.TitleAttribute]
+	Title = "Folder"
+	TitleAlignment = Left
+	Bold = True
++ [Sirenix.OdinInspector.HideLabelAttribute]

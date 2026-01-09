@@ -1,0 +1,32 @@
+OVDF v1.0
+Accelib.Module.Localization.Helper.LocalizedMonoBehaviour, Accelib.Runtime
+
+# $4wUTPNEM1VF5gWM9gc7jCs
+Position: "# Debug":0
++ [Sirenix.OdinInspector.ColumnGroupAttribute]
+
+# $R8rMehBXcQRcf3KsCH4FQu
+Position: $4wUTPNEM1VF5gWM9gc7jCs:0
++ [Sirenix.OdinInspector.ColumnGroupAttribute+ColumnSubGroupAttribute]
+
+# $QDEJ1WKM8Kn88mpoAeBNmQ
+Position: $4wUTPNEM1VF5gWM9gc7jCs:1
++ [Sirenix.OdinInspector.ColumnGroupAttribute+ColumnSubGroupAttribute]
+	Size = Auto
+
+# "# Debug"
+* [Sirenix.OdinInspector.BoxGroupAttribute]
+	GroupName = "# 미리보기"
+	CenterLabel = True
+
+# _localeAsset
+Position: $QDEJ1WKM8Kn88mpoAeBNmQ:0
++ [Sirenix.OdinInspector.HideLabelAttribute]
+
+# previewLanguage
+Position: $R8rMehBXcQRcf3KsCH4FQu:0
++ [Sirenix.OdinInspector.HideLabelAttribute]
+
+# TextPreview
++ [UnityEngine.TextAreaAttribute]
++ [Sirenix.OdinInspector.HideLabelAttribute]

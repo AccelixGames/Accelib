@@ -14,7 +14,9 @@
         "UnityAtoms.UnityAtomsBaseAtoms.Runtime",
         "UnityAtoms.UnityAtomsCore.Runtime",
         "ZLinq.Unity",
-        "ZLinq.Unity.UnityCollectoins"
+        "ZLinq.Unity.UnityCollectoins",
+        "Unity.Addressables",
+        "Unity.Addressables.Editor"
     ],
     "includePlatforms": [
         "Editor"

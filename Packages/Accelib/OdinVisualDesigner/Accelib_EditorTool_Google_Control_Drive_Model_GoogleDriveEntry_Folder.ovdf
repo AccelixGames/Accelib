@@ -1,0 +1,23 @@
+OVDF v1.0
+Accelib.EditorTool.Google.Control.Drive.Model.GoogleDriveEntry_Folder, Accelib.Runtime
+
+# $3GLNrdj2A77ofky4gKmqfk
+Position: $root:2
+
+# Children
+Position: $root:6
++ [Sirenix.OdinInspector.ListDrawerSettingsAttribute]
+	HideAddButton = True
+	HideRemoveButton = True
++ [Sirenix.OdinInspector.LabelTextAttribute]
+	Text = "Folder"
+	Icon = FolderFill
+	NicifyText = True
+	IconColor = "lightyellow"
+
+# children
+Position: $root:3
+Visibility: Shown
++ [Sirenix.OdinInspector.ListDrawerSettingsAttribute]
+	ShowFoldout = False
++ [Sirenix.OdinInspector.PolymorphicDrawerSettingsAttribute]

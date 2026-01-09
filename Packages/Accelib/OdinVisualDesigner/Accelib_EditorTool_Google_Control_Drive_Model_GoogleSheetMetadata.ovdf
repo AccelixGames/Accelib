@@ -1,0 +1,33 @@
+OVDF v1.0
+Accelib.EditorTool.Google.Control.Drive.Model.GoogleSheetMetadata, Accelib.Runtime
+
+# $En8kUiqVhK5N3YRahwMgDR
+Position: $root:0
++ [Sirenix.OdinInspector.ColumnGroupAttribute]
+
+# $Fxs5FiR9H4Z3BoRcDbvuPm
+Position: $En8kUiqVhK5N3YRahwMgDR:0
++ [Sirenix.OdinInspector.ColumnGroupAttribute+ColumnSubGroupAttribute]
+	Size = 60 %
+
+# $QviwtB27Y5Q2pVr5AemGLH
+Position: $En8kUiqVhK5N3YRahwMgDR:1
++ [Sirenix.OdinInspector.ColumnGroupAttribute+ColumnSubGroupAttribute]
+
+# name
+Position: $QviwtB27Y5Q2pVr5AemGLH:0
++ [Sirenix.OdinInspector.HideLabelAttribute]
++ [Sirenix.OdinInspector.SuffixLabelAttribute]
+	Label = "Name"
+
+# gid
+Position: $Fxs5FiR9H4Z3BoRcDbvuPm:0
++ [Sirenix.OdinInspector.HideLabelAttribute]
++ [Sirenix.OdinInspector.SuffixLabelAttribute]
+	Label = "ID"
+
+# Url
+Visibility: Shown
+
+# sheetId
+Visibility: Hidden

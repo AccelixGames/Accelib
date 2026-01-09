@@ -1,0 +1,25 @@
+OVDF v1.0
+Accelib.EditorTool.Google.Control.Drive.Model.GoogleDriveEntry_SpreadSheet, Accelib.Runtime
+
+# $QZU6BPvoVKghr1TgFYwnRU
+Position: $root:2
++ [Sirenix.OdinInspector.BoxGroupAttribute]
+	LabelText = "Sheet"
+	ShowLabel = True
+	CenterLabel = True
+	GroupName = "Sheet"
+
+# $3GLNrdj2A77ofky4gKmqfk
+Position: $QZU6BPvoVKghr1TgFYwnRU:0
+
+# sheets
+Position: $QZU6BPvoVKghr1TgFYwnRU:1
++ [Sirenix.OdinInspector.ListDrawerSettingsAttribute]
+	ShowFoldout = True
++ [Sirenix.OdinInspector.LabelTextAttribute]
+	Text = "Sheets"
+	Icon = None
+	IconColor = "green"
+
+# MimeType
+Visibility: Hidden

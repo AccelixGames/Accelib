@@ -26,6 +26,12 @@ namespace Accelib.Module.Localization.Architecture
 
         public bool TryGetValue(string key, out string value)
         {
+            if (string.IsNullOrEmpty(key))
+            {
+                value = string.Empty;
+                return false;
+            }
+            
             textDict ??=  new SerializedDictionary<string, string>(textDict);
             return textDict.TryGetValue(key, out value);
         }

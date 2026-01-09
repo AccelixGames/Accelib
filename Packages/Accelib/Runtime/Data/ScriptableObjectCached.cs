@@ -1,18 +1,23 @@
 ﻿using System.Linq;
+using Accelib.EditorTool.Provider;
 using Sirenix.OdinInspector;
+using Sirenix.OdinInspector.Editor;
 using UnityEditor;
 using UnityEngine;
 
 namespace Accelib.Data
 {
-    public abstract class ScriptableObjectCached<T> : ScriptableObject, IPreviewNameProvider where T : ScriptableObject
+    public abstract class ScriptableObjectCached<T> : ScriptableObject, IPreviewNameProvider, IPreviewIconProvider where T : ScriptableObject
     {
-        [field: SerializeField, LabelText("에셋 이름"), PropertyOrder(float.MinValue + 1)]
-        public string EditorPreviewName { get; private set; }
+        [field: HorizontalGroup("에디터 에셋/그룹", Title = "", Order = float.MinValue + 1)]
+        [field: SerializeField, HideLabel] public string EditorPreviewName { get; private set; }
+        [field: HorizontalGroup("에디터 에셋/그룹")]
+        [field: SerializeField, HideLabel] public SdfIconType EditorPreviewIcon { get; private set; }
         
 #if  UNITY_EDITOR
         private static T _editorInstance;
-        [ShowInInspector, LabelText("에디터 에셋"), PropertyOrder(float.MinValue)] public static T EditorInstance
+        [FoldoutGroup("에디터 에셋", Order = float.MinValue, Expanded = true)]
+        [ShowInInspector, HideLabel] public static T EditorInstance
         {
             get
             {

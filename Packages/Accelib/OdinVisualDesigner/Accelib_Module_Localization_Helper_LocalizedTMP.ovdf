@@ -1,0 +1,62 @@
+OVDF v1.0
+Accelib.Module.Localization.Helper.LocalizedTMP, Accelib.Runtime
+
+# $PguKV32cGZjxBjxNuCfkVc
+Position: $root:37
++ [Sirenix.OdinInspector.ResponsiveButtonGroupAttribute]
+	UniformLayout = True
+	DefaultButtonSize = Medium
+
+# $B2Gab1gDQfqwzwgu2b846G
+Position: $PguKV32cGZjxBjxNuCfkVc:1
++ [Sirenix.OdinInspector.ColumnGroupAttribute]
+
+# $AnwhyG7SgXQeVKYLGLi6N5
+Position: $B2Gab1gDQfqwzwgu2b846G:0
++ [Sirenix.OdinInspector.ColumnGroupAttribute+ColumnSubGroupAttribute]
+
+# $6XBotYx14KfmR7rCaJBcXg
+Position: $B2Gab1gDQfqwzwgu2b846G:1
++ [Sirenix.OdinInspector.ColumnGroupAttribute+ColumnSubGroupAttribute]
+
+# $9yjXHc27oM4NoMyHtxm6nz
+Position: $root:2
++ [Sirenix.OdinInspector.BoxGroupAttribute]
+	LabelText = "# 설정"
+	ShowLabel = True
+	CenterLabel = True
+
+# Reload()
+Position: $PguKV32cGZjxBjxNuCfkVc:0
+
+# Deb_SyncFont()
+Position: $6XBotYx14KfmR7rCaJBcXg:0
+
+# Deb_UpdateTMP()
+Position: $AnwhyG7SgXQeVKYLGLi6N5:0
+
+# key
+Position: $9yjXHc27oM4NoMyHtxm6nz:0
+
+# fontId
+Position: $9yjXHc27oM4NoMyHtxm6nz:1
+* [Sirenix.OdinInspector.SuffixLabelAttribute]
+	icon = FileFont
+	HasDefinedIcon = True
+	IconColor = "blue"
+
+# fontMaterialId
+Position: $9yjXHc27oM4NoMyHtxm6nz:2
+* [Sirenix.OdinInspector.SuffixLabelAttribute]
+	icon = ArchiveFill
+	HasDefinedIcon = True
+	IconColor = ""
+
+# loadOnEnable
+Position: $9yjXHc27oM4NoMyHtxm6nz:3
+
+# useFormatter
+Position: $9yjXHc27oM4NoMyHtxm6nz:4
+
+# <TMP>k__BackingField
+Position: $root:1

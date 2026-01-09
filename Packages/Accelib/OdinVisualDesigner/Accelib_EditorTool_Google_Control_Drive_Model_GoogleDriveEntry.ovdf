@@ -1,0 +1,47 @@
+OVDF v1.0
+Accelib.EditorTool.Google.Control.Drive.Model.GoogleDriveEntry, Accelib.Runtime
+
+# $3GLNrdj2A77ofky4gKmqfk
+Position: $root:0
++ [Sirenix.OdinInspector.ColumnGroupAttribute]
+
+# $S3PCDZas8LzHRatuKndxka
+Position: $3GLNrdj2A77ofky4gKmqfk:0
++ [Sirenix.OdinInspector.ColumnGroupAttribute+ColumnSubGroupAttribute]
+	Size = Auto
+
+# $UmFaVRpPNc8ikcDiBFV7fC
+Position: $3GLNrdj2A77ofky4gKmqfk:3
++ [Sirenix.OdinInspector.ColumnGroupAttribute+ColumnSubGroupAttribute]
+	Size = 10 %
+
+# $8wxJeDqQVmhSV4PUbftZAJ
+Position: $3GLNrdj2A77ofky4gKmqfk:1
++ [Sirenix.OdinInspector.ColumnGroupAttribute+ColumnSubGroupAttribute]
+
+# MimeType
+Visibility: Hidden
+
+# name
+Position: $8wxJeDqQVmhSV4PUbftZAJ:0
++ [Sirenix.OdinInspector.HideLabelAttribute]
++ [Sirenix.OdinInspector.SuffixLabelAttribute]
+	Label = "Name"
+	Overlay = False
+
+# id
+Position: $S3PCDZas8LzHRatuKndxka:0
++ [Sirenix.OdinInspector.HideLabelAttribute]
++ [Sirenix.OdinInspector.SuffixLabelAttribute]
+	Label = "ID"
+	Overlay = False
+	icon = None
+	HasDefinedIcon = True
+
+# OpenURL()
+Position: $UmFaVRpPNc8ikcDiBFV7fC:0
+Visibility: Shown
++ [Sirenix.OdinInspector.ButtonAttribute]
+	Style = Box
+	DisplayParameters = False
+	Icon = ArrowUpRightSquareFill

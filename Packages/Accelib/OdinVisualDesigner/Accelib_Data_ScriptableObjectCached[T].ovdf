@@ -1,0 +1,27 @@
+OVDF v1.0
+Accelib.Data.ScriptableObjectCached`1, Accelib.Runtime
+
+# $8fQxdBakZc3gGMm96EXot7
+Position: "에디터 에셋":1
++ [Sirenix.OdinInspector.ColumnGroupAttribute]
+
+# $RTZC5Lmw5hXkpVaT5wPVTf
+Position: $8fQxdBakZc3gGMm96EXot7:0
++ [Sirenix.OdinInspector.ColumnGroupAttribute+ColumnSubGroupAttribute]
+
+# $Ez91UCgYyYHKPpdtpWjnNN
+Position: $8fQxdBakZc3gGMm96EXot7:1
++ [Sirenix.OdinInspector.ColumnGroupAttribute+ColumnSubGroupAttribute]
+	Size = 120 px
+
+# "에디터 에셋/그룹"
+- [Sirenix.OdinInspector.HorizontalGroupAttribute]
+
+# EditorInstance
+Position: "에디터 에셋":0
+
+# <EditorPreviewName>k__BackingField
+Position: $RTZC5Lmw5hXkpVaT5wPVTf:0
+
+# <EditorPreviewIcon>k__BackingField
+Position: $Ez91UCgYyYHKPpdtpWjnNN:0
