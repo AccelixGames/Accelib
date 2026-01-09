@@ -5,6 +5,7 @@ using System.Net;
 using System.Security.Cryptography;
 using System.Text;
 using System.Web;
+using Accelib.Data;
 using Cysharp.Threading.Tasks;
 using Sirenix.OdinInspector;
 using UnityEditor;
@@ -14,14 +15,28 @@ using UnityEngine.Networking;
 namespace Accelib.EditorTool.Google.Control.Auth
 {
     [CreateAssetMenu(fileName = "(Google) OAuthHelper", menuName = "Accelib.Google/OAuthHelper", order = 0)]
-    public class GoogleOAuthHelper : ScriptableObject
+    public class GoogleOAuthHelper : ScriptableObjectCached<GoogleOAuthHelper>
     {
-        [Header("ClientInfo")]
+        private const string AuthUrl = "https://accounts.google.com/o/oauth2/v2/auth";
+        private const string TokenUrl = "https://oauth2.googleapis.com/token";
+        private const string TokenInfoUrl = "https://www.googleapis.com/oauth2/v3/tokeninfo?access_token=";
+
+        private string RedirectUri => $"http://127.0.0.1:{port}/";
+        
+        private static string AccessTokenPrefsKey => $"GSHEETS_ACCESS_TOKEN";
+        private static string RefreshTokenPrefsKey => $"GSHEETS_REFRESH_TOKEN";
+        private static string UpdatedAtPrefsKey => $"GSHEETS_UPDATED_AT";
+        private static string TokenExpiryPrefsKey => $"GSHEETS_TOKEN_EXPIRY";
+
+        private static string SuccessHtml(string code) => $"<html><body><h3>OAuth Success({code})</h3><p>You can now close this tab and go back to Unity.</p></body></html>";
+        private static string FailedHtml(string error) => $"<html><body><h3>OAuth Failed</h3><p>Error: {error}</p></body></html>";
+        
+        [Title("ClientInfo")]
         [SerializeField, TextArea] private string memo;
         [SerializeField, TextArea] private string clientId = "";
         [SerializeField, TextArea] private string clientSecret = "";
         
-        [Header("Metadata")]
+        [Title("Metadata")]
         [SerializeField, TextArea] private List<string> scopes = new()
         {
             "https://www.googleapis.com/auth/spreadsheets.readonly",
@@ -30,50 +45,65 @@ namespace Accelib.EditorTool.Google.Control.Auth
         };
         [SerializeField] private int port = 45871;
 
-        [Header("Debug")]
-        [SerializeField, TextArea, ReadOnly] private string accessToken;
-        [SerializeField, TextArea, ReadOnly] private string refreshToken;
-        [SerializeField, TextArea, ReadOnly] private string updatedAt;
-        [SerializeField, TextArea, ReadOnly] private string tokenExpiry;
-        
-        private const string AuthUrl = "https://accounts.google.com/o/oauth2/v2/auth";
-        private const string TokenUrl = "https://oauth2.googleapis.com/token";
-        private string RedirectUri => $"http://127.0.0.1:{port}/";
-        
-        private string PrefsKey_AccessToken => $"GSHEETS_ACCESS_TOKEN-{clientId}";
-        private string PrefsKey_RefreshToken => $"GSHEETS_REFRESH_TOKEN-{clientId}";
-        private string PrefsKey_UpdatedAt => $"GSHEETS_UPDATED_AT-{clientId}";
-        private string PrefsKey_TokenExpiry => $"GSHEETS_TOKEN_EXPIRY-{clientId}";
+        [Title("Debug")]
+        [ShowInInspector, TextArea, ReadOnly] private static string AccessToken
+        {
+            get => EditorPrefs.GetString(AccessTokenPrefsKey, "");
+            set => EditorPrefs.SetString(AccessTokenPrefsKey, value);
+        }
+        [ShowInInspector, TextArea, ReadOnly] private string RefreshToken
+        {
+            get => EditorPrefs.GetString(RefreshTokenPrefsKey, "");
+            set => EditorPrefs.SetString(RefreshTokenPrefsKey, value);
+        }
+        [ShowInInspector, TextArea, ReadOnly] private string UpdatedAt
+        {
+            get => EditorPrefs.GetString(UpdatedAtPrefsKey, "");
+            set => EditorPrefs.SetString(UpdatedAtPrefsKey, value);
+        }
+        [ShowInInspector, TextArea, ReadOnly] private string TokenExpiry
+        {
+            get => EditorPrefs.GetString(TokenExpiryPrefsKey, "");
+            set => EditorPrefs.SetString(AccessTokenPrefsKey, value);
+        }
 
-        private static string SuccessHtml(string code) => $"<html><body><h3>OAuth Success({code})</h3><p>You can now close this tab and go back to Unity.</p></body></html>";
-        private static string FailedHtml(string error) => $"<html><body><h3>OAuth Failed</h3><p>Error: {error}</p></body></html>";
+        public static async UniTask<string> GetAccessToken(bool forceRenew = false)
+        {
+            var instance = EditorInstance;
+            if (instance == null)
+            {
+                var msg = $"{nameof(GoogleOAuthHelper)} 가 없습니다! 생성 후 진행해주세요.";
+                Debug.LogError(msg);
+                EditorUtility.DisplayDialog("오류", msg, "닫기");
+                return null;
+            }
 
+            if(!forceRenew)
+                return await EditorInstance.GetValidAccessToken();
+            else
+                return await EditorInstance.TryAuthorize();
+        } 
+        
         /// <summary>
         /// 저장된 AccessToken을 가져온다.
         /// 토큰이 없거나, 만료되었다면, 새로 가져온다.
         /// </summary>
-        public async UniTask<string> GetValidAccessToken()
+        private async UniTask<string> GetValidAccessToken()
         {
-            accessToken = EditorPrefs.GetString(PrefsKey_AccessToken, "");
-            refreshToken = EditorPrefs.GetString(PrefsKey_RefreshToken, "");
-            updatedAt = EditorPrefs.GetString(PrefsKey_UpdatedAt, "");
-            tokenExpiry = EditorPrefs.GetString(tokenExpiry, "");
-            var isExpired = IsTokenExpired();
-            
-            // 토큰이 비어있지 않고, 아직 기간이 남았다면,
-            if (!string.IsNullOrEmpty(accessToken) && !isExpired)
-                // 반환
-                return accessToken;
+            // 토큰이 유효하다면, 반환
+            var isValid = await ValidateAccessToken(AccessToken);
+            if(isValid)
+                return AccessToken;
 
             // 아니라면, 리프래쉬 진행
-            accessToken = await TryRefreshAccessToken();
-            if (!string.IsNullOrEmpty(accessToken))
-                return accessToken;
+            AccessToken = await TryRefreshAccessToken();
+            if (!string.IsNullOrEmpty(AccessToken))
+                return AccessToken;
 
             // 아니라면, 로그인 진행
-            accessToken = await TryAuthorize();
-            if (!string.IsNullOrEmpty(accessToken))
-                return accessToken;
+            AccessToken = await TryAuthorize();
+            if (!string.IsNullOrEmpty(AccessToken))
+                return AccessToken;
             
             // 실패
             Debug.LogError("[Auth] 구글 Auth 실패: 알 수 없는 에러", this);
@@ -83,7 +113,7 @@ namespace Accelib.EditorTool.Google.Control.Auth
         /// <summary>
         /// 로그인 후 AccessToken을 가져온다.
         /// </summary>
-        public async UniTask<string> TryAuthorize()
+        private async UniTask<string> TryAuthorize()
         {
             try
             {
@@ -136,9 +166,9 @@ namespace Accelib.EditorTool.Google.Control.Auth
                 }
 
                 // 7) token으로 코드 교환
-                accessToken = await ExchangeCodeForTokens(code, codeVerifier);
+                AccessToken = await ExchangeCodeForTokens(code, codeVerifier);
                 Debug.Log("[OAuth] Token exchange complete.");
-                return accessToken;
+                return AccessToken;
             }
             catch (Exception ex)
             {
@@ -149,8 +179,7 @@ namespace Accelib.EditorTool.Google.Control.Auth
         
         private async UniTask<string> TryRefreshAccessToken()
         {
-            refreshToken = EditorPrefs.GetString(PrefsKey_RefreshToken, "");
-            if (string.IsNullOrEmpty(refreshToken))
+            if (string.IsNullOrEmpty(RefreshToken))
             {
                 Debug.LogWarning("[Auth] 리프래쉬 토큰이 없습니다.", this);
                 return null;
@@ -160,7 +189,7 @@ namespace Accelib.EditorTool.Google.Control.Auth
             form.AddField("client_id", clientId);
             form.AddField("client_secret", clientSecret);
             form.AddField("grant_type", "refresh_token");
-            form.AddField("refresh_token", refreshToken);
+            form.AddField("refresh_token", RefreshToken);
 
             using var www = UnityWebRequest.Post(TokenUrl, form);
             await www.SendWebRequest();
@@ -178,13 +207,12 @@ namespace Accelib.EditorTool.Google.Control.Auth
                 return null;
             }
 
-            EditorPrefs.SetString(PrefsKey_AccessToken, token.access_token);
-            var expiry = DateTime.UtcNow.AddSeconds(token.expires_in);
-            tokenExpiry = expiry.ToString("yyyy-MM-dd HH:mm:ss");
-            EditorPrefs.SetString(PrefsKey_TokenExpiry, expiry.Ticks.ToString());
+            AccessToken = token.access_token;
             
-            updatedAt = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
-            EditorPrefs.SetString(PrefsKey_UpdatedAt, updatedAt);
+            var expiry = DateTime.UtcNow.AddSeconds(token.expires_in);
+            TokenExpiry = expiry.Ticks.ToString();
+            
+            UpdatedAt = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
 
             Debug.Log("[Auth] AccessToken이 갱신되었습니다.");
             return token.access_token;
@@ -252,21 +280,17 @@ namespace Accelib.EditorTool.Google.Control.Auth
                 throw new Exception("[Token] No access_token in response: " + json);
 
             // AccessToken 저장
-            accessToken = token.access_token;
-            EditorPrefs.SetString(PrefsKey_AccessToken, accessToken);
-            updatedAt = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
-            EditorPrefs.SetString(PrefsKey_UpdatedAt, updatedAt);
+            AccessToken = token.access_token;
+            UpdatedAt = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
 
             // RefreshToken 저장
             if (!string.IsNullOrEmpty(token.refresh_token))
             {
-                refreshToken = token.refresh_token;
-                EditorPrefs.SetString(PrefsKey_RefreshToken, refreshToken);
+                RefreshToken = token.refresh_token;
             }
 
             var expiry = DateTime.UtcNow.AddSeconds(token.expires_in);
-            tokenExpiry = expiry.ToString("yyyy-MM-dd HH:mm:ss");
-            EditorPrefs.SetString(PrefsKey_TokenExpiry, expiry.Ticks.ToString());
+            TokenExpiry = expiry.Ticks.ToString();
 
             // 반환
             return token.access_token;
@@ -274,11 +298,46 @@ namespace Accelib.EditorTool.Google.Control.Auth
         
         private bool IsTokenExpired()
         {
-            var ticksStr = EditorPrefs.GetString(PrefsKey_TokenExpiry, "");
-            if (!long.TryParse(ticksStr, out var ticks)) return true;
+            if (!long.TryParse(TokenExpiry, out var ticks)) return true;
             
             var expiry = new DateTime(ticks, DateTimeKind.Utc);
             return DateTime.UtcNow >= expiry.AddSeconds(-60); // 60초 여유
+        }
+
+        private async UniTask<bool> ValidateAccessToken(string accessToken)
+        {
+            if (string.IsNullOrWhiteSpace(accessToken)) return false;
+
+            try
+            {
+                // access_token은 URL 인코딩 권장
+                var url = TokenInfoUrl + UnityWebRequest.EscapeURL(accessToken);
+
+                // 리퀘스트
+                using var req = UnityWebRequest.Get(url);
+                req.timeout = 5;
+                await req.SendWebRequest();
+
+                var http = req.responseCode;
+                var text = req.downloadHandler?.text;
+
+                // 네트워크 레벨 에러
+                if (req.result is UnityWebRequest.Result.ConnectionError or UnityWebRequest.Result.DataProcessingError)
+                    throw new Exception(req.error);
+
+                // tokeninfo는 보통:
+                // 200: 유효
+                // 400: invalid_token / expired_token 등
+                if (http != 200)
+                    throw new Exception(req.error);
+
+                return true;
+            }
+            catch (Exception e)
+            {
+                Debug.LogError(e.Message, this);
+                return false;
+            }
         }
         
         [Serializable]
@@ -291,31 +350,30 @@ namespace Accelib.EditorTool.Google.Control.Auth
             public string token_type;
         }
 
-        [Button("토큰 가져오기(테스트)")]
+        [Button("토큰 가져오기")]
         private async void Internal_GetAccessToken()
         {
+            Debug.Log($"토큰 가져오기 시도");
             var token = await GetValidAccessToken();
-            Debug.Log($"AccessToken: {token}");
+            Debug.Log($"토큰 가져오기 결과: {token}");
         }
 
         [Button("토큰 비우기")]
         public void Clear()
         {
-            accessToken = null;
-            refreshToken = null;
-            updatedAt = null;
-            
-            EditorPrefs.SetString(PrefsKey_AccessToken, string.Empty);
-            EditorPrefs.SetString(PrefsKey_RefreshToken, string.Empty);
-            EditorPrefs.SetString(PrefsKey_TokenExpiry, string.Empty);
-            EditorPrefs.SetString(PrefsKey_UpdatedAt, string.Empty);
+            AccessToken = string.Empty;
+            RefreshToken = string.Empty;
+            UpdatedAt = string.Empty;
+            TokenExpiry = string.Empty;
         }
 
-        private void OnEnable()
+
+        [Button("토큰 유효성 검사", DrawResult = true)]
+        private async void Internal_ValidateAccessToken()
         {
-            accessToken = EditorPrefs.GetString(PrefsKey_AccessToken, "");
-            refreshToken = EditorPrefs.GetString(PrefsKey_RefreshToken, "");
-            updatedAt = EditorPrefs.GetString(PrefsKey_UpdatedAt, "");
+            Debug.Log("토큰 유효성 검사 시도: " + AccessToken);
+            var result = await ValidateAccessToken(AccessToken);
+            Debug.Log("토큰 유효성 검사 결과: " + result);
         }
     }
 }

@@ -22,7 +22,7 @@ namespace Accelib.Module.UI.Popup.Layer
         
         private void OnDisable() => _ucs?.TrySetResult(Result.Exception);
         
-        internal UniTask<Result> Open(ModalOpenOption option)
+        public UniTask<Result> Open(ModalOpenOption option)
         {
             gameObject.SetActive(true);
             
@@ -55,7 +55,11 @@ namespace Accelib.Module.UI.Popup.Layer
         public void OnClickResult(int result)
         {
             _ucs?.TrySetResult((Result)result);
-            PopupSingleton.Instance.CloseModal();
+            
+            if(PopupSingleton.Instance)
+                PopupSingleton.Instance.CloseModal();
+            else
+                gameObject.SetActive(false);
         }
 
         public override string GetId() => "_modal";

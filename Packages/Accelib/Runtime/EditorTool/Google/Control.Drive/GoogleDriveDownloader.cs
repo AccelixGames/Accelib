@@ -17,7 +17,6 @@ namespace Accelib.EditorTool.Google.Control.Drive
     [CreateAssetMenu(fileName = "(Google) DriveDownloader", menuName = "Accelib.Google/DriveDownloader", order = 0)]
     public class GoogleDriveDownloader : SerializedScriptableObject
     {
-        [SerializeField] private GoogleOAuthHelper oAuthHelper;
         [SerializeField] private string rootFolderId;
 
         [Header("Result")] 
@@ -35,7 +34,7 @@ namespace Accelib.EditorTool.Google.Control.Drive
         [Button]
         public async UniTask LoadAsync()
         {
-            var accessToken = await oAuthHelper.GetValidAccessToken();
+            var accessToken = await GoogleOAuthHelper.GetAccessToken();
             if (string.IsNullOrEmpty(accessToken))
             {
                 Debug.LogError("[구글] AccessToken 가져오기 실패", this);

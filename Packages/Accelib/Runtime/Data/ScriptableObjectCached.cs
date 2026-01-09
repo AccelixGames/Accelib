@@ -11,7 +11,6 @@ namespace Accelib.Data
         public string EditorPreviewName { get; private set; }
         
 #if  UNITY_EDITOR
-        
         private static T _editorInstance;
         [ShowInInspector, LabelText("에디터 에셋"), PropertyOrder(float.MinValue)] public static T EditorInstance
         {

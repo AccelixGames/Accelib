@@ -15,9 +15,6 @@ namespace Accelib.EditorTool.Google.Control.Sheets
     [CreateAssetMenu(fileName = "(Google) SheetDownloader-Auth", menuName = "Accelib.Google/SheetDownloader-Auth", order = 0)]
     public class GoogleSheetsDownloader_Auth : GoogleSheetsDownloaderBase
     {
-        [Header("# OAuth 정보")]
-        [SerializeField] private GoogleOAuthHelper oAuthHelper;
-        
         private const string BaseURL = "https://sheets.googleapis.com/v4/spreadsheets";
 
         public override async UniTask<JSheet> DownloadAsSheetDataAsync()
@@ -41,7 +38,7 @@ namespace Accelib.EditorTool.Google.Control.Sheets
             }
             
             // AccessToken 가져오기
-            var accessToken = await oAuthHelper.GetValidAccessToken();
+            var accessToken = await GoogleOAuthHelper.GetAccessToken();
             if (string.IsNullOrEmpty(accessToken))
             {
                 Debug.LogError("[구글시트] AccessToken 가져오기 실패", this);
