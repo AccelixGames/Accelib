@@ -1,19 +1,11 @@
-﻿using System.Collections.Generic;
-using UnityEngine;
-
-namespace Accelib.Module.Localization.Model
+﻿namespace Accelib.Module.Localization.Model
 {
     [System.Serializable]
-    public class LocaleKey
+    public struct LocaleKey
     {
-        [SerializeField] private string key;
-
-        public string Key => key;
-        public void SetKey(string value) => key = value;
+        public string key;
         
-#if UNITY_EDITOR
-        [SerializeField, HideInInspector] 
-        private string[] preview;
-#endif
+        public static explicit operator string(LocaleKey localeKey) => localeKey.key;
+        public static explicit operator LocaleKey(string value) => new() { key = value };
     }
 }

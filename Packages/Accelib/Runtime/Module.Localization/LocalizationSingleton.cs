@@ -10,7 +10,7 @@ namespace Accelib.Module.Localization
 {
     public class LocalizationSingleton : MonoSingleton<LocalizationSingleton>
     {
-        private const string NullString = "@null@";
+        public const string NullString = "@null@";
         private const SystemLanguage DefaultLanguage = SystemLanguage.English;
         private const string LangueSaveKey =
 #if UNITY_EDITOR

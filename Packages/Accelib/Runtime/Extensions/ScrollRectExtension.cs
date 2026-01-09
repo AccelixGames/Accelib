@@ -44,6 +44,12 @@ namespace Accelib.Extensions
 		public static void FocusAtPoint(this ScrollRect scrollView, Vector2 focusPoint) => scrollView.normalizedPosition = scrollView.CalculateFocusedScrollPosition(focusPoint);
 		public static void FocusOnItem(this ScrollRect scrollView, RectTransform item) => scrollView.normalizedPosition = scrollView.CalculateFocusedScrollPosition(item);
 
+		public static async UniTask FocusOnItemDelayed(this ScrollRect scrollView, RectTransform item, int frame)
+		{
+			await UniTask.DelayFrame(frame);
+			scrollView.normalizedPosition = scrollView.CalculateFocusedScrollPosition(item);
+		}
+
 		private static Tweener DoScrollPosition(this ScrollRect scrollView, Vector2 targetNormalizedPos,
 			float duration)
 		{

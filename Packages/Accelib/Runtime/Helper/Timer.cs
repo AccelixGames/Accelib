@@ -52,8 +52,7 @@ namespace Accelib.Helper
             
             if (Time >= TargetTime)
             {
-                IsEnabled = false;
-                IsDone = true;
+                Done();
                 return true;
             }
             
@@ -66,6 +65,13 @@ namespace Accelib.Helper
             TargetTime = target;
             IsEnabled = true;
             IsDone = false;
+        }
+
+        public void Done()
+        {
+            Time = TargetTime;
+            IsEnabled = false;
+            IsDone = true;
         }
 
         public void Clear(bool repeat = false)

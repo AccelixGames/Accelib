@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using Accelib.Extensions;
 using Accelib.Logging;
 using AYellowpaper.SerializedCollections;
@@ -30,7 +31,7 @@ namespace Accelib.Module.Localization.Architecture
         }
 
 #if UNITY_EDITOR
-        public IEnumerable<string> GetKeys() => textDict?.Keys;
+        public IReadOnlyList<string> GetKeys() => textDict?.Keys.ToList();
         public IReadOnlyList<LocaleFontData> GetFontDataList() => fontDataList;
         
         public void FromDictionary(Dictionary<string, string> dict)

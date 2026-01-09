@@ -1,4 +1,5 @@
 ﻿using Accelib.Module.Localization.Helper.Formatter;
+using Accelib.Module.Localization.Model;
 using Sirenix.OdinInspector;
 using TMPro;
 using UnityEngine;
@@ -68,6 +69,8 @@ namespace Accelib.Module.Localization.Helper
             key = otherKey;
             return Reload();
         }
+        
+        public string ChangeKey(LocaleKey otherKey) => ChangeKey(otherKey.key);
         
         public override void OnLocaleUpdated(string localizedString)
         {
