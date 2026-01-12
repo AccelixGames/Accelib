@@ -9,7 +9,7 @@ namespace Accelib.EditorTool
     {
         public static List<T> FindAllAssets<T>() where T : Object
         {
-            Debug.Log($"t: {typeof(T).FullName}");
+            // Debug.Log($"t: {typeof(T).FullName}");
             
             return UnityEditor.AssetDatabase
                 .FindAssetGUIDs($"t: {typeof(T).FullName}")
