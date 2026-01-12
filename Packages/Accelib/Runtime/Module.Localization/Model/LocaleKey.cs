@@ -1,4 +1,6 @@
-﻿using Accelib.Module.Localization.EditorTool;
+﻿#if UNITY_EDITOR
+using Accelib.Module.Localization.EditorTool;
+#endif
 
 namespace Accelib.Module.Localization.Model
 {
