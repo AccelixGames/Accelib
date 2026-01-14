@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using Sirenix.OdinInspector;
+using UnityEngine;
 
 namespace Accelib.Module.UI.Popup.Data
 {
@@ -8,6 +9,7 @@ namespace Accelib.Module.UI.Popup.Data
         public bool useLocale;
         public string title;
         [TextArea] public string desc;
+        [ShowInInspector] public object[] descParams;
         public string ok;
         public string ng;
     }

@@ -64,13 +64,19 @@ namespace Accelib.Module.Localization.Helper
         }
 
         /// <summary>키 변경</summary>
-        public string ChangeKey(string otherKey)
+        public string ChangeKey(string otherKey, params object[] args)
         {
             key = otherKey;
+            if (args is { Length: > 0 })
+            {
+                _formatter ??= GetComponent<ILocalizedFormatter>();
+                _formatter?.SetArgs(args);   
+            }
+            
             return Reload();
         }
         
-        public string ChangeKey(LocaleKey otherKey) => ChangeKey(otherKey.key);
+        public string ChangeKey(LocaleKey otherKey, params object[] args) => ChangeKey(otherKey.key, args);
         
         public override void OnLocaleUpdated(string localizedString)
         {
@@ -102,7 +108,7 @@ namespace Accelib.Module.Localization.Helper
         private string FormatString(string origin)
         {
             var args = _formatter?.GetArgs();
-            if (args is { Length: > 0 })
+            if (!string.IsNullOrEmpty(origin) && args != null && args.Length >0)
                 origin = string.Format(origin, args);
 
             return origin;

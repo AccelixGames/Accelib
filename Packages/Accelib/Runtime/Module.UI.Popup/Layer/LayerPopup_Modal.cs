@@ -26,8 +26,8 @@ namespace Accelib.Module.UI.Popup.Layer
         {
             gameObject.SetActive(true);
             
-            SetText(titleTMP, option.title, option.useLocale);
-            SetText(descTMP, option.desc, option.useLocale);
+            SetText(titleTMP, option.title, option.useLocale, null);
+            SetText(descTMP, option.desc, option.useLocale, null, option.descParams);
             SetText(okButton, option.ok, option.useLocale, okButtonObj);
             SetText(ngButton, option.ng, option.useLocale, ngButtonObj);
             
@@ -37,16 +37,19 @@ namespace Accelib.Module.UI.Popup.Layer
             return _ucs.Task;
         }
 
-        private void SetText(TMP_Text target, string text, bool useLocale, GameObject obj = null)
+        private void SetText(TMP_Text target, string text, bool useLocale, GameObject obj, params object[] args)
         {
             if (obj)
             {
                 obj.SetActive(!string.IsNullOrEmpty(text));
                 if(!obj.activeSelf) return;
             }
-            
-            if(useLocale)
-                target.GetComponent<LocalizedTMP>()?.ChangeKey(text);
+
+            if (useLocale)
+            {
+                var tmp = target.GetComponent<LocalizedTMP>();
+                tmp?.ChangeKey(text, args);
+            }
             else
                 target.text = text;
         }
