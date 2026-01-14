@@ -2,6 +2,7 @@
 {
     public enum LifeCycleType
     {
-        Awake = 0, Start, OnEnable, OnDisable, OnDestroy
+        Awake = 0, Start, OnEnable, OnDisable, OnDestroy,
+        None = -1
     }
 }
