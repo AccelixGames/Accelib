@@ -1,0 +1,17 @@
+﻿{
+  "name": "Accelib.Conditional",
+  "rootNamespace": "Accelib.Conditional",
+  "references": [
+    "UniTask",
+    "UniTask.DOTween",
+    "UniTask.TextMeshPro",
+    "UniTask.Addressables",
+    "DOTween.Modules",
+    "Unity.Addressables",
+    "Unity.ResourceManager",
+    "Unity.Collections",
+    "Unity.TextMeshPro",
+    "ZLinq.Unity",
+    "ZLinq.Unity.UnityCollectoins"
+  ]
+}

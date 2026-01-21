@@ -2,6 +2,7 @@
 using Accelib.Module.Initialization.Base;
 using NaughtyAttributes;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.SceneManagement;
 
 namespace Accelib.Module.Initialization
@@ -10,9 +11,8 @@ namespace Accelib.Module.Initialization
     {
         public enum State {None, Success}
 
-        [Header("LoadScn")]
-        [SerializeField] private bool loadScnAfterInit = true; 
-        [ShowIf(nameof(loadScnAfterInit)),SerializeField, Scene] private string targetScene;
+        [Header("LoadEnd")]
+        public UnityEvent onLoadEnd;
         
         [field: Header("State")]
         [field: SerializeField, ReadOnly] public State InitState { get; private set; }
@@ -62,9 +62,7 @@ namespace Accelib.Module.Initialization
                 if(!initRequired.IsInitialized()) return;
 
             InitState = State.Success;
-            
-            if (loadScnAfterInit) 
-                SceneManager.LoadScene(targetScene, LoadSceneMode.Single);
+            onLoadEnd?.Invoke();
         }
     }
 }
