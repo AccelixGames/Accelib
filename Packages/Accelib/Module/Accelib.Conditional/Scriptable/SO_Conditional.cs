@@ -9,6 +9,7 @@ namespace Accelib.Conditional.Scriptable
     [CreateAssetMenu(fileName = "(Conditional) Name", menuName = "Accelib/Conditional/Conditional", order = 0)]
     public class SO_Conditional : ScriptableObject
     {
+        [field: SerializeField, TextArea] public string Preview { get; private set; }
         [ListDrawerSettings(DraggableItems = true, ShowFoldout = false, ShowIndexLabels = false, ShowPaging = false, ShowItemCount = false, HideRemoveButton = false)]
         [SerializeField] private List<Condition> conditions;
 
