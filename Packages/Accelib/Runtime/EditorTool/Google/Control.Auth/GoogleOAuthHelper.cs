@@ -179,43 +179,50 @@ namespace Accelib.EditorTool.Google.Control.Auth
         
         private async UniTask<string> TryRefreshAccessToken()
         {
-            if (string.IsNullOrEmpty(RefreshToken))
+            try
             {
-                Debug.LogWarning("[Auth] 리프래쉬 토큰이 없습니다.", this);
+                if (string.IsNullOrEmpty(RefreshToken))
+                {
+                    Debug.LogWarning("[Auth] 리프래쉬 토큰이 없습니다.", this);
+                    return null;
+                }
+                
+                var form = new WWWForm();
+                form.AddField("client_id", clientId);
+                form.AddField("client_secret", clientSecret);
+                form.AddField("grant_type", "refresh_token");
+                form.AddField("refresh_token", RefreshToken);
+
+                using var www = UnityWebRequest.Post(TokenUrl, form);
+                await www.SendWebRequest();
+                if (www.result != UnityWebRequest.Result.Success)
+                {
+                    Debug.LogError("[Auth] 리프래쉬 에러: " + www.error + "\n" + www.downloadHandler.text);
+                    return null;
+                }
+
+                var json = www.downloadHandler.text;
+                var token = JsonUtility.FromJson<TokenResponse>(json.Trim());
+                if (string.IsNullOrEmpty(token.access_token))
+                {
+                    Debug.LogError("[Auth] AccessToken 반환에 실패하였습니다: " + json);
+                    return null;
+                }
+
+                AccessToken = token.access_token;
+
+                var expiry = DateTime.UtcNow.AddSeconds(token.expires_in);
+                TokenExpiry = expiry.Ticks.ToString();
+
+                UpdatedAt = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
+
+                Debug.Log("[Auth] AccessToken이 갱신되었습니다.");
+                return token.access_token;
+            }
+            catch (Exception e)
+            {
                 return null;
             }
-
-            var form = new WWWForm();
-            form.AddField("client_id", clientId);
-            form.AddField("client_secret", clientSecret);
-            form.AddField("grant_type", "refresh_token");
-            form.AddField("refresh_token", RefreshToken);
-
-            using var www = UnityWebRequest.Post(TokenUrl, form);
-            await www.SendWebRequest();
-            if (www.result != UnityWebRequest.Result.Success)
-            {
-                Debug.LogError("[Auth] 리프래쉬 에러: " + www.error + "\n" + www.downloadHandler.text);
-                return null;
-            }
-
-            var json = www.downloadHandler.text;
-            var token = JsonUtility.FromJson<TokenResponse>(json.Trim());
-            if (string.IsNullOrEmpty(token.access_token))
-            {
-                Debug.LogError("[Auth] AccessToken 반환에 실패하였습니다: " + json);
-                return null;
-            }
-
-            AccessToken = token.access_token;
-            
-            var expiry = DateTime.UtcNow.AddSeconds(token.expires_in);
-            TokenExpiry = expiry.Ticks.ToString();
-            
-            UpdatedAt = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
-
-            Debug.Log("[Auth] AccessToken이 갱신되었습니다.");
-            return token.access_token;
         }
         
         private static void GeneratePKCE(out string verifier, out string challenge)

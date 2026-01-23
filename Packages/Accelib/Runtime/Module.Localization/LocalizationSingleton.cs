@@ -100,7 +100,7 @@ namespace Accelib.Module.Localization
         {
             if (!_currLocale)
             {
-                Deb.LogWarning($"Locale이 또는 TextDict이 아직 로드되지 않았습니다. 현재 로케일({_currLocale})", ctx);
+                // Deb.LogWarning($"Locale이 또는 TextDict이 아직 로드되지 않았습니다. 현재 로케일({_currLocale})", ctx);
                 return NullString;
             }
             
@@ -108,7 +108,7 @@ namespace Accelib.Module.Localization
             if (string.IsNullOrEmpty(key) || !_currLocale.TryGetValue(key, out var result))
             {
                 // NULL 리턴
-                Deb.LogWarning($"키({key})의 로컬라이징 값을 가져올 수 없습니다. 현재 언어({CurrLang})", ctx);
+                // Deb.LogWarning($"키({key})의 로컬라이징 값을 가져올 수 없습니다. 현재 언어({CurrLang})", ctx);
                 return NullString;
             }
             

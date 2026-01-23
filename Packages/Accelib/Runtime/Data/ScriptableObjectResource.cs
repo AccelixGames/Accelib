@@ -18,9 +18,18 @@ namespace Accelib.Data
         {
             get
             {
-                _instance ??= Resources.FindObjectsOfTypeAll<T>().FirstOrDefault();
+                if (!_instance) LoadInstance();
                 return _instance;
             }
+        }
+
+        protected virtual void OnEnable() => LoadInstance();
+
+        [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
+        private static void LoadInstance()
+        {
+            //_instance = Resources.FindObjectsOfTypeAll<T>().FirstOrDefault();
+            _instance = Resources.LoadAll<T>("Accelix").FirstOrDefault();
         }
     }
 }

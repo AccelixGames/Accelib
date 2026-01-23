@@ -5,6 +5,7 @@ using Accelib.Module.Transition;
 using Cysharp.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
+using UnityEngine.ResourceManagement.ResourceProviders;
 using UnityEngine.SceneManagement;
 // ReSharper disable PossibleMultipleEnumeration
 
@@ -14,9 +15,9 @@ namespace Accelib.Module.SceneManagement
     {
         private static SO_SceneConfig Config => SO_SceneConfig.Instance;
 
-        public static UniTask<bool> ChangeScnPreviousAsync(int transitionIndex = 0) => ChangeScnAsync(Config.prevScn, transitionIndex);
+        public static UniTask<SceneInstance?> ChangeScnPreviousAsync(int transitionIndex = 0) => ChangeScnAsync(Config.prevScn, transitionIndex);
 
-        public static async UniTask<bool> ChangeScnAsync(AssetReference scnRef, int transitionIndex = 0)
+        public static async UniTask<SceneInstance?> ChangeScnAsync(AssetReference scnRef, int transitionIndex = 0)
         {
             // 로딩 우선도 캐싱
             var defaultLoadPriority = Application.backgroundLoadingPriority;
@@ -60,14 +61,18 @@ namespace Accelib.Module.SceneManagement
                     .Where(h => h != null)
                     .ToArray();
                 
+                // 이벤트
                 foreach (var handler in handlers) 
                     await handler.OnAfterSceneChanged();
+                
+                // 반환
+                return instance;
             }
             catch (Exception e)
             {
                 // 실패
                 Debug.LogException(e);
-                return false;
+                return null;
             }
             finally
             {
@@ -82,9 +87,6 @@ namespace Accelib.Module.SceneManagement
                 // 마무리 - 잠금 해제
                 Config.isLocked = false;
             }
-            
-            // 성공
-            return true;
         }
         
         public static async UniTask<bool> AddScnAsync(params AssetReference[] scnRefs)
@@ -164,8 +166,8 @@ namespace Accelib.Module.SceneManagement
                 GC.Collect();
         }
 
-        [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
-        private static void Init() => SO_SceneConfig.Instance.Init();
+        // [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
+        //private static void Init() => SO_SceneConfig.Instance.Init();
 
     }
 }

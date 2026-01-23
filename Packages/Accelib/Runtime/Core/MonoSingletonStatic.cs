@@ -5,6 +5,8 @@ namespace Accelib.Core
     [DefaultExecutionOrder(-1000)]
     public class MonoSingletonStatic<T> : MonoBehaviour where T : MonoBehaviour
     {
+        [SerializeField] protected bool dontDestroyOnLoad = true;
+        
         // Check to see if we're about to be destroyed
         private static bool _shuttingDown;
         private static readonly object _lock = new();
@@ -25,7 +27,8 @@ namespace Accelib.Core
                     {
                         // Search for existing instance.
                         _instance = FindFirstObjectByType<T>(FindObjectsInactive.Exclude);
-                        DontDestroyOnLoad(_instance);
+                        var singleton = _instance as MonoSingletonStatic<T>;
+                        if(singleton?.dontDestroyOnLoad ?? false) DontDestroyOnLoad(_instance);
                     }
 
                     return _instance;
