@@ -7,6 +7,7 @@ namespace Accelib.Conditional.Definition
         Integer = 0,
         Double = 1,
         Boolean = 2,
-        [InspectorName("Object")] ScriptableObject = 10,
+        [InspectorName("Preset")] ScriptableObject = 10,
+        [InspectorName("Custom")] Custom = 11,
     }
 }

@@ -1,6 +1,6 @@
 ﻿using Sirenix.OdinInspector;
 
-namespace Accelib.EditorTool.Provider
+namespace Accelib.Preview
 {
     public interface IPreviewIconProvider
     {

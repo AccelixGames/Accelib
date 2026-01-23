@@ -1,8 +1,7 @@
 ﻿using System.Linq;
-using Accelib.Data;
 using Accelib.Editor.CustomWindow.Core;
 using Accelib.Editor.CustomWindow.LevelDesign.Model;
-using Accelib.EditorTool.Provider;
+using Accelib.Preview;
 using Sirenix.OdinInspector;
 using Sirenix.OdinInspector.Editor;
 using Sirenix.Utilities.Editor;

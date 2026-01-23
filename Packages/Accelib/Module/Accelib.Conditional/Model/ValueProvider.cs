@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Globalization;
 using Accelib.Conditional.Definition;
 using Accelib.Conditional.Scriptable;
+using Accelib.Reflection;
 using Sirenix.OdinInspector;
 using UnityEngine;
 
@@ -11,21 +13,33 @@ namespace Accelib.Conditional.Model
     {
         [HideLabel][SerializeField] private EValueSourceType sourceType;
         
-        [HideLabel][SerializeField, ShowIf("sourceType", EValueSourceType.ScriptableObject), HorizontalGroup] private SO_ValueProviderBase soValue;
-        [HideLabel][ShowInInspector, ShowIf("sourceType", EValueSourceType.ScriptableObject), HorizontalGroup(width:0.3f),
-        ShowIf("soValue")] private string SoPreview => soValue?.Preview ?? "";
-        
         [HideLabel][SerializeField, ShowIf("sourceType", EValueSourceType.Boolean)]  private bool booleanValue;
         [HideLabel][SerializeField, ShowIf("sourceType", EValueSourceType.Integer)]  private int intValue;
         [HideLabel][SerializeField, ShowIf("sourceType", EValueSourceType.Double)]  private double doubleValue;
+        
+        [HideLabel][SerializeField, ShowIf("sourceType", EValueSourceType.ScriptableObject), HorizontalGroup] 
+        private SO_ValueProviderBase soValue;
+        
+        [HideLabel][SerializeField, ShowIf("sourceType", EValueSourceType.Custom), HorizontalGroup] 
+        private MemberRef customValue;
 
-        private double Value => sourceType switch
+        [HideLabel][ShowInInspector, ShowIf("sourceType", EValueSourceType.ScriptableObject), HorizontalGroup(width:0.3f), ShowIf("soValue")]
+        public double Value => sourceType switch
         {
-            EValueSourceType.ScriptableObject => soValue?.Value ?? 0,
             EValueSourceType.Boolean => booleanValue ? 1 : 0,
             EValueSourceType.Integer => intValue,
             EValueSourceType.Double => doubleValue,
+            EValueSourceType.ScriptableObject => soValue?.Value ?? 0,
+            EValueSourceType.Custom => customValue?.Value ?? 0,
             _ => 0
+        };
+        
+        public string Preview => sourceType switch
+        {
+            EValueSourceType.Boolean => booleanValue ?  "true" : "false",
+            EValueSourceType.Custom => $"'{customValue?.GetPreview()}'[{Value}]",
+            EValueSourceType.ScriptableObject => $"'{soValue?.Preview}'[{Value}]",
+            _ => Value.ToString(CultureInfo.InvariantCulture)
         };
 
         public bool CompareTo(ValueProvider other, EComparisonOperator oper)

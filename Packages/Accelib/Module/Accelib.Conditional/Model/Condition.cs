@@ -1,4 +1,5 @@
 ﻿using Accelib.Conditional.Definition;
+using Accelib.Conditional.Utility;
 using Sirenix.OdinInspector;
 using UnityEngine;
 
@@ -19,5 +20,7 @@ namespace Accelib.Conditional.Model
 
         internal ELogicalOperator LogicalOperator => logicalOperator;
         public bool Evaluate() => lhs.CompareTo(rhs, comparisonOperator);
+
+        public string Preview => $"{lhs.Preview} {comparisonOperator.ToStringSign()} {rhs.Preview}";
     }
 }

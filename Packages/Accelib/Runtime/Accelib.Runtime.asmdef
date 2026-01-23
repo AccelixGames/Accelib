@@ -27,7 +27,8 @@
         "ZLinq.Unity",
         "ZLinq.Unity.UnityCollectoins",
         "Unity.Collections",
-        "Unity.InputSystem"
+        "Unity.InputSystem",
+        "Accelib.Preview"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

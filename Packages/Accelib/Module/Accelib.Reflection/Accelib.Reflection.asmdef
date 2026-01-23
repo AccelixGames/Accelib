@@ -1,0 +1,7 @@
+﻿{
+  "name": "Accelib.Reflection",
+  "rootNamespace": "Accelib.Reflection",
+  "references": [
+    "Accelib.Preview"
+  ]
+}
