@@ -1,59 +1,67 @@
-﻿using Accelib.Data;
+﻿using System;
+using Accelib.Data;
 using DG.Tweening;
 using NaughtyAttributes;
+using Sirenix.OdinInspector;
 using UnityEngine;
 
 namespace Accelib.Effect
 {
     public class UISlideEffect : MonoBehaviour
     {
-        [Header("연결")]
+        private enum ShowMode { In, Out, None }
+        
+        [Title("연결")]
         [SerializeField] private EasePairTweenConfig config;
         [SerializeField] private RectTransform showPos;
         [SerializeField] private RectTransform hidePos;
 
-        [Header("옵션")]
-        [SerializeField] private bool showOnStart = true;
+        [Title("옵션")]
+        [SerializeField] private ShowMode enableMode = ShowMode.In;
 
-        private RectTransform rt;
-        private DG.Tweening.Tween tween;
+        private RectTransform _rt;
+        private DG.Tweening.Tween _tween;
         
         private void Awake()
         {
-            rt = GetComponent<RectTransform>();
-            rt.anchoredPosition = showOnStart ? showPos.anchoredPosition : hidePos.anchoredPosition;
-
-            tween = null;
-            
-            gameObject.SetActive(showOnStart);
+            _rt = GetComponent<RectTransform>();
+            _tween = null;
         }
 
-        private void OnDestroy() => tween?.Kill();
+        private void OnEnable()
+        {
+            if (enableMode == ShowMode.In)
+                Show();
+            else if (enableMode == ShowMode.Out)
+                Hide();
+        }
 
-        [Button(enabledMode:EButtonEnableMode.Playmode)] 
-        public DG.Tweening.Tween Show() => DoSlide(true, hidePos, showPos);
+        private void OnDestroy() => _tween?.Kill();
+
+        [NaughtyAttributes.Button(enabledMode:EButtonEnableMode.Playmode)] 
+        public DG.Tweening.Tween Show() => DoSlide(false, showPos, hidePos);
         
-        [Button(enabledMode:EButtonEnableMode.Playmode)]
-        public DG.Tweening.Tween Hide() => DoSlide(false, showPos, hidePos);
+        [NaughtyAttributes.Button(enabledMode:EButtonEnableMode.Playmode)]
+        public DG.Tweening.Tween Hide() => DoSlide(true, hidePos, showPos);
 
         private DG.Tweening.Tween DoSlide(bool show, RectTransform initPos, RectTransform endPos)
         {
-            tween?.Kill(true);
+            _tween?.Kill(true);
 
             gameObject.SetActive(true);
-            rt.anchoredPosition = initPos.anchoredPosition;
+            _rt.anchoredPosition = initPos.anchoredPosition;
 
-            tween = rt
+            _tween = _rt
                 .DOAnchorPos(endPos.anchoredPosition, config.duration);
 
-            tween.SetEase(show ? config.easeA : config.easeB);
+            _tween.SetEase(show ? config.easeA : config.easeB);
 
             if (config.delayA > 0f)
-                tween.SetDelay(config.delayA);
-            if (!show)
-                tween.onComplete += () => gameObject.SetActive(false);
+                _tween.SetDelay(config.delayA);
+            // if (!show)
+            //     _tween.onComplete += () => gameObject.SetActive(false);
 
-            return tween;
+            return _tween;
         }
     }
 }

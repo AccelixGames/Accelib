@@ -12,6 +12,8 @@ namespace Accelib.Module.Localization.Model
         public static explicit operator string(LocaleKey localeKey) => localeKey.key;
         public static explicit operator LocaleKey(string value) => new() { key = value };
 
+        public LocaleKey(string key = null) => this.key = key;
+        
         public override string ToString() => key;
         
 #if UNITY_EDITOR

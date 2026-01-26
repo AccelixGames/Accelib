@@ -7,6 +7,7 @@ namespace Accelib.Effect
     public class SimpleFlowEffect : MonoBehaviour
     {
         [SerializeField,] private bool useLocalPos = false;
+        [SerializeField] private bool showGizmo = false;
         [SerializeField] private Vector3 startPos;
         [SerializeField] private Vector3 endPos;
 
@@ -49,7 +50,8 @@ namespace Accelib.Effect
 #if UNITY_EDITOR
         private void OnDrawGizmosSelected()
         {
-            if(UnityEditor.EditorApplication.isPlaying) return;
+            if (UnityEditor.EditorApplication.isPlaying) return;
+            if (!showGizmo) return;
 
             var start = startPos + (useLocalPos ? transform.position : Vector3.zero);
             var end = endPos + (useLocalPos ? transform.position : Vector3.zero);

@@ -23,7 +23,7 @@ namespace Accelib.Conditional.Model
         [HideLabel][SerializeField, ShowIf("sourceType", EValueSourceType.Custom), HorizontalGroup] 
         private MemberRef customValue;
 
-        [HideLabel][ShowInInspector, ShowIf("sourceType", EValueSourceType.ScriptableObject), HorizontalGroup(width:0.3f), ShowIf("soValue")]
+        [HideLabel][ShowInInspector, ShowIf("sourceType", EValueSourceType.ScriptableObject), HorizontalGroup(width:0.3f)]
         public double Value => sourceType switch
         {
             EValueSourceType.Boolean => booleanValue ? 1 : 0,
