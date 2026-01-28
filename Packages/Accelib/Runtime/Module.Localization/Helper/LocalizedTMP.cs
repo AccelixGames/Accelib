@@ -1,8 +1,10 @@
-﻿using Accelib.Module.Localization.Helper.Formatter;
+﻿using System;
+using Accelib.Module.Localization.Helper.Formatter;
 using Accelib.Module.Localization.Model;
 using Sirenix.OdinInspector;
 using TMPro;
 using UnityEngine;
+using UnityEngine.Events;
 
 namespace Accelib.Module.Localization.Helper
 {
@@ -34,6 +36,7 @@ namespace Accelib.Module.Localization.Helper
         public override string LocaleKey => key;
         public override int FontIndex => fontId;
         public override bool LoadOnEnable => loadOnEnable;
+        public Action OnChangedLocale;
 
         // TMP 캐싱 
         private void Awake()
@@ -94,6 +97,7 @@ namespace Accelib.Module.Localization.Helper
 
             // 텍스트 변경
             TMP.SetText(FormatString(localizedString));
+            OnChangedLocale?.Invoke();
             // Debug.Log("OnLocaleUpdated: " + TMP.text, TMP);
         }
 

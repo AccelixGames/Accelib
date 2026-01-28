@@ -19,7 +19,7 @@ namespace Accelib.Core
         {
             get
             {
-                if (_shuttingDown) return null;
+                //if (_shuttingDown) return null;
 
                 lock (_lock)
                 {
