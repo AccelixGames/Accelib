@@ -342,7 +342,7 @@ namespace Accelib.EditorTool.Google.Control.Auth
             }
             catch (Exception e)
             {
-                Debug.LogError(e.Message, this);
+                // Debug.LogError(e.Message, this);
                 return false;
             }
         }

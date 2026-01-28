@@ -36,8 +36,7 @@ namespace Accelib.Module.Localization.Helper
         public override string LocaleKey => key;
         public override int FontIndex => fontId;
         public override bool LoadOnEnable => loadOnEnable;
-        public Action OnChangedLocale;
-
+        
         // TMP 캐싱 
         private void Awake()
         {
@@ -97,7 +96,7 @@ namespace Accelib.Module.Localization.Helper
 
             // 텍스트 변경
             TMP.SetText(FormatString(localizedString));
-            OnChangedLocale?.Invoke();
+            // OnChangedLocale?.Invoke();
             // Debug.Log("OnLocaleUpdated: " + TMP.text, TMP);
         }
 
