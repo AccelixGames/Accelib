@@ -13,6 +13,7 @@
         Float,
         Double,
         Decimal,
-        Boolean
+        Boolean,
+        Enum
     }
 }

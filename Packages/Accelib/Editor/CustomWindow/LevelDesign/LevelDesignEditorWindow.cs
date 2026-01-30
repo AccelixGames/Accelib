@@ -14,6 +14,26 @@ namespace Accelib.Editor.CustomWindow.LevelDesign
     {
         [MenuItem("Accelib/레벨디자인 매니저")]
         private static void OpenWindow() => GetWindow<LevelDesignEditorWindow>("[Accelib] 레벨디자인 매니저").Show();
+
+        private void AddLayout(OdinMenuTree tree, string path, ScriptableObject o)
+        {
+            if (!o || o == null) return;
+            
+            var assetName = o.name;
+            if (o is IPreviewNameProvider provider)
+                assetName = provider.EditorPreviewName;
+            
+            var newPath = $"{path}/{assetName}";
+                    
+            if( o is IPreviewIconProvider iconProvider)
+                tree.Add(newPath, o, iconProvider.EditorPreviewIcon);
+            else
+                tree.Add(newPath, o);
+
+            if (o is ISubAssetProvider subAssetProvider)
+                foreach (var subAsset in subAssetProvider.SubAssets)
+                    AddLayout(tree, newPath, subAsset);
+        }
         
         protected override OdinMenuTree BuildMenuTree()
         {
@@ -35,15 +55,7 @@ namespace Accelib.Editor.CustomWindow.LevelDesign
             {
                 foreach (var layout in config.MenuLayouts)
                 foreach (var o in layout.dataList.Where(o => o))
-                {
-                    var assetName = o.name;
-                    if (o is IPreviewNameProvider provider)
-                        assetName = provider.EditorPreviewName;
-                    if( o is IPreviewIconProvider iconProvider)
-                        tree.Add($"{layout.label}/{assetName}", o, iconProvider.EditorPreviewIcon);
-                    else
-                        tree.Add($"{layout.label}/{assetName}", o);
-                }
+                    AddLayout(tree, layout.label, o);
             }
             
             // 첫 오브젝트 선택
@@ -70,8 +82,8 @@ namespace Accelib.Editor.CustomWindow.LevelDesign
                 EditorPrefs.SetString(LastSelectedPathKey, path);
                 
                 // 오브젝트 핑
-                // if (menuItem.Value is Object asset)
-                //     EditorGUIUtility.PingObject(asset);
+                if (menuItem.Value is Object asset)
+                    EditorGUIUtility.PingObject(asset);
                 
                 // 열고닫기
                 if (menuItem.Value is not Object)

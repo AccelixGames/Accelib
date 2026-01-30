@@ -54,39 +54,6 @@ namespace Accelib.Reflection.Utility
         }
 
         /// <summary>
-        /// 캐싱된 체인을 사용해서 최종 값을 object로 반환함
-        /// - 체인 순회 중간에 null 나오면 실패로 null 반환함
-        /// </summary>
-        public static object GetValue(UnityEngine.Object target, CachedChain cached)
-        {
-            if (target == null || cached == null || !cached.IsValid)
-                return null;
-
-            object obj = target;
-
-            // 체인을 따라가며 값을 내려받음
-            foreach (var m in cached.Chain)
-            {
-                if (obj == null) return null;
-
-                if (m is FieldInfo fi)
-                {
-                    obj = fi.GetValue(obj);
-                }
-                else if (m is PropertyInfo pi)
-                {
-                    obj = pi.GetValue(obj);
-                }
-                else
-                {
-                    return null;
-                }
-            }
-
-            return obj;
-        }
-
-        /// <summary>
         /// “결과 타입 고정(double)” 버전 getter를 생성해서 반환함
         /// - 반환된 Func는 target을 캡처함 (target이 ScriptableObject인 케이스에 적합)
         /// - 체인 탐색을 매번 하지 않고, 체인 순회 + double 변환만 수행함
@@ -154,5 +121,39 @@ namespace Accelib.Reflection.Utility
                 return 0.0;
             }
         }
+        
+        
+        // /// <summary>
+        // /// 캐싱된 체인을 사용해서 최종 값을 object로 반환함
+        // /// - 체인 순회 중간에 null 나오면 실패로 null 반환함
+        // /// </summary>
+        // public static object GetValue(UnityEngine.Object target, CachedChain cached)
+        // {
+        //     if (target == null || cached == null || !cached.IsValid)
+        //         return null;
+        //
+        //     object obj = target;
+        //
+        //     // 체인을 따라가며 값을 내려받음
+        //     foreach (var m in cached.Chain)
+        //     {
+        //         if (obj == null) return null;
+        //
+        //         if (m is FieldInfo fi)
+        //         {
+        //             obj = fi.GetValue(obj);
+        //         }
+        //         else if (m is PropertyInfo pi)
+        //         {
+        //             obj = pi.GetValue(obj);
+        //         }
+        //         else
+        //         {
+        //             return null;
+        //         }
+        //     }
+        //
+        //     return obj;
+        // }
     }
 }

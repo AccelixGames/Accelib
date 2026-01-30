@@ -26,7 +26,9 @@ namespace Accelib.Reflection
         
         public string GetPreview()
         {
-            var name = target?.name;
+            if (!target || target == null) return "";
+
+            var name = target.name;
             if (Target is IPreviewNameProvider preview)
                 name = preview.EditorPreviewName;
             
