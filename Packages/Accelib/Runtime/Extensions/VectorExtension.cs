@@ -36,6 +36,8 @@ namespace Accelib.Extensions
 
         public static Vector3Int ToVec3Int(this in Vector2Int v) => new(v.x, v.y, 0);
         public static Vector3 ToVec3(this in Vector2Int v) => new(v.x, v.y, 0);
+        public static Vector3 ToVec3XZ(this in Vector2Int v) => new(v.x, 0, v.y);
+        public static Vector3 ToVec3XZ(this in Vector2 v) => new(v.x, 0, v.y);
         
         public static Vector3 ToVec3(this in Vector2 v) => new(v.x, v.y, 0f);
 

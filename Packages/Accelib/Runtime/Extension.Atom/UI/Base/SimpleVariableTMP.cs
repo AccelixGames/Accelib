@@ -1,4 +1,6 @@
-﻿using TMPro;
+﻿using System;
+using Sirenix.OdinInspector;
+using TMPro;
 using UnityAtoms;
 using UnityEngine;
 using UnityEngine.Events;
@@ -14,7 +16,7 @@ namespace Accelib.Extension.Atom.UI.Base
         [Header("Modifier")]
         [SerializeField] protected string format;
 #if UNITY_EDITOR
-        [SerializeField, ReadOnly] protected string preview;
+        [NonSerialized, ShowInInspector, Sirenix.OdinInspector.ReadOnly] protected string preview;
 #endif
 
         [Header("Event")]
