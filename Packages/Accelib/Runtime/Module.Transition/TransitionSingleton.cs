@@ -10,6 +10,7 @@ namespace Accelib.Module.Transition
     public class TransitionSingleton : MonoSingleton<TransitionSingleton>
     {
         [Header("상태")]
+        [SerializeField] private Camera cam;
         [SerializeField] private TransitionEffect[] targetEffects;
         [SerializeField, ReadOnly] private bool isMoving;
         [SerializeField, ReadOnly] private int currIndex;
@@ -23,6 +24,7 @@ namespace Accelib.Module.Transition
         private void Start()
         {
             currIndex = 0;
+            cam.gameObject.SetActive(false);
         }
     
         [HorizontalGroup("# 테스트")]
@@ -50,6 +52,8 @@ namespace Accelib.Module.Transition
         {
             _seq?.Kill();
             _seq = DOTween.Sequence();
+            
+            cam.gameObject.SetActive(start);
             
             // 끝
             if(!start)
