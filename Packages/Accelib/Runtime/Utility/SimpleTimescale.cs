@@ -1,5 +1,4 @@
-﻿using System;
-using NaughtyAttributes;
+﻿using Sirenix.OdinInspector;
 using UnityEngine;
 
 namespace Accelib.Utility
@@ -8,9 +7,9 @@ namespace Accelib.Utility
     {
         [SerializeField] private bool setOnAwake = true;
         [SerializeField, Range(0f, 5f)] private float targetTimescale = 1f;
-        [ShowNativeProperty] private float CurrTimescale => Time.timeScale;
+        [ShowInInspector, ReadOnly] private float CurrTimescale => Time.timeScale;
         
-        [Button(enabledMode: EButtonEnableMode.Playmode)]
+        [Button("타임스케일 변경")]
         public void SetTimescale() => Time.timeScale = targetTimescale;
 
         private void Awake()
