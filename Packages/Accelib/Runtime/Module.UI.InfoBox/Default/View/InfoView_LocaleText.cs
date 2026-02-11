@@ -1,4 +1,5 @@
-﻿using Accelib.Module.UI.InfoBox.Base.Control.Receiver.Interface;
+﻿using Accelib.Module.Localization.Helper;
+using Accelib.Module.UI.InfoBox.Base.Control.Receiver.Interface;
 using Accelib.Module.UI.InfoBox.Default.Model;
 using Sirenix.OdinInspector;
 using TMPro;
@@ -7,10 +8,10 @@ using UnityEngine.Events;
 
 namespace Accelib.Module.UI.InfoBox.Default.View
 {
-    public class InfoView_Default : MonoBehaviour, IInfoReceiverT<InfoData_Default>
+    public class InfoView_LocaleText  : MonoBehaviour, IInfoReceiverT<InfoData_Locale>
     {
         [TitleGroup("Core")]
-        [SerializeField] private TMP_Text descTMP;
+        [SerializeField] private LocalizedTMP descTMP;
         [TitleGroup("Core")]
         [SerializeField] private bool clearTextOnNullInfo;
         
@@ -19,25 +20,23 @@ namespace Accelib.Module.UI.InfoBox.Default.View
         [TitleGroup("Event")]
         [SerializeField] private UnityEvent onNullReceived;
 
-        public void ReceiveInfo(InfoData_Default info)
+        public void ReceiveInfo(InfoData_Locale info)
         {
-            var hasInfo = !string.IsNullOrEmpty(info?.description);
+            var hasInfo = !string.IsNullOrEmpty(info?.localeKey);
 
             if (hasInfo)
             {
-                descTMP.text = info.description;
+                descTMP.ChangeKey(info.localeKey);
+                
                 onInfoReceived?.Invoke();
             }
             else
             {
                 if (clearTextOnNullInfo)
-                    descTMP.text = string.Empty;
+                    descTMP.ChangeKey(null);
+                
                 onNullReceived?.Invoke();
             }
-
-            OnReceiveInfo(info);
         }
-        
-        protected virtual void OnReceiveInfo(InfoData_Default info) {}
     }
 }

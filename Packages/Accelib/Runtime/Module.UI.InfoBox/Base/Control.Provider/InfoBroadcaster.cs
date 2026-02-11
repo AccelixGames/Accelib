@@ -1,9 +1,6 @@
-﻿using System.Collections.Generic;
-using Accelib.Extensions;
-using Accelib.Logging;
+﻿using Accelib.Logging;
 using Accelib.Module.UI.InfoBox.Base.Control.Provider.Interface;
-using Accelib.Module.UI.InfoBox.Base.Model;
-using NaughtyAttributes;
+using Sirenix.OdinInspector;
 using UnityAtoms.BaseAtoms;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -12,21 +9,17 @@ namespace Accelib.Module.UI.InfoBox.Base.Control.Provider
 {
     public class InfoBroadcaster : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
     {
-        [Header("Config")]
+        [Title("옵션")]
         [SerializeField] private InfoDataBaseEvent onInformed;
         [SerializeField] private bool pointerExitOnDisable = false;
-
-        [Header("Interface info")]
-        [SerializeField, ReadOnly] private bool hasProvider;
-        private _IInfoProvider _provider;
-
-        [Header("Debug")]
         [SerializeField] private bool debugLog = false;
+
+        [Title("디버그")]
+        [ShowInInspector, ReadOnly] private _IInfoProvider _provider;
 
         private void OnEnable()
         {
             _provider = GetComponent<_IInfoProvider>();
-            hasProvider = _provider is not null;
         }
 
         private void OnDisable()

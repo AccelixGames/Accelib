@@ -3,7 +3,7 @@ using Accelib.Module.UI.InfoBox.Base.Control.Provider.Interface;
 using Accelib.Module.UI.InfoBox.Default.Model;
 using UnityEngine;
 
-namespace Accelib.Module.UI.InfoBox.Default.Control.Provider
+namespace Accelib.Module.UI.InfoBox.Default.Control
 {
     [RequireComponent(typeof(InfoBroadcaster))]
     public class InfoProvider_Default : MonoBehaviour, IInfoProviderT<InfoData_Default>

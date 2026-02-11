@@ -7,7 +7,7 @@ namespace Accelib.Module.UI.InfoBox.Default.Model
     {
         public string description;
         
-        public InfoData_Default(string desc) => description = desc;
+        public InfoData_Default(string desc = null) => description = desc;
         
         public override bool Equals(InfoDataBase other)
         {
