@@ -1,4 +1,4 @@
-﻿namespace Accelib.Reflection.Model
+﻿namespace Accelib.Reflection.Data
 {
     public enum ENumericType
     {

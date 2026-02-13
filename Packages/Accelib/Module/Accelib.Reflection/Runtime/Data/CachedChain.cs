@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Reflection;
 
-namespace Accelib.Reflection.Model
+namespace Accelib.Reflection.Data
 {
     [Serializable]
     public sealed class CachedChain

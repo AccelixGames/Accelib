@@ -1,0 +1,25 @@
+{
+  "name": "Accelib.OdinExtension",
+  "rootNamespace": "Accelib.OdinExtension",
+  "references": [
+    "R3.Unity"
+  ],
+  "includePlatforms": [
+    "Editor"
+  ],
+  "excludePlatforms": [],
+  "allowUnsafeCode": false,
+  "overrideReferences": true,
+  "precompiledReferences": [
+    "R3.dll",
+    "Sirenix.OdinInspector.Editor.dll",
+    "Sirenix.Utilities.Editor.dll",
+    "Sirenix.OdinInspector.Attributes.dll"
+  ],
+  "autoReferenced": true,
+  "defineConstraints": [
+    "ODIN_INSPECTOR"
+  ],
+  "versionDefines": [],
+  "noEngineReferences": false
+}
