@@ -11,6 +11,7 @@
 | **Accelib.Reflection** | 리플렉션 기반 멤버 접근 및 UI 바인딩. SO의 중첩 필드 경로를 드롭다운으로 선택, 캐시된 리플렉션으로 런타임 읽기 | Accelib.Preview | [README](Accelib.Reflection/README.md) |
 | **Accelib.Conditional** | 조건식 평가 시스템. 비교/논리 연산자로 규칙 기반 로직 구성. 인스펙터에서 조건 편집 및 텍스트 프리뷰 | Accelib.Reflection, Accelib.Preview, ZLinq, Collections | README 없음 |
 | **Accelib.OdinExtension** | R3 ReactiveProperty용 Odin Drawer. SerializableReactiveProperty 순수 값 편집 | R3, Odin Inspector | [README](Accelib.OdinExtension/README.md) |
+| **Accelib.R3Extension** | R3 Observable 확장 메서드. Delta() 등 자주 쓰는 연산자 조합 제공 | R3 | [README](Accelib.R3Extension/README.md) |
 
 ## 모듈 상세
 
@@ -34,6 +35,11 @@
 - **드로어:** `SerializableReactiveProperty<int/bool/float>` (편집)
 - **유틸리티:** `ReactivePropertyDrawerHelper` (ForceNotify 리플렉션 캐시)
 
+### Accelib.R3Extension
+- **경로:** `Accelib.R3Extension/`
+- **주요 클래스:** `ObservableExtension` (Delta 등 Observable 확장 메서드)
+- Runtime 전용 모듈. Odin 의존성 없음
+
 ## 의존성 그래프
 
 ```
@@ -44,6 +50,8 @@ Accelib.Preview (의존성 없음)
     │       └── Accelib.Conditional
     │
     └── Accelib.OdinExtension (R3, Odin 외부 의존)
+
+Accelib.R3Extension (R3 외부 의존, 독립)
 ```
 
 ## 코어 어셈블리

@@ -1,0 +1,18 @@
+{
+  "name": "Accelib.R3Extension",
+  "rootNamespace": "Accelib.R3Extension",
+  "references": [
+    "R3.Unity"
+  ],
+  "includePlatforms": [],
+  "excludePlatforms": [],
+  "allowUnsafeCode": false,
+  "overrideReferences": true,
+  "precompiledReferences": [
+    "R3.dll"
+  ],
+  "autoReferenced": true,
+  "defineConstraints": [],
+  "versionDefines": [],
+  "noEngineReferences": false
+}

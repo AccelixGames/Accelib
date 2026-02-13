@@ -122,13 +122,66 @@ Accelib.<ModuleName>/
 - **모듈 수정:** 요약/의존성이 변경된 경우 카탈로그 반영
 - **모듈 삭제:** 카탈로그에서 해당 모듈 제거, 의존성 그래프 업데이트
 
-### 체크리스트
+## 7. 패키지 루트 문서 업데이트
+
+Accelib 코드를 변경할 때 모듈 문서뿐 아니라 **패키지 루트 문서도 반드시 업데이트**한다.
+
+### 대상 파일
+| 파일 | 경로 | 업데이트 시점 |
+|------|------|-------------|
+| `CHANGELOG.md` | `Packages/Accelib/CHANGELOG.md` | **모든 변경 시** |
+| `README.md` | `Packages/Accelib/README.md` | 모듈 목록 등이 바뀐 경우 |
+| `package.json` | `Packages/Accelib/package.json` | **모든 변경 시** (버전 올림) |
+
+### CHANGELOG.md 형식 (Keep a Changelog 한국어)
+
+```markdown
+## [X.Y.Z] - YYYY-MM-DD
+
+### 추가
+- 새로운 기능
+
+### 변경
+- 기존 기능 변경
+
+### 수정
+- 버그 수정
+
+### 제거
+- 삭제된 기능
+
+### 폐기 예정
+- 곧 제거될 기능
+
+### 보안
+- 보안 취약점 해결
+```
+
+- 형식: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) 기반
+- 버전: [Semantic Versioning](https://semver.org/spec/v2.0.0.html) 준수
+- 최신 버전을 맨 위에 배치
+- 날짜: ISO 8601 형식 (`YYYY-MM-DD`)
+
+### 버전 관리 규칙
+- **커밋 전까지 동일 버전 유지** — 여러 변경이 있어도 하나의 버전으로 모은다
+- **커밋 시** — CHANGELOG 내용을 참고하여 커밋 메시지 작성
+- **커밋 완료 후** — 다음 작업부터 새 버전 번호 사용
+
+## 8. 최종 체크리스트
+
 모듈 작업 완료 후 다음을 확인한다:
-1. [ ] 모듈 README.md 업데이트
-2. [ ] 모듈 CHANGELOG.md 업데이트
+
+### 모듈 레벨
+1. [ ] 모듈 `README.md` 업데이트
+2. [ ] 모듈 `CHANGELOG.md` 업데이트
 3. [ ] `MODULE_CATALOG.md` 업데이트
 
-## 7. 기존 모듈 참고
+### 패키지 루트
+4. [ ] 루트 `CHANGELOG.md` 업데이트
+5. [ ] 루트 `README.md` 업데이트 (필요 시)
+6. [ ] `package.json` 버전 업데이트
+
+## 9. 기존 모듈 참고
 
 | 모듈 | 특징 |
 |------|------|
