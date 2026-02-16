@@ -1,4 +1,6 @@
 using Accelib.Module.Localization.Model;
+using Accelib.UI.Popup.Runtime.Layer.Base;
+using Cysharp.Threading.Tasks;
 using Sirenix.OdinInspector;
 using UnityEngine;
 
@@ -28,6 +30,19 @@ namespace Accelib.UI.Popup.Runtime.Data
         public void SetParams(params object[] param)
         {
             DescParams = param;
+        }
+
+        public async UniTask<LayerPopup_Modal.Result> OpenAsync(params object[] param)
+        {
+            SetParams(param);
+
+            var instance = PopupSingleton.Instance;
+            if (instance == null)
+            {
+                Debug.LogError("PopupSingleton instance is null", this);
+                return LayerPopup_Modal.Result.Exception;
+            }
+            return await PopupSingleton.Instance.OpenModalAsync(this);
         }
     }
 }

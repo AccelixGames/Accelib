@@ -21,7 +21,7 @@ namespace Accelib.UI.Popup.Runtime.Utility
         [Button]
         public async void Open()
         {
-            var result = await PopupSingleton.Instance.OpenModal(option);
+            var result = await PopupSingleton.Instance.OpenModalAsync(option);
 
             if (result == LayerPopup_Modal.Result.OK)
                 onOK?.Invoke();

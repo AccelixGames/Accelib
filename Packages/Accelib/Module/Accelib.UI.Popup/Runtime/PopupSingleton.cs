@@ -79,7 +79,7 @@ namespace Accelib.UI.Popup.Runtime
         /// <summary>
         /// 모달 팝업을 연다.
         /// </summary>
-        public async UniTask<LayerPopup_Modal.Result> OpenModal(IModalOptionProvider option)
+        public async UniTask<LayerPopup_Modal.Result> OpenModalAsync(IModalOptionProvider option)
         {
             if (modalPopup.gameObject.activeSelf)
             {

@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Accelib.Core;
 using Accelib.Module.Localization.Architecture;
+using Accelib.Module.Localization.Model;
 using Sirenix.OdinInspector;
 using UnityEngine;
 
@@ -127,6 +128,8 @@ namespace Accelib.Module.Localization
             inst.Internal_ChangeLanguage(language);
         }
 
+        public static string GetLocalizedString(LocaleKey locale, Object ctx = null) => GetLocalizedString(locale.key, ctx);
+        
         /// <summary>키값에 알맞는 로컬라이징 문자열을 가져온다.</summary>
         public static string GetLocalizedString(string key, Object ctx = null)
         {
