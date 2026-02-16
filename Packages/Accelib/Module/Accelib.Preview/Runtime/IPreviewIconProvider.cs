@@ -1,4 +1,4 @@
-#if ODIN_INSPECTOR
+﻿//#if ODIN_INSPECTOR
 using Sirenix.OdinInspector;
 
 namespace Accelib.Preview
@@ -9,4 +9,4 @@ namespace Accelib.Preview
         public SdfIconType EditorPreviewIcon { get; }
     }
 }
-#endif
+//#endif

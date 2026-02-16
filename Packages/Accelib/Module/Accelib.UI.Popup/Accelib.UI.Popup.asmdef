@@ -2,20 +2,22 @@
   "name": "Accelib.UI.Popup",
   "rootNamespace": "Accelib.Module.UI.Popup",
   "references": [
-    "Accelib.Runtime",
-    "Accelib.InputState",
     "UniTask",
     "Unity.TextMeshPro",
-    "NaughtyAttributes.Core",
     "UnityAtoms.UnityAtomsBaseAtoms.Runtime",
     "UnityAtoms.UnityAtomsCore.Runtime",
-    "Unity.VisibleEnum.Runtime"
+    "Unity.VisibleEnum.Runtime",
+    "Accelib.Core",
+    "Accelib.Flag",
+    "Accelib.Localization"
   ],
   "includePlatforms": [],
   "excludePlatforms": [],
   "allowUnsafeCode": false,
   "overrideReferences": false,
-  "precompiledReferences": [],
+  "precompiledReferences": [
+    "Sirenix.OdinInspector.Attributes.dll"
+  ],
   "autoReferenced": true,
   "defineConstraints": [],
   "versionDefines": [],

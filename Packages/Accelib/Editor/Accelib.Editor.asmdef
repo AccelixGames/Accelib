@@ -17,7 +17,9 @@
         "ZLinq.Unity.UnityCollectoins",
         "Unity.Addressables",
         "Unity.Addressables.Editor",
-        "Accelib.Preview"
+        "Accelib.Preview",
+        "Accelib.Localization",
+        "Accelib.Core"
     ],
     "includePlatforms": [
         "Editor"

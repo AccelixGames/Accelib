@@ -1,4 +1,4 @@
-{
+﻿{
   "name": "Accelib.Conditional",
   "rootNamespace": "Accelib.Conditional",
   "references": [
@@ -16,9 +16,6 @@
     "Sirenix.OdinInspector.Attributes.dll"
   ],
   "autoReferenced": true,
-  "defineConstraints": [
-    "ODIN_INSPECTOR"
-  ],
   "versionDefines": [],
   "noEngineReferences": false
 }

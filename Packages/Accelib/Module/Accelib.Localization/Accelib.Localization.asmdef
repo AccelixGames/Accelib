@@ -1,0 +1,21 @@
+{
+  "name": "Accelib.Localization",
+  "rootNamespace": "Accelib.Module.Localization",
+  "references": [
+    "Accelib.Core",
+    "Accelib.Extensions",
+    "Unity.TextMeshPro",
+    "AYellowpaper.SerializedCollections"
+  ],
+  "includePlatforms": [],
+  "excludePlatforms": [],
+  "allowUnsafeCode": false,
+  "overrideReferences": true,
+  "precompiledReferences": [
+    "Sirenix.OdinInspector.Attributes.dll"
+  ],
+  "autoReferenced": true,
+  "defineConstraints": [],
+  "versionDefines": [],
+  "noEngineReferences": false
+}

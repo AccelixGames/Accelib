@@ -17,7 +17,6 @@
         "NintendoSDK",
         "Febucci.TextAnimator.Runtime",
         "Febucci.TextAnimator.TMP.Runtime",
-        "Accelib.AccelixWeb",
         "Unity.Services.Analytics",
         "Unity.Services.Core",
         "Unity.Services.Core.Environments",
@@ -28,7 +27,13 @@
         "ZLinq.Unity.UnityCollectoins",
         "Unity.Collections",
         "Unity.InputSystem",
-        "Accelib.Preview"
+        "Accelib.AccelixWeb",
+        "Accelib.Preview",
+        "Accelib.UI.Transition",
+        "Accelib.Flag",
+        "Accelib.Core",
+        "Accelib.Localization",
+        "Accelib.Extensions"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

@@ -2,6 +2,27 @@
 
 이 문서는 Accelib.UI.Popup 모듈의 주요 변경 내역을 기록한다.
 
+## [0.3.0] - 2026-02-16
+
+### 변경
+- `LayerPopup_Modal`을 `abstract` 베이스 클래스로 변환
+  - `SetText`를 `protected abstract` 메서드로 분리
+  - SerializeField 접근 제한자 `private` → `protected` 변경
+- `ModalOpenOption`에서 `useLocale` 필드 제거
+
+### 추가
+- `LayerPopup_PlainModal` — 일반 텍스트 모달 다이얼로그
+- `LayerPopup_LocalizedModal` — 로컬라이제이션 키 기반 모달 다이얼로그
+- asmdef 참조: `Accelib.Localization` 추가
+
+## [0.2.0] - 2026-02-16
+
+### 변경
+- `PopupSingleton`의 `SO_InputState inputLock` → `SO_TokenFlag showCursor`로 변경
+  - `Accelib.Flag` 모듈 이름 변경에 따른 참조 업데이트
+  - 토큰 타입 `gameObject` → `this` (MonoBehaviour) 변경
+- asmdef 참조: `Accelib.InputState` → `Accelib.Flag`
+
 ## [0.1.0] - 2026-02-16
 
 ### 추가

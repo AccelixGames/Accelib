@@ -1,0 +1,22 @@
+{
+    "name": "Accelib.UI.Transition",
+    "rootNamespace": "Accelib.Module.Transition",
+    "references": [
+        "Accelib.Core",
+        "DOTween.Modules",
+        "Accelib.Flag",
+        "UniTask.DOTween"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": true,
+    "precompiledReferences": [
+        "Sirenix.OdinInspector.Attributes.dll",
+        "DOTween.dll"
+    ],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

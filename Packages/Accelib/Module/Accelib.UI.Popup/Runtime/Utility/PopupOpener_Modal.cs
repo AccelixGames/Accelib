@@ -1,6 +1,6 @@
 ﻿using Accelib.Module.UI.Popup.Data;
 using Accelib.Module.UI.Popup.Layer;
-using NaughtyAttributes;
+using Sirenix.OdinInspector;
 using UnityEngine;
 using UnityEngine.Events;
 

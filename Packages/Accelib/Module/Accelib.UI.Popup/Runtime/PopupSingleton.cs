@@ -1,25 +1,21 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using Accelib.Core;
-using Accelib.InputState;
+using Accelib.Flag;
 using Accelib.Logging;
 using Accelib.Module.UI.Popup.Data;
 using Accelib.Module.UI.Popup.Layer;
 using Accelib.Module.UI.Popup.Layer.Base;
 using Cysharp.Threading.Tasks;
-using NaughtyAttributes;
-using UnityAtoms.BaseAtoms;
+using Sirenix.OdinInspector;
 using UnityEngine;
-using UnityEngine.UI;
 
 namespace Accelib.Module.UI.Popup
 {
     public class PopupSingleton : MonoSingleton<PopupSingleton>
     {
         [Header("Var")]
-        [SerializeField] private BoolVariable isPaused;
-        [SerializeField] private SO_InputState inputState;
+        [SerializeField] private SO_TokenFlag showCursor;
 
         [Header("Base")]
         [SerializeField] private Canvas canvas;
@@ -34,7 +30,6 @@ namespace Accelib.Module.UI.Popup
 
         private void Start()
         {
-            isPaused.SetValue(false);
             canvas.gameObject.SetActive(false);
             modalPopup.gameObject.SetActive(false);
         }
@@ -78,8 +73,7 @@ namespace Accelib.Module.UI.Popup
             layerPopups.Add(layer);
             layer.OpenLayer(param);
 
-            isPaused.SetValue(true);
-            inputState?.Lock(gameObject);
+            showCursor?.Lock(this);
             return true;
         }
 
@@ -98,8 +92,7 @@ namespace Accelib.Module.UI.Popup
             dim.SetAsLastSibling();
             modalPopup.transform.SetAsLastSibling();
 
-            isPaused.SetValue(true);
-            inputState?.Lock(gameObject);
+            showCursor?.Lock(this);
             return await modalPopup.Open(option);
         }
         #endregion
@@ -152,7 +145,7 @@ namespace Accelib.Module.UI.Popup
         /// <summary>
         /// 마지막 레이어 팝업을 닫는다.
         /// </summary>
-        [Button(enabledMode: EButtonEnableMode.Playmode)]
+        [Button()]
         public bool CloseLastLayer()
         {
             if (layerPopups.Count > 0)
@@ -188,16 +181,16 @@ namespace Accelib.Module.UI.Popup
                 // 캔버스 닫기
                 canvas.gameObject.SetActive(false);
                 // 일시정지 해제
-                UnPause().Forget();
+                showCursor?.Unlock(this);
+                // UnPause().Forget();
             }
         }
 
-        private async UniTaskVoid UnPause()
-        {
-            await UniTask.DelayFrame(1);
-            isPaused.SetValue(false);
-            inputState?.Unlock(gameObject);
-        }
+        // private async UniTaskVoid UnPause()
+        // {
+        //     await UniTask.DelayFrame(1);
+        //     showCursor?.Unlock(this);
+        // }
         #endregion
 
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]

@@ -1,0 +1,27 @@
+{
+  "name": "Accelib.Localization.Editor",
+  "rootNamespace": "Accelib.Editor.Module.Localization",
+  "references": [
+    "Accelib.Runtime",
+    "Accelib.Localization",
+    "Accelib.Extensions",
+    "UniTask",
+    "Unity.TextMeshPro"
+  ],
+  "includePlatforms": [
+    "Editor"
+  ],
+  "excludePlatforms": [],
+  "allowUnsafeCode": false,
+  "overrideReferences": true,
+  "precompiledReferences": [
+    "Sirenix.OdinInspector.Attributes.dll",
+    "Sirenix.OdinInspector.Editor.dll",
+    "Sirenix.Utilities.dll",
+    "Sirenix.Utilities.Editor.dll"
+  ],
+  "autoReferenced": true,
+  "defineConstraints": [],
+  "versionDefines": [],
+  "noEngineReferences": false
+}
