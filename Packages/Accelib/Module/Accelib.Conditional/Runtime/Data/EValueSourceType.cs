@@ -1,7 +1,8 @@
-﻿using UnityEngine;
+using UnityEngine;
 
-namespace Accelib.Conditional.Definition
+namespace Accelib.Conditional.Data
 {
+    /// <summary> 값 소스 타입 </summary>
     public enum EValueSourceType
     {
         Integer = 0,

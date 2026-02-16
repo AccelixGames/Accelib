@@ -7,9 +7,9 @@
 
 | 모듈 | 요약 | 의존성 | README |
 |------|------|--------|--------|
-| **Accelib.Preview** | 프리뷰 이름/아이콘/서브에셋 인터페이스 정의 | (없음) | README 없음 (인터페이스 3개만 포함) |
+| **Accelib.Preview** | 프리뷰 이름/아이콘/서브에셋 인터페이스 정의 | Odin Inspector (조건부) | [README](Accelib.Preview/README.md) |
 | **Accelib.Reflection** | 리플렉션 기반 멤버 접근 및 UI 바인딩. SO의 중첩 필드 경로를 드롭다운으로 선택, 캐시된 리플렉션으로 런타임 읽기 | Accelib.Preview | [README](Accelib.Reflection/README.md) |
-| **Accelib.Conditional** | 조건식 평가 시스템. 비교/논리 연산자로 규칙 기반 로직 구성. 인스펙터에서 조건 편집 및 텍스트 프리뷰 | Accelib.Reflection, Accelib.Preview, ZLinq, Collections | README 없음 |
+| **Accelib.Conditional** | 조건식 평가 시스템. 비교/논리 연산자로 규칙 기반 로직 구성. 인스펙터에서 조건 편집 및 텍스트 프리뷰 | Accelib.Reflection, Accelib.Preview, Odin Inspector, ZLinq, Collections | [README](Accelib.Conditional/README.md) |
 | **Accelib.OdinExtension** | R3 ReactiveProperty용 Odin Drawer. SerializableReactiveProperty 순수 값 편집 | R3, Odin Inspector | [README](Accelib.OdinExtension/README.md) |
 | **Accelib.R3Extension** | R3 Observable 확장 메서드. Delta() 등 자주 쓰는 연산자 조합 제공 | R3 | [README](Accelib.R3Extension/README.md) |
 | **Accelib.Pool** | 오브젝트 풀링 (리소스/컴포넌트/프리팹) | Odin Inspector | [README](Accelib.Pool/README.md) |
@@ -20,8 +20,8 @@
 
 ### Accelib.Preview
 - **경로:** `Accelib.Preview/`
-- **인터페이스:** `IPreviewNameProvider` (이름), `IPreviewIconProvider` (Odin SdfIcon), `ISubAssetProvider` (서브에셋 목록)
-- 의존성 없는 최소 모듈. 다른 모듈들이 공통으로 참조함
+- **인터페이스:** `IPreviewNameProvider` (이름), `IPreviewIconProvider` (Odin SdfIcon, `#if ODIN_INSPECTOR`), `ISubAssetProvider` (서브에셋 목록)
+- Odin 조건부 의존 (`IPreviewIconProvider`만 Odin 필요). 다른 모듈들이 공통으로 참조함
 
 ### Accelib.Reflection
 - **경로:** `Accelib.Reflection/`
@@ -30,8 +30,10 @@
 
 ### Accelib.Conditional
 - **경로:** `Accelib.Conditional/`
-- **주요 클래스:** `Conditional` (조건 컨테이너, Evaluate()), `Condition` (좌/우 ValueProvider + 비교연산자), `ValueProvider` (리터럴/SO/MemberRef 값 소스), `SO_Conditional` (ScriptableObject 래퍼)
+- **주요 클래스:** `Conditional` (조건 컨테이너, Evaluate()), `Condition` (좌/우 ValueProvider + 비교연산자), `ValueProvider` (리터럴/SO/MemberRef 값 소스), `SO_Conditional` (ScriptableObject 래퍼), `SO_ValueProviderBase` (값 제공자 추상 베이스), `SO_PresetValue` (MemberRef 프리셋)
 - **연산자:** `EComparisonOperator` (==, !=, >, >=, <, <=), `ELogicalOperator` (And, Or)
+- **값 소스:** Integer/Double/Boolean 리터럴, ScriptableObject, Custom (MemberRef)
+- Odin Inspector 필수 의존 (`defineConstraints: ODIN_INSPECTOR`)
 
 ### Accelib.OdinExtension
 - **경로:** `Accelib.OdinExtension/`
@@ -63,11 +65,11 @@
 ## 의존성 그래프
 
 ```
-Accelib.Preview (의존성 없음)
+Accelib.Preview (Odin 조건부 의존)
     ↑
     ├── Accelib.Reflection
     │       ↑
-    │       └── Accelib.Conditional
+    │       └── Accelib.Conditional (Odin, ZLinq 외부 의존)
     │
     └── Accelib.OdinExtension (R3, Odin 외부 의존)
 

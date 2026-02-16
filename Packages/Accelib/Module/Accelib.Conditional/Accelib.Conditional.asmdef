@@ -1,4 +1,4 @@
-﻿{
+{
   "name": "Accelib.Conditional",
   "rootNamespace": "Accelib.Conditional",
   "references": [
@@ -7,5 +7,18 @@
     "ZLinq.Unity.UnityCollectoins",
     "Accelib.Reflection",
     "Accelib.Preview"
-  ]
+  ],
+  "includePlatforms": [],
+  "excludePlatforms": [],
+  "allowUnsafeCode": false,
+  "overrideReferences": true,
+  "precompiledReferences": [
+    "Sirenix.OdinInspector.Attributes.dll"
+  ],
+  "autoReferenced": true,
+  "defineConstraints": [
+    "ODIN_INSPECTOR"
+  ],
+  "versionDefines": [],
+  "noEngineReferences": false
 }

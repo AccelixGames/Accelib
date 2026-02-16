@@ -1,6 +1,6 @@
-﻿using UnityEngine;
+using UnityEngine;
 
-namespace Accelib.Conditional.Definition
+namespace Accelib.Conditional.Data
 {
     /// <summary> 논리 연산자 </summary>
     public enum ELogicalOperator

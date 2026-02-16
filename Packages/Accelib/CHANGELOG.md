@@ -5,6 +5,24 @@
 형식은 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/)를 기반으로 하며,
 [Semantic Versioning](https://semver.org/spec/v2.0.0.html)을 따른다.
 
+## [0.0.16] - 2026-02-16
+
+### 변경
+- `Accelib.Preview` 모듈 MODULE_RULES 표준 준수 리팩토링
+  - 폴더 구조 UPM 표준 재구성 (`Runtime/` 하위로 이동)
+  - asmdef 표준화 — Odin 의존성 명시 (`precompiledReferences`)
+  - `IPreviewIconProvider`를 `#if ODIN_INSPECTOR` 전처리기로 래핑
+  - 모든 인터페이스에 `<summary>` 주석 추가
+  - `README.md` 및 `CHANGELOG.md` 생성
+  - `MODULE_CATALOG.md` 업데이트
+- `Accelib.Conditional` 모듈 MODULE_RULES 표준 준수 개선
+  - 폴더 구조 UPM 표준 재구성 (`Runtime/`, `Runtime/Data/`, `Runtime/Utility/`)
+  - 네임스페이스 표준화 (`Definition` → `Data`, `Model`/`Scriptable` → 루트)
+  - asmdef에 Odin 의존성 명시 및 표준 필드 추가
+  - 모든 public/protected abstract 멤버에 XML 주석 추가
+  - `README.md` 및 `CHANGELOG.md` 생성
+  - `MODULE_CATALOG.md` 업데이트
+
 ## [0.0.15] - 2026-02-16
 
 ### 추가

@@ -1,9 +1,10 @@
-﻿using Accelib.Reflection;
+using Accelib.Reflection;
 using Sirenix.OdinInspector;
 using UnityEngine;
 
-namespace Accelib.Conditional.Scriptable
+namespace Accelib.Conditional
 {
+    /// <summary> MemberRef 기반 프리셋 값 제공자 </summary>
     [CreateAssetMenu(fileName = "(Value) Name", menuName = "Accelib/Conditional/PresetValue", order = 0)]
     public class SO_PresetValue : SO_ValueProviderBase
     {

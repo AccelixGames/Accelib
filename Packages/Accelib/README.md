@@ -6,7 +6,7 @@
 
 | 모듈 | 요약 | 의존성 |
 |------|------|--------|
-| **Accelib.Preview** | 프리뷰 이름/아이콘/서브에셋 인터페이스 정의 | (없음) |
+| **Accelib.Preview** | 프리뷰 이름/아이콘/서브에셋 인터페이스 정의 | Odin Inspector (조건부) |
 | **Accelib.Reflection** | 리플렉션 기반 멤버 접근 및 UI 바인딩 | Accelib.Preview |
 | **Accelib.Conditional** | 규칙 기반 조건식 평가 시스템 | Accelib.Reflection, Accelib.Preview, ZLinq, Collections |
 | **Accelib.OdinExtension** | R3 ReactiveProperty용 Odin Drawer | R3, Odin Inspector |

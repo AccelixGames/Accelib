@@ -1,5 +1,16 @@
-﻿{
+{
   "name": "Accelib.Preview",
   "rootNamespace": "Accelib.Preview",
-  "references": []
+  "references": [],
+  "includePlatforms": [],
+  "excludePlatforms": [],
+  "allowUnsafeCode": false,
+  "overrideReferences": true,
+  "precompiledReferences": [
+    "Sirenix.OdinInspector.Attributes.dll"
+  ],
+  "autoReferenced": true,
+  "defineConstraints": [],
+  "versionDefines": [],
+  "noEngineReferences": false
 }
