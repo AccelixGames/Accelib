@@ -10,7 +10,7 @@ namespace Accelib.Module.UI.Popup.Layer.Base
         public virtual bool HideOnLostFocus => true;
 
         public abstract string GetId();
-        
+
         internal void OpenLayer(object param)
         {
             OnPreOpen(param);
@@ -29,7 +29,7 @@ namespace Accelib.Module.UI.Popup.Layer.Base
             if(!(PopupSingleton.Instance?.OpenLayer(this, param) ?? false))
                 Deb.LogWarning($"팝업을 열지 못했습니다: {name}", this);
         }
-        
+
         [Button(enabledMode: EButtonEnableMode.Playmode)]
         public virtual void Open()
         {
@@ -43,7 +43,7 @@ namespace Accelib.Module.UI.Popup.Layer.Base
             if(!(PopupSingleton.Instance?.CloseLayer(this) ?? false))
                 Deb.LogWarning($"팝업을 닫지 못했습니다: {name}", this);
         }
-        
+
         [Button(enabledMode: EButtonEnableMode.Playmode)]
         public virtual void CloseWithId()
         {

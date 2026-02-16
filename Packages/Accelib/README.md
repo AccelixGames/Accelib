@@ -12,6 +12,8 @@
 | **Accelib.OdinExtension** | R3 ReactiveProperty용 Odin Drawer | R3, Odin Inspector |
 | **Accelib.R3Extension** | R3 Observable 확장 메서드 (Delta 등) | R3 |
 | **Accelib.Pool** | 오브젝트 풀링 (리소스/컴포넌트/프리팹) | Odin Inspector |
+| **Accelib.InputState** | 토큰 기반 입력 상태 관리 | (없음) |
+| **Accelib.UI.Popup** | 레이어 팝업 및 모달 다이얼로그 | Accelib.Runtime, Accelib.InputState, UniTask, Unity Atoms |
 
 상세 내용은 [MODULE_CATALOG.md](Module/MODULE_CATALOG.md) 참조.
 

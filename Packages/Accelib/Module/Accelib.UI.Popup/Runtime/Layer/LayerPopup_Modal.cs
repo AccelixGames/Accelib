@@ -17,20 +17,20 @@ namespace Accelib.Module.UI.Popup.Layer
         [SerializeField] private GameObject ngButtonObj;
 
         public enum Result {OK = 0, NG = 1, Exception = -1}
-        
+
         private UniTaskCompletionSource<Result> _ucs;
-        
+
         private void OnDisable() => _ucs?.TrySetResult(Result.Exception);
-        
+
         public UniTask<Result> Open(ModalOpenOption option)
         {
             gameObject.SetActive(true);
-            
+
             SetText(titleTMP, option.title, option.useLocale, null);
             SetText(descTMP, option.desc, option.useLocale, null, option.descParams);
             SetText(okButton, option.ok, option.useLocale, okButtonObj);
             SetText(ngButton, option.ng, option.useLocale, ngButtonObj);
-            
+
             _ucs?.TrySetResult(Result.Exception);
             _ucs = new UniTaskCompletionSource<Result>();
             _ucs.Task.AttachExternalCancellation(this.GetCancellationTokenOnDestroy());
@@ -53,12 +53,12 @@ namespace Accelib.Module.UI.Popup.Layer
             else
                 target.text = text;
         }
-          
+
         [VisibleEnum(typeof(Result))]
         public void OnClickResult(int result)
         {
             _ucs?.TrySetResult((Result)result);
-            
+
             if(PopupSingleton.Instance)
                 PopupSingleton.Instance.CloseModal();
             else

@@ -26,11 +26,18 @@ namespace Accelib.Pool
         private bool _isInitialized = false;
         public bool IsInitialized => _isInitialized;
 
+        /// <summary>
+        /// 풀을 초기화한다. 부모 Transform의 기존 자식을 자동으로 풀에 등록한다.
+        /// </summary>
+        /// <param name="onPooled">풀에서 꺼낼 때 콜백. null이면 기본값(SetActive + SetAsFirstSibling) 사용.</param>
+        /// <param name="onReleased">풀에 반환할 때 콜백. null이면 기본값(SetActive(false)) 사용.</param>
         public void Initialize(Action<T> onPooled = null, Action<T> onReleased = null)
         {
+            // 리스트 초기화
             _enabledList = new List<T>();
             _releasedList = new List<T>();
 
+            // 팩토리 및 콜백 설정
             New = () => Object.Instantiate(prefab, parent);
             OnPooled = onPooled ?? (x =>
             {
@@ -39,11 +46,14 @@ namespace Accelib.Pool
             });
             OnReleased = onReleased ?? (x => x.gameObject.SetActive(false));
 
+            // 부모 아래 기존 자식을 풀에 반환 상태로 등록
             foreach (var comp in parent.GetComponentsInChildren<T>())
                 base.Release(comp);
             _isInitialized = true;
         }
 
+        /// <summary>풀에서 인스턴스를 꺼내고 활성 목록에 추가한다.</summary>
+        /// <exception cref="InvalidOperationException">Initialize가 호출되지 않은 경우.</exception>
         public new T Get()
         {
             if (!_isInitialized) throw new InvalidOperationException(
@@ -54,17 +64,21 @@ namespace Accelib.Pool
             return comp;
         }
 
+        /// <summary>인스턴스를 풀에 반환한다. 활성 목록에 없는 객체는 무시된다.</summary>
         public new void Release(T comp)
         {
+            // 활성 목록에서 제거 실패 시 무시
             if (!_enabledList.Remove(comp)) return;
 
             base.Release(comp);
         }
 
+        /// <summary>모든 활성 인스턴스를 풀에 반환한다.</summary>
         public void ReleaseAll()
         {
             if (_enabledList == null) return;
 
+            // 활성 목록의 모든 인스턴스를 풀에 반환
             foreach (var behaviour in _enabledList)
                 if(behaviour != null)
                     base.Release(behaviour);

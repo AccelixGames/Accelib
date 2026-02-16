@@ -11,7 +11,7 @@ namespace Accelib.Module.UI.Popup.Layer
 
         public override bool AllowMultiInstance => allowMultiInstance;
         public override bool HideOnLostFocus => hideOnLostFocus;
-        
+
         public override string GetId() => popupID;
     }
 }

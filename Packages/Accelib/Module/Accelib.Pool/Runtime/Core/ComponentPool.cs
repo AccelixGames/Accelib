@@ -18,9 +18,12 @@ namespace Accelib.Pool
         public Action<T> OnPooled = null;
         public Action<T> OnReleased = null;
 
+        /// <summary>풀에서 객체를 꺼낸다. 풀이 비어 있으면 <see cref="New"/>로 생성한다.</summary>
         public T Get()
         {
             T pooled;
+
+            // 풀에서 꺼내기 시도, 없으면 새로 생성
             if (_releasedList.Count <= 0)
             {
                 pooled = New?.Invoke();
@@ -32,10 +35,12 @@ namespace Accelib.Pool
                 _releasedList.RemoveAt(index);
             }
 
+            // 꺼낸 후 콜백 호출
             OnPooled?.Invoke(pooled);
             return pooled;
         }
 
+        /// <summary>객체를 풀에 반환한다. 중복 반환은 무시된다.</summary>
         public void Release(T comp)
         {
             if (!_releasedList.Contains(comp))

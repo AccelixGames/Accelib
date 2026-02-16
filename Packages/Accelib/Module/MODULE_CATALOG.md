@@ -13,6 +13,8 @@
 | **Accelib.OdinExtension** | R3 ReactiveProperty용 Odin Drawer. SerializableReactiveProperty 순수 값 편집 | R3, Odin Inspector | [README](Accelib.OdinExtension/README.md) |
 | **Accelib.R3Extension** | R3 Observable 확장 메서드. Delta() 등 자주 쓰는 연산자 조합 제공 | R3 | [README](Accelib.R3Extension/README.md) |
 | **Accelib.Pool** | 오브젝트 풀링 (리소스/컴포넌트/프리팹) | Odin Inspector | [README](Accelib.Pool/README.md) |
+| **Accelib.InputState** | 토큰 기반 입력 상태 관리. GameObject를 토큰으로 사용하여 입력 잠금/해제 | (없음) | [README](Accelib.InputState/README.md) |
+| **Accelib.UI.Popup** | 레이어 팝업 및 모달 다이얼로그. 스택 기반 레이어 관리, 비동기 모달 패턴 | Accelib.Runtime, Accelib.InputState, UniTask, Unity Atoms | [README](Accelib.UI.Popup/README.md) |
 
 ## 모듈 상세
 
@@ -46,6 +48,18 @@
 - **주요 클래스:** `IPoolTarget` (풀 대상 인터페이스), `ResourcePool<T>` (Stack 기반 리소스 풀), `ComponentPool<T>` (델리게이트 구동 컴포넌트 풀), `PrefabPool<T>` (프리팹 전용 풀)
 - Odin Inspector 필수 의존 (`defineConstraints: ODIN_INSPECTOR`)
 
+### Accelib.InputState
+- **경로:** `Accelib.InputState/`
+- **주요 클래스:** `SO_InputState` (GameObject 토큰 기반 입력 잠금/해제 ScriptableObject)
+- 외부 의존성 없는 독립 모듈
+- **TODO:** 프로젝트 분석에 맞춰 기능 업그레이드 필요
+
+### Accelib.UI.Popup
+- **경로:** `Accelib.UI.Popup/`
+- **주요 클래스:** `PopupSingleton` (싱글톤 팝업 매니저), `LayerPopupBase` (추상 베이스), `LayerPopup_Default` (기본 레이어), `LayerPopup_Modal` (비동기 모달), `ModalOpenOption` (모달 설정), `PopupOpener_Modal` (UnityEvent 헬퍼)
+- `Accelib.Runtime`의 `Module.UI.Popup`에서 독립 모듈로 추출
+- `SO_InputState` 연동으로 팝업 열기/닫기 시 입력 잠금 자동 처리
+
 ## 의존성 그래프
 
 ```
@@ -60,6 +74,10 @@ Accelib.Preview (의존성 없음)
 Accelib.R3Extension (R3 외부 의존, 독립)
 
 Accelib.Pool (Odin 외부 의존, 독립)
+
+Accelib.InputState (의존성 없음, 독립)
+    ↑
+    └── Accelib.UI.Popup (Accelib.Runtime, UniTask, Unity Atoms 외부 의존)
 ```
 
 ## 코어 어셈블리

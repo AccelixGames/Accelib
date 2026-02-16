@@ -1,0 +1,23 @@
+{
+  "name": "Accelib.UI.Popup",
+  "rootNamespace": "Accelib.Module.UI.Popup",
+  "references": [
+    "Accelib.Runtime",
+    "Accelib.InputState",
+    "UniTask",
+    "Unity.TextMeshPro",
+    "NaughtyAttributes.Core",
+    "UnityAtoms.UnityAtomsBaseAtoms.Runtime",
+    "UnityAtoms.UnityAtomsCore.Runtime",
+    "Unity.VisibleEnum.Runtime"
+  ],
+  "includePlatforms": [],
+  "excludePlatforms": [],
+  "allowUnsafeCode": false,
+  "overrideReferences": false,
+  "precompiledReferences": [],
+  "autoReferenced": true,
+  "defineConstraints": [],
+  "versionDefines": [],
+  "noEngineReferences": false
+}

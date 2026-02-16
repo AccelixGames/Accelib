@@ -109,8 +109,41 @@ Accelib.<ModuleName>/
 - `Accelib.<ModuleName>.Utility` — 유틸리티
 - `Accelib.<ModuleName>.Editor.Drawer` — 에디터 드로어
 
-### XML 문서 주석
-- 모든 public/internal 클래스에 `<summary>` 작성
+### 주석 규칙
+
+#### 클래스/인터페이스
+- 모든 `public`/`internal` 클래스에 `<summary>` 작성
+
+#### 메서드
+- **`public` 메서드:** `<summary>` 필수. 필요 시 `<param>`, `<returns>`, `<exception>` 추가
+- **`protected abstract` 메서드:** `<summary>` 필수 (상속자 가이드 역할)
+- **`private`/`internal` 메서드:** 주석 불필요 (이름으로 의도를 전달)
+
+#### 변수/프로퍼티/필드
+- 주석 달지 않는다. 이름으로 의미를 전달한다.
+
+#### 메서드 내부
+- 큰 기능 단위로 `//` 한 줄 주석을 단다
+- "무엇을 하는지"가 아니라 "왜/어떤 단계인지"를 설명한다
+
+```csharp
+public void Initialize(Action<T> onPooled = null, Action<T> onReleased = null)
+{
+    // 리스트 초기화
+    _enabledList = new List<T>();
+    _releasedList = new List<T>();
+
+    // 팩토리 및 콜백 설정
+    New = () => Object.Instantiate(prefab, parent);
+    OnPooled = onPooled ?? (x => { ... });
+
+    // 부모 아래 기존 자식을 풀에 반환 상태로 등록
+    foreach (var comp in parent.GetComponentsInChildren<T>())
+        base.Release(comp);
+}
+```
+
+#### 언어
 - 한국어 또는 영어 (기존 코드 스타일 따름)
 
 ## 6. 모듈 카탈로그 업데이트

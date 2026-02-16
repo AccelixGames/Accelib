@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Accelib.Core;
+using Accelib.InputState;
 using Accelib.Logging;
 using Accelib.Module.UI.Popup.Data;
 using Accelib.Module.UI.Popup.Layer;
@@ -18,25 +19,26 @@ namespace Accelib.Module.UI.Popup
     {
         [Header("Var")]
         [SerializeField] private BoolVariable isPaused;
+        [SerializeField] private SO_InputState inputState;
 
         [Header("Base")]
         [SerializeField] private Canvas canvas;
         [SerializeField] private Transform dim;
-        
+
         [Header("Current")]
         [SerializeField] private LayerPopup_Modal modalPopup;
         [SerializeField, ReadOnly] private List<LayerPopupBase> layerPopups;
 
         public bool IsModalActive => modalPopup.gameObject.activeSelf;
         public int LayerCount => layerPopups.Count;
-        
+
         private void Start()
         {
             isPaused.SetValue(false);
             canvas.gameObject.SetActive(false);
             modalPopup.gameObject.SetActive(false);
         }
-        
+
         #region **** Open ****
         /// <summary>
         /// 레이어 팝업을 연다.
@@ -47,7 +49,7 @@ namespace Accelib.Module.UI.Popup
             if(modalPopup.gameObject.activeSelf)
                 // 실패
                 return false;
-            
+
             // 만약 동일한 창을 띄울 수 없다면,
             if (!prefab.AllowMultiInstance)
                 // 타입을 비교해서, 동일한 타입이 있다면,
@@ -57,29 +59,30 @@ namespace Accelib.Module.UI.Popup
                     // 실패
                     return false;
                 }
-            
+
             // 이전 팝업을 포커스 잃기
             if (layerPopups.Count > 0)
             {
                 var lastPopup = layerPopups[^1];
                 lastPopup.OnLostFocus();
-                if (lastPopup.HideOnLostFocus) 
+                if (lastPopup.HideOnLostFocus)
                     lastPopup.gameObject.SetActive(false);
             }
-            
+
             // 딤 위치 옮기기
             canvas.gameObject.SetActive(true);
             dim.transform.SetAsLastSibling();
-            
+
             // 레이어 생성 및 열기
             var layer = Instantiate(prefab, canvas.transform);
             layerPopups.Add(layer);
             layer.OpenLayer(param);
 
             isPaused.SetValue(true);
+            inputState?.Lock(gameObject);
             return true;
         }
-        
+
         /// <summary>
         /// 모달 팝업을 연다.
         /// </summary>
@@ -90,16 +93,17 @@ namespace Accelib.Module.UI.Popup
                 Deb.LogError("이미 모달이 열린 상태입니다.");
                 return LayerPopup_Modal.Result.Exception;
             }
-         
+
             canvas.gameObject.SetActive(true);
             dim.SetAsLastSibling();
             modalPopup.transform.SetAsLastSibling();
-            
+
             isPaused.SetValue(true);
+            inputState?.Lock(gameObject);
             return await modalPopup.Open(option);
         }
         #endregion
-        
+
         #region **** Close ***
         /// <summary>
         /// 레이어 팝업을 닫는다.
@@ -127,7 +131,7 @@ namespace Accelib.Module.UI.Popup
                 Deb.LogWarning("팝업 ID가 없어 닫을 수 없습니다.", this);
                 return false;
             }
-            
+
             var layer = layerPopups.Find(x => x.GetId() == targetId);
             return CloseLayer(layer);
         }
@@ -140,11 +144,11 @@ namespace Accelib.Module.UI.Popup
                 Deb.LogWarning("팝업 ID가 없어 닫을 수 없습니다.", target);
                 return false;
             }
-            
+
             var layer = layerPopups.Find(x => x.GetId() == target.GetId());
             return CloseLayer(layer);
         }
-        
+
         /// <summary>
         /// 마지막 레이어 팝업을 닫는다.
         /// </summary>
@@ -153,10 +157,10 @@ namespace Accelib.Module.UI.Popup
         {
             if (layerPopups.Count > 0)
                 return CloseLayer(layerPopups[^1]);
-            
+
             return false;
         }
-        
+
         // 모달을 닫는다.
         internal void CloseModal()
         {
@@ -174,7 +178,7 @@ namespace Accelib.Module.UI.Popup
                 var lastPopup = layerPopups[^1];
                 lastPopup.gameObject.SetActive(true);
                 lastPopup.OnRegainFocus();
-                
+
                 // 딤 위치 변경
                 dim.SetSiblingIndex(layerPopups.Count - 1);
             }
@@ -192,9 +196,10 @@ namespace Accelib.Module.UI.Popup
         {
             await UniTask.DelayFrame(1);
             isPaused.SetValue(false);
+            inputState?.Unlock(gameObject);
         }
         #endregion
-        
+
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
         private static void Init() => Initialize();
     }

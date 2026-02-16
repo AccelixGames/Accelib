@@ -14,3 +14,6 @@
 - ProjectMaid `Accelix.GameSystem.Utility.Pool`에서 이관, 네임스페이스를 `Accelib.Pool`로 변경
 - NaughtyAttributes 의존성 제거, Odin Inspector 기반으로 전환
 - `PrefabPool.Get()`의 예외 타입을 `NullReferenceException`에서 `InvalidOperationException`으로 변경
+
+### 문서
+- 모든 public/protected abstract 메서드 및 델리게이트 필드에 XML `<summary>` 주석 추가
