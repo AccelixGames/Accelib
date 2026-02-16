@@ -3,14 +3,13 @@ using System.Linq;
 using Accelib.Core;
 using Accelib.Flag;
 using Accelib.Logging;
-using Accelib.Module.UI.Popup.Data;
-using Accelib.Module.UI.Popup.Layer;
-using Accelib.Module.UI.Popup.Layer.Base;
+using Accelib.UI.Popup.Runtime.Data;
+using Accelib.UI.Popup.Runtime.Layer.Base;
 using Cysharp.Threading.Tasks;
 using Sirenix.OdinInspector;
 using UnityEngine;
 
-namespace Accelib.Module.UI.Popup
+namespace Accelib.UI.Popup.Runtime
 {
     public class PopupSingleton : MonoSingleton<PopupSingleton>
     {
@@ -76,11 +75,11 @@ namespace Accelib.Module.UI.Popup
             showCursor?.Lock(this);
             return true;
         }
-
+        
         /// <summary>
         /// 모달 팝업을 연다.
         /// </summary>
-        public async UniTask<LayerPopup_Modal.Result> OpenModal(ModalOpenOption option)
+        public async UniTask<LayerPopup_Modal.Result> OpenModal(IModalOptionProvider option)
         {
             if (modalPopup.gameObject.activeSelf)
             {

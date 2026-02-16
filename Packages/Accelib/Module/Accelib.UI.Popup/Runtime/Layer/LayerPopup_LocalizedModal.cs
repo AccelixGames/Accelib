@@ -1,9 +1,10 @@
 using Accelib.Module.Localization.Helper;
-using Accelib.Module.UI.Popup.Data;
+using Accelib.UI.Popup.Runtime.Data;
+using Accelib.UI.Popup.Runtime.Layer.Base;
 using Sirenix.OdinInspector;
 using UnityEngine;
 
-namespace Accelib.Module.UI.Popup.Layer
+namespace Accelib.UI.Popup.Runtime.Layer
 {
     /// <summary>
     /// 로컬라이제이션 키 기반 모달 다이얼로그.
@@ -19,13 +20,13 @@ namespace Accelib.Module.UI.Popup.Layer
         [TitleGroup("버튼")]
         [SerializeField] private LocalizedTMP ngButton;
 
-        protected override void ApplyOption(ModalOpenOption option)
+        protected override void ApplyOption(IModalOptionProvider option)
         {
-            titleTMP.ChangeKey(option.title);
-            descTMP.ChangeKey(option.desc, option.descParams);
+            titleTMP.ChangeKey(option.Title);
+            descTMP.ChangeKey(option.Desc, option.DescParams);
 
-            if (okButtonObj && okButtonObj.activeSelf) okButton.ChangeKey(option.ok);
-            if (ngButtonObj && ngButtonObj.activeSelf) ngButton.ChangeKey(option.ng);
+            if (okButtonObj && okButtonObj.activeSelf) okButton.ChangeKey(option.Ok);
+            if (ngButtonObj && ngButtonObj.activeSelf) ngButton.ChangeKey(option.Ng);
         }
     }
 }

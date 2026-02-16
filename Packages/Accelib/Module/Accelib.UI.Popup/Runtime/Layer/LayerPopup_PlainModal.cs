@@ -1,9 +1,10 @@
-using Accelib.Module.UI.Popup.Data;
+using Accelib.UI.Popup.Runtime.Data;
+using Accelib.UI.Popup.Runtime.Layer.Base;
 using Sirenix.OdinInspector;
 using TMPro;
 using UnityEngine;
 
-namespace Accelib.Module.UI.Popup.Layer
+namespace Accelib.UI.Popup.Runtime.Layer
 {
     /// <summary>
     /// 일반 텍스트 모달 다이얼로그.
@@ -19,13 +20,13 @@ namespace Accelib.Module.UI.Popup.Layer
         [TitleGroup("버튼")]
         [SerializeField] private TMP_Text ngButton;
 
-        protected override void ApplyOption(ModalOpenOption option)
+        protected override void ApplyOption(IModalOptionProvider option)
         {
-            titleTMP.text = option.title;
-            descTMP.text = option.desc;
+            titleTMP.text = option.Title;
+            descTMP.text = option.Desc;
 
-            if (okButtonObj && okButtonObj.activeSelf) okButton.text = option.ok;
-            if (ngButtonObj && ngButtonObj.activeSelf) ngButton.text = option.ng;
+            if (okButtonObj && okButtonObj.activeSelf) okButton.text = option.Ok;
+            if (ngButtonObj && ngButtonObj.activeSelf) ngButton.text = option.Ng;
         }
     }
 }

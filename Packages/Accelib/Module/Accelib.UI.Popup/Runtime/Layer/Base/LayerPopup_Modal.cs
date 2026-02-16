@@ -1,10 +1,9 @@
-using Accelib.Module.UI.Popup.Data;
-using Accelib.Module.UI.Popup.Layer.Base;
+using Accelib.UI.Popup.Runtime.Data;
 using Cysharp.Threading.Tasks;
 using Sirenix.OdinInspector;
 using UnityEngine;
 
-namespace Accelib.Module.UI.Popup.Layer
+namespace Accelib.UI.Popup.Runtime.Layer.Base
 {
     /// <summary>
     /// 비동기 모달 다이얼로그의 추상 베이스 클래스.
@@ -22,13 +21,13 @@ namespace Accelib.Module.UI.Popup.Layer
 
         private void OnDisable() => _ucs?.TrySetResult(Result.Exception);
 
-        public UniTask<Result> Open(ModalOpenOption option)
+        public UniTask<Result> Open(IModalOptionProvider option)
         {
             gameObject.SetActive(true);
 
             // 버튼 오브젝트 활성화/비활성화
-            if (okButtonObj) okButtonObj.SetActive(!string.IsNullOrEmpty(option.ok));
-            if (ngButtonObj) ngButtonObj.SetActive(!string.IsNullOrEmpty(option.ng));
+            if (okButtonObj) okButtonObj.SetActive(!string.IsNullOrEmpty(option.Ok));
+            if (ngButtonObj) ngButtonObj.SetActive(!string.IsNullOrEmpty(option.Ng));
 
             // 서브클래스에서 텍스트 설정
             ApplyOption(option);
@@ -42,7 +41,7 @@ namespace Accelib.Module.UI.Popup.Layer
         /// <summary>
         /// 모달 옵션을 적용한다. 서브클래스에서 텍스트 설정 방식을 결정한다.
         /// </summary>
-        protected abstract void ApplyOption(ModalOpenOption option);
+        protected abstract void ApplyOption(IModalOptionProvider option);
 
         [VisibleEnum(typeof(Result))]
         public void OnClickResult(int result)

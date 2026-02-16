@@ -10,7 +10,8 @@
 - 토큰 타입 변경: `GameObject` → `MonoBehaviour`
 - 프로퍼티 이름 변경: `IsLocked` → `IsActive`
 - 네임스페이스 변경: `Accelib.InputState` → `Accelib.Flag`
-- Odin Inspector 의존성 제거 (ShowInInspector/ReadOnly 어트리뷰트 제거)
+- `_lockTokens`에 `[ShowInInspector, ReadOnly]` 추가 (디버깅용 인스펙터 표시)
+- Odin Inspector 의존성: 제거 → 디버깅용으로 재추가
 
 ## [0.1.0] - 2026-02-16
 

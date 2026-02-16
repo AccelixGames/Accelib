@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Sirenix.OdinInspector;
 using UnityEngine;
 
 namespace Accelib.Flag
@@ -11,7 +12,7 @@ namespace Accelib.Flag
     [CreateAssetMenu(menuName = "Accelib/TokenFlag")]
     public class SO_TokenFlag : ScriptableObject
     {
-        private readonly HashSet<MonoBehaviour> _lockTokens = new();
+        [ShowInInspector, ReadOnly] private readonly HashSet<MonoBehaviour> _lockTokens = new();
 
         /// <summary>활성 상태인지 여부. 하나 이상의 토큰이 잠금 중이면 true.</summary>
         public bool IsActive => _lockTokens.Count > 0;

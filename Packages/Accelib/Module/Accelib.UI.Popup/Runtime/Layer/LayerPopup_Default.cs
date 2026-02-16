@@ -1,7 +1,7 @@
-﻿using Accelib.Module.UI.Popup.Layer.Base;
+﻿using Accelib.UI.Popup.Runtime.Layer.Base;
 using UnityEngine;
 
-namespace Accelib.Module.UI.Popup.Layer
+namespace Accelib.UI.Popup.Runtime.Layer
 {
     public class LayerPopup_Default : LayerPopupBase
     {

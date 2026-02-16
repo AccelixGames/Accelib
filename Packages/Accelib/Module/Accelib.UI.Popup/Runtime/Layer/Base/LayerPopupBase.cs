@@ -2,7 +2,7 @@
 using Sirenix.OdinInspector;
 using UnityEngine;
 
-namespace Accelib.Module.UI.Popup.Layer.Base
+namespace Accelib.UI.Popup.Runtime.Layer.Base
 {
     public abstract class LayerPopupBase : MonoBehaviour
     {

@@ -4,17 +4,25 @@
 
 ## [0.3.0] - 2026-02-16
 
-### 변경
-- `LayerPopup_Modal`을 `abstract` 베이스 클래스로 변환
-  - TMP_Text/GameObject SerializeField를 베이스에서 제거
-  - `ApplyOption(ModalOpenOption)` abstract 메서드로 텍스트 설정 위임
-  - 각 서브클래스가 자체 필드를 소유하도록 구조 변경
-- `ModalOpenOption`에서 `useLocale` 필드 제거
-
 ### 추가
-- `LayerPopup_PlainModal` — 일반 텍스트 모달 (`TMP_Text` SerializeField 직접 소유)
-- `LayerPopup_LocalizedModal` — 로컬라이제이션 모달 (`LocalizedTMP` SerializeField 직접 소유)
+- `IModalOptionProvider` 인터페이스 — 모달 옵션 공통 계약
+- `SO_ModalOpenOption` — 일반 텍스트 모달 옵션 SO
+- `SO_ModalOpenOptionLocalized` — 로컬라이제이션 모달 옵션 SO
+- `LayerPopup_PlainModal` — 일반 텍스트 모달 (`TMP_Text` 직접 소유)
+- `LayerPopup_LocalizedModal` — 로컬라이제이션 모달 (`LocalizedTMP` 직접 소유)
 - asmdef 참조: `Accelib.Localization` 추가
+
+### 변경
+- `ModalOpenOption`/`ModalOpenOptionBase` → `IModalOptionProvider` 인터페이스로 전환
+- `LayerPopup_Modal.Open()`/`ApplyOption()`: `ModalOpenOption` → `IModalOptionProvider`
+- `PopupSingleton.OpenModal()`: `ModalOpenOption` → `IModalOptionProvider`
+- `PopupOpener_Modal` 필드: `ModalOpenOption` → `SO_ModalOpenOption`
+- `LayerPopup_Modal`을 `abstract` 베이스 클래스로 변환
+- 네임스페이스: `Accelib.Module.UI.Popup.*` → `Accelib.UI.Popup.Runtime.*`
+- asmdef `rootNamespace`: `Accelib.Module.UI.Popup` → `Accelib.UI.Popup`
+
+### 제거
+- `ModalOpenOption`, `ModalOpenOptionBase` 클래스 삭제
 
 ## [0.2.0] - 2026-02-16
 

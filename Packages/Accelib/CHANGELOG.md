@@ -39,6 +39,10 @@
   - 폴더 구조·네임스페이스 표준화, XML 주석 추가
 - `PopupSingleton`의 `isPaused`/`SO_InputState` → `SO_TokenFlag showCursor`로 변경
 - `ModalOpenOption`에서 `useLocale` 필드 제거
+- `Accelib.UI.Popup` — `ModalOpenOption`/`ModalOpenOptionBase` → `IModalOptionProvider` 인터페이스로 전환
+- `Accelib.UI.Popup` — 네임스페이스 `Accelib.Module.UI.Popup.*` → `Accelib.UI.Popup.Runtime.*` 변경
+- `Accelib.UI.Popup` — `SO_ModalOpenOption`, `SO_ModalOpenOptionLocalized` SO 추가
+- `Accelib.Flag` — `SO_TokenFlag._lockTokens`에 `[ShowInInspector, ReadOnly]` 추가 (디버깅용)
 - `LocalizedTypewriter` 주석 처리 (Febucci TextAnimator 의존성 제거)
 - `EditorObjectField` 네임스페이스 통일
 - `Accelib.Runtime` asmdef에 신규 모듈 참조 추가

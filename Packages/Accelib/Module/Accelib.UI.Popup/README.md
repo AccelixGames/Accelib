@@ -13,7 +13,9 @@ Accelib.UI.Popup/
 └── Runtime/
     ├── PopupSingleton.cs           # 싱글톤 팝업 매니저
     ├── Data/
-    │   └── ModalOpenOption.cs      # 모달 설정 데이터
+    │   ├── IModalOptionProvider.cs        # 모달 옵션 인터페이스
+    │   ├── SO_ModalOpenOption.cs          # 일반 텍스트 모달 옵션 SO
+    │   └── SO_ModalOpenOptionLocalized.cs # 로컬라이제이션 모달 옵션 SO
     ├── Layer/
     │   ├── Base/
     │   │   ├── LayerPopupBase.cs   # 추상 레이어 팝업 베이스
@@ -32,7 +34,7 @@ Accelib.UI.Popup/
 `MonoSingleton<PopupSingleton>` 기반 팝업 매니저. 캔버스 위에 레이어/모달을 관리한다.
 
 - `OpenLayer(LayerPopupBase prefab, object param)` — 레이어 팝업 열기. 딤 위치 자동 관리
-- `OpenModal(ModalOpenOption option)` — 비동기 모달 열기. `UniTask<Result>` 반환
+- `OpenModal(IModalOptionProvider option)` — 비동기 모달 열기. `UniTask<Result>` 반환
 - `CloseLayer(LayerPopupBase target)` — 특정 레이어 닫기
 - `CloseLastLayer()` — 최상위 레이어 닫기
 - `IsModalActive` — 모달 활성 여부
@@ -54,8 +56,8 @@ Accelib.UI.Popup/
 비동기 모달 다이얼로그의 추상 베이스 클래스. `UniTaskCompletionSource<Result>`로 결과 대기.
 UI 필드는 베이스에 없으며, 각 서브클래스가 자체 필드를 소유한다.
 
-- `Open(ModalOpenOption option)` — 모달 열기, `UniTask<Result>` 반환
-- `ApplyOption(ModalOpenOption)` — **abstract**, 서브클래스에서 텍스트 설정 방식 결정
+- `Open(IModalOptionProvider option)` — 모달 열기, `UniTask<Result>` 반환
+- `ApplyOption(IModalOptionProvider)` — **abstract**, 서브클래스에서 텍스트 설정 방식 결정
 - `OnClickResult(int result)` — 버튼 onClick에서 호출
 - `Result` — `OK(0)`, `NG(1)`, `Exception(-1)`
 
@@ -67,46 +69,40 @@ UI 필드는 베이스에 없으며, 각 서브클래스가 자체 필드를 소
 
 로컬라이제이션 키 기반 모달. `LocalizedTMP` SerializeField를 직접 소유하고 `ChangeKey()`를 통해 텍스트를 설정한다.
 
-### ModalOpenOption
+### IModalOptionProvider
 
-모달 설정 데이터 클래스.
+모달 옵션 공통 인터페이스. `Title`, `Desc`, `DescParams`, `Ok`, `Ng` 프로퍼티를 정의한다.
 
-- `title`, `desc` — 제목 및 설명 텍스트/키
-- `descParams` — 설명 포맷 파라미터
-- `ok`, `ng` — 확인/취소 버튼 텍스트/키
+### SO_ModalOpenOption
+
+일반 텍스트 기반 모달 옵션 ScriptableObject. `IModalOptionProvider` 구현.
+
+### SO_ModalOpenOptionLocalized
+
+로컬라이제이션 키 기반 모달 옵션 ScriptableObject. `LocaleKey`를 사용하며 `IModalOptionProvider` 구현.
 
 ### PopupOpener_Modal
 
-UnityEvent 기반 모달 헬퍼. 인스펙터에서 `ModalOpenOption` 설정 후 `onOK`/`onNG` 이벤트 바인딩.
+UnityEvent 기반 모달 헬퍼. 인스펙터에서 `SO_ModalOpenOption` 설정 후 `onOK`/`onNG` 이벤트 바인딩.
 
 ## 사용 예시
 
 ```csharp
-// 일반 텍스트 모달 (LayerPopup_PlainModal 사용)
-var option = new ModalOpenOption
-{
-    title = "확인",
-    desc = "정말 진행하시겠습니까?",
-    ok = "예",
-    ng = "아니요"
-};
+// SO 에셋을 인스펙터에서 연결
+[SerializeField] private SO_ModalOpenOption confirmOption;
 
-var result = await PopupSingleton.Instance.OpenModal(option);
+// 모달 열기
+var result = await PopupSingleton.Instance.OpenModal(confirmOption);
 if (result == LayerPopup_Modal.Result.OK)
 {
     // 확인 처리
 }
 
-// 로컬라이제이션 모달 (LayerPopup_LocalizedModal 사용)
-var option = new ModalOpenOption
-{
-    title = "modal_confirm_title",
-    desc = "modal_confirm_desc",
-    ok = "common_ok",
-    ng = "common_cancel"
-};
+// 로컬라이제이션 모달 (SO_ModalOpenOptionLocalized 사용)
+[SerializeField] private SO_ModalOpenOptionLocalized localizedOption;
 
-var result = await PopupSingleton.Instance.OpenModal(option);
+localizedOption.SetParams("아이템 이름");
+var result = await PopupSingleton.Instance.OpenModal(localizedOption);
 ```
 
 ## 의존성
@@ -124,9 +120,9 @@ var result = await PopupSingleton.Instance.OpenModal(option);
 ## 네임스페이스
 
 ```
-Accelib.Module.UI.Popup                 — PopupSingleton
-Accelib.Module.UI.Popup.Data            — ModalOpenOption
-Accelib.Module.UI.Popup.Layer.Base      — LayerPopupBase
-Accelib.Module.UI.Popup.Layer           — LayerPopup_Default, LayerPopup_Modal, LayerPopup_PlainModal, LayerPopup_LocalizedModal
-Accelib.Module.UI.Popup.Utility         — PopupOpener_Modal
+Accelib.UI.Popup.Runtime               — PopupSingleton
+Accelib.UI.Popup.Runtime.Data          — IModalOptionProvider, SO_ModalOpenOption, SO_ModalOpenOptionLocalized
+Accelib.UI.Popup.Runtime.Layer.Base    — LayerPopupBase, LayerPopup_Modal
+Accelib.UI.Popup.Runtime.Layer         — LayerPopup_Default, LayerPopup_PlainModal, LayerPopup_LocalizedModal
+Accelib.UI.Popup.Runtime.Utility       — PopupOpener_Modal
 ```

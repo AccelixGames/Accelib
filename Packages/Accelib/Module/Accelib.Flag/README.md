@@ -51,7 +51,7 @@ showCursor.OnStateChanged += isActive =>
 
 | 패키지 | 용도 |
 |--------|------|
-| (없음) | 외부 의존성 없음 |
+| `Odin Inspector` | 디버깅용 인스펙터 표시 (ShowInInspector) |
 
 ## 네임스페이스
 

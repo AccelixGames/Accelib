@@ -1,6 +1,6 @@
 {
   "name": "Accelib.UI.Popup",
-  "rootNamespace": "Accelib.Module.UI.Popup",
+  "rootNamespace": "Accelib.UI.Popup",
   "references": [
     "UniTask",
     "Unity.TextMeshPro",
