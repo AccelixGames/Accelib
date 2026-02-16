@@ -1,5 +1,6 @@
 using Accelib.Module.Localization.Helper;
 using Accelib.Module.UI.Popup.Data;
+using Sirenix.OdinInspector;
 using UnityEngine;
 
 namespace Accelib.Module.UI.Popup.Layer
@@ -9,30 +10,22 @@ namespace Accelib.Module.UI.Popup.Layer
     /// </summary>
     public sealed class LayerPopup_LocalizedModal : LayerPopup_Modal
     {
+        [TitleGroup("텍스트")]
         [SerializeField] private LocalizedTMP titleTMP;
+        [TitleGroup("텍스트")]
         [SerializeField] private LocalizedTMP descTMP;
+        [TitleGroup("버튼")]
         [SerializeField] private LocalizedTMP okButton;
-        [SerializeField] private GameObject okButtonObj;
+        [TitleGroup("버튼")]
         [SerializeField] private LocalizedTMP ngButton;
-        [SerializeField] private GameObject ngButtonObj;
 
         protected override void ApplyOption(ModalOpenOption option)
         {
-            SetText(titleTMP, option.title, null);
-            SetText(descTMP, option.desc, null, option.descParams);
-            SetText(okButton, option.ok, okButtonObj);
-            SetText(ngButton, option.ng, ngButtonObj);
-        }
+            titleTMP.ChangeKey(option.title);
+            descTMP.ChangeKey(option.desc, option.descParams);
 
-        private static void SetText(LocalizedTMP target, string text, GameObject obj, params object[] args)
-        {
-            if (obj)
-            {
-                obj.SetActive(!string.IsNullOrEmpty(text));
-                if (!obj.activeSelf) return;
-            }
-
-            target.ChangeKey(text, args);
+            if (okButtonObj && okButtonObj.activeSelf) okButton.ChangeKey(option.ok);
+            if (ngButtonObj && ngButtonObj.activeSelf) ngButton.ChangeKey(option.ng);
         }
     }
 }

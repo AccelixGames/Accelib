@@ -1,6 +1,7 @@
 using Accelib.Module.UI.Popup.Data;
 using Accelib.Module.UI.Popup.Layer.Base;
 using Cysharp.Threading.Tasks;
+using Sirenix.OdinInspector;
 using UnityEngine;
 
 namespace Accelib.Module.UI.Popup.Layer
@@ -10,6 +11,11 @@ namespace Accelib.Module.UI.Popup.Layer
     /// </summary>
     public abstract class LayerPopup_Modal : LayerPopupBase
     {
+        [TitleGroup("버튼")]
+        [SerializeField] protected GameObject okButtonObj;
+        [TitleGroup("버튼")]
+        [SerializeField] protected GameObject ngButtonObj;
+
         public enum Result {OK = 0, NG = 1, Exception = -1}
 
         private UniTaskCompletionSource<Result> _ucs;
@@ -19,6 +25,10 @@ namespace Accelib.Module.UI.Popup.Layer
         public UniTask<Result> Open(ModalOpenOption option)
         {
             gameObject.SetActive(true);
+
+            // 버튼 오브젝트 활성화/비활성화
+            if (okButtonObj) okButtonObj.SetActive(!string.IsNullOrEmpty(option.ok));
+            if (ngButtonObj) ngButtonObj.SetActive(!string.IsNullOrEmpty(option.ng));
 
             // 서브클래스에서 텍스트 설정
             ApplyOption(option);

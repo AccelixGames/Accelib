@@ -1,4 +1,5 @@
 using Accelib.Module.UI.Popup.Data;
+using Sirenix.OdinInspector;
 using TMPro;
 using UnityEngine;
 
@@ -9,30 +10,22 @@ namespace Accelib.Module.UI.Popup.Layer
     /// </summary>
     public sealed class LayerPopup_PlainModal : LayerPopup_Modal
     {
+        [TitleGroup("텍스트")]
         [SerializeField] private TMP_Text titleTMP;
+        [TitleGroup("텍스트")]
         [SerializeField] private TMP_Text descTMP;
+        [TitleGroup("버튼")]
         [SerializeField] private TMP_Text okButton;
-        [SerializeField] private GameObject okButtonObj;
+        [TitleGroup("버튼")]
         [SerializeField] private TMP_Text ngButton;
-        [SerializeField] private GameObject ngButtonObj;
 
         protected override void ApplyOption(ModalOpenOption option)
         {
-            SetText(titleTMP, option.title, null);
-            SetText(descTMP, option.desc, null);
-            SetText(okButton, option.ok, okButtonObj);
-            SetText(ngButton, option.ng, ngButtonObj);
-        }
+            titleTMP.text = option.title;
+            descTMP.text = option.desc;
 
-        private static void SetText(TMP_Text target, string text, GameObject obj)
-        {
-            if (obj)
-            {
-                obj.SetActive(!string.IsNullOrEmpty(text));
-                if (!obj.activeSelf) return;
-            }
-
-            target.text = text;
+            if (okButtonObj && okButtonObj.activeSelf) okButton.text = option.ok;
+            if (ngButtonObj && ngButtonObj.activeSelf) ngButton.text = option.ng;
         }
     }
 }

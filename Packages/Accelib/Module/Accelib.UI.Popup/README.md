@@ -16,9 +16,9 @@ Accelib.UI.Popup/
     │   └── ModalOpenOption.cs      # 모달 설정 데이터
     ├── Layer/
     │   ├── Base/
-    │   │   └── LayerPopupBase.cs   # 추상 레이어 팝업 베이스
+    │   │   ├── LayerPopupBase.cs   # 추상 레이어 팝업 베이스
+    │   │   └── LayerPopup_Modal.cs # 비동기 모달 추상 베이스
     │   ├── LayerPopup_Default.cs   # 인스펙터 설정 가능 기본 레이어 팝업
-    │   ├── LayerPopup_Modal.cs     # 비동기 모달 추상 베이스
     │   ├── LayerPopup_PlainModal.cs      # 일반 텍스트 모달
     │   └── LayerPopup_LocalizedModal.cs  # 로컬라이제이션 모달
     └── Utility/
@@ -52,19 +52,20 @@ Accelib.UI.Popup/
 ### LayerPopup_Modal (abstract)
 
 비동기 모달 다이얼로그의 추상 베이스 클래스. `UniTaskCompletionSource<Result>`로 결과 대기.
+UI 필드는 베이스에 없으며, 각 서브클래스가 자체 필드를 소유한다.
 
 - `Open(ModalOpenOption option)` — 모달 열기, `UniTask<Result>` 반환
-- `SetText(TMP_Text, string, GameObject, object[])` — **abstract**, 서브클래스에서 텍스트 설정 방식 결정
+- `ApplyOption(ModalOpenOption)` — **abstract**, 서브클래스에서 텍스트 설정 방식 결정
 - `OnClickResult(int result)` — 버튼 onClick에서 호출
 - `Result` — `OK(0)`, `NG(1)`, `Exception(-1)`
 
 ### LayerPopup_PlainModal
 
-일반 텍스트 모달. `TMP_Text.text`에 직접 할당한다.
+일반 텍스트 모달. `TMP_Text` SerializeField를 직접 소유하고 `text`에 직접 할당한다.
 
 ### LayerPopup_LocalizedModal
 
-로컬라이제이션 키 기반 모달. `LocalizedTMP.ChangeKey()`를 통해 텍스트를 설정한다.
+로컬라이제이션 키 기반 모달. `LocalizedTMP` SerializeField를 직접 소유하고 `ChangeKey()`를 통해 텍스트를 설정한다.
 
 ### ModalOpenOption
 

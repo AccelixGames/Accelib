@@ -6,13 +6,14 @@
 
 ### 변경
 - `LayerPopup_Modal`을 `abstract` 베이스 클래스로 변환
-  - `SetText`를 `protected abstract` 메서드로 분리
-  - SerializeField 접근 제한자 `private` → `protected` 변경
+  - TMP_Text/GameObject SerializeField를 베이스에서 제거
+  - `ApplyOption(ModalOpenOption)` abstract 메서드로 텍스트 설정 위임
+  - 각 서브클래스가 자체 필드를 소유하도록 구조 변경
 - `ModalOpenOption`에서 `useLocale` 필드 제거
 
 ### 추가
-- `LayerPopup_PlainModal` — 일반 텍스트 모달 다이얼로그
-- `LayerPopup_LocalizedModal` — 로컬라이제이션 키 기반 모달 다이얼로그
+- `LayerPopup_PlainModal` — 일반 텍스트 모달 (`TMP_Text` SerializeField 직접 소유)
+- `LayerPopup_LocalizedModal` — 로컬라이제이션 모달 (`LocalizedTMP` SerializeField 직접 소유)
 - asmdef 참조: `Accelib.Localization` 추가
 
 ## [0.2.0] - 2026-02-16

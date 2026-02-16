@@ -19,9 +19,9 @@
   - `SO_TokenFlag`: MonoBehaviour 토큰으로 플래그 활성화/비활성화
 - `Accelib.UI.Popup` 모듈 신규 생성 — 레이어 팝업 및 모달 시스템
   - `Accelib.Runtime`의 `Module.UI.Popup`에서 독립 모듈로 추출
-  - `LayerPopup_Modal`을 abstract 베이스 클래스로 변환
-  - `LayerPopup_PlainModal` (일반 텍스트 모달) 추가
-  - `LayerPopup_LocalizedModal` (로컬라이제이션 모달) 추가
+  - `LayerPopup_Modal`을 abstract 베이스 클래스로 변환 (UI 필드 서브클래스 위임)
+  - `LayerPopup_PlainModal` (일반 텍스트 모달, `TMP_Text` 직접 소유) 추가
+  - `LayerPopup_LocalizedModal` (로컬라이제이션 모달, `LocalizedTMP` 직접 소유) 추가
   - `SO_TokenFlag showCursor` 연동으로 팝업 시 커서 표시 자동 처리
 - `Accelib.UI.Transition` 모듈 신규 생성 — 화면 전환 이펙트 시스템
   - `Accelib.Runtime`의 `Module.Transition`에서 독립 모듈로 추출
