@@ -12,14 +12,16 @@ namespace Accelib.Flag
     [CreateAssetMenu(menuName = "Accelib/TokenFlag")]
     public class SO_TokenFlag : ScriptableObject
     {
+        [TitleGroup("상태", indent:true)]
+        [ShowInInspector, ReadOnly] public bool IsActive => _lockTokens.Count > 0;
+        [ShowInInspector, ReadOnly] public int LockCount => _lockTokens.Count;
+        
+        [TitleGroup("디버그", indent:true)]
         [ShowInInspector, ReadOnly] private readonly HashSet<MonoBehaviour> _lockTokens = new();
 
-        /// <summary>활성 상태인지 여부. 하나 이상의 토큰이 잠금 중이면 true.</summary>
-        public bool IsActive => _lockTokens.Count > 0;
-
-        /// <summary>현재 잠금 토큰 수.</summary>
-        public int LockCount => _lockTokens.Count;
-
+        /// <summary>상태 변경 콜백. bool 인자는 IsActive 값.</summary>
+        public event Action<bool> OnStateChanged;
+        
         /// <summary>플래그 활성화 요청. 자기 자신의 MonoBehaviour를 토큰으로 전달한다.</summary>
         public bool Lock(MonoBehaviour token)
         {
@@ -45,9 +47,6 @@ namespace Accelib.Flag
             _lockTokens.Clear();
             OnStateChanged?.Invoke(false);
         }
-
-        /// <summary>상태 변경 콜백. bool 인자는 IsActive 값.</summary>
-        public event Action<bool> OnStateChanged;
 
         private void OnDisable() => _lockTokens.Clear();
     }

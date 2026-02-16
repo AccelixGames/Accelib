@@ -7,11 +7,15 @@
 
 ```
 Accelib.Flag/
-├── Accelib.Flag.asmdef        # 어셈블리 정의
-├── README.md                  # 이 문서
-├── CHANGELOG.md               # 변경 이력
-└── Runtime/
-    └── SO_TokenFlag.cs        # 토큰 플래그 ScriptableObject
+├── Accelib.Flag.asmdef              # 런타임 어셈블리 정의
+├── README.md                        # 이 문서
+├── CHANGELOG.md                     # 변경 이력
+├── Runtime/
+│   └── SO_TokenFlag.cs              # 토큰 플래그 ScriptableObject
+└── Editor/
+    ├── Accelib.Flag.Editor.asmdef   # 에디터 어셈블리 정의
+    └── Drawer/
+        └── SO_TokenFlagDrawer.cs    # Odin 커스텀 드로어
 ```
 
 ## 주요 클래스
@@ -47,14 +51,26 @@ showCursor.OnStateChanged += isActive =>
 };
 ```
 
+## 에디터 드로어
+
+`SO_TokenFlag`를 필드로 참조하면, 인스펙터에서 다음과 같이 표시된다:
+
+```
+[IsActive 토글(ReadOnly)] [ObjectField]
+```
+
+- **토글:** 현재 `IsActive` 상태를 실시간으로 표시 (편집 불가, 런타임 토큰 기반)
+- **ObjectField:** SO_TokenFlag asset을 드래그&드롭으로 할당
+
 ## 의존성
 
 | 패키지 | 용도 |
 |--------|------|
-| `Odin Inspector` | 디버깅용 인스펙터 표시 (ShowInInspector) |
+| `Odin Inspector` | 런타임: 디버깅용 인스펙터 표시, 에디터: 커스텀 드로어 |
 
 ## 네임스페이스
 
 ```
 Accelib.Flag              — SO_TokenFlag
+Accelib.Flag.Editor       — SO_TokenFlagDrawer (Editor 전용)
 ```

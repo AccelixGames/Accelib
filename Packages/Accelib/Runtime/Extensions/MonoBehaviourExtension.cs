@@ -1,32 +1,48 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Collections.Generic;
 using UnityEngine;
 
 namespace Accelib.Extensions
 {
     public static class MonoBehaviourExtension
     {
+        private static readonly HashSet<GameObject> _visitedBuffer = new();
+
         public static void FindComponents<T>(this Object monoBehaviour, ref List<T> list) where T : class
         {
             if(list == null) list = new List<T>();
             else list.Clear();
-            
+
+            _visitedBuffer.Clear();
+            var buffer = new List<T>();
+
+            // 모든 MonoBehaviour를 순회하며 T를 구현하는 컴포넌트 수집
             foreach (var o in Object.FindObjectsByType<MonoBehaviour>(FindObjectsInactive.Include, FindObjectsSortMode.None))
             {
-                if(o.TryGetComponent<T>(out var comp))
+                var go = o.gameObject;
+                if (!_visitedBuffer.Add(go)) continue;
+
+                go.GetComponents(buffer);
+                foreach (var comp in buffer)
                     list.Add(comp);
             }
         }
-        
+
         public static void FindComponents<T>(this Object monoBehaviour, ref HashSet<T> list) where T : class
         {
             if (list == null) list = new HashSet<T>();
             else list.Clear();
-            
+
+            _visitedBuffer.Clear();
+            var buffer = new List<T>();
+
+            // 모든 MonoBehaviour를 순회하며 T를 구현하는 컴포넌트 수집
             foreach (var o in Object.FindObjectsByType<MonoBehaviour>(FindObjectsInactive.Include, FindObjectsSortMode.None))
             {
-                if(o.TryGetComponent<T>(out var comp))
+                var go = o.gameObject;
+                if (!_visitedBuffer.Add(go)) continue;
+
+                go.GetComponents(buffer);
+                foreach (var comp in buffer)
                     list.Add(comp);
             }
         }

@@ -1,0 +1,24 @@
+{
+  "name": "Accelib.Flag.Editor",
+  "rootNamespace": "Accelib.Flag.Editor",
+  "references": [
+    "Accelib.Flag"
+  ],
+  "includePlatforms": [
+    "Editor"
+  ],
+  "excludePlatforms": [],
+  "allowUnsafeCode": false,
+  "overrideReferences": true,
+  "precompiledReferences": [
+    "Sirenix.OdinInspector.Editor.dll",
+    "Sirenix.Utilities.Editor.dll",
+    "Sirenix.OdinInspector.Attributes.dll"
+  ],
+  "autoReferenced": true,
+  "defineConstraints": [
+    "ODIN_INSPECTOR"
+  ],
+  "versionDefines": [],
+  "noEngineReferences": false
+}

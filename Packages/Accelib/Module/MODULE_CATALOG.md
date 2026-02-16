@@ -67,7 +67,8 @@
 ### Accelib.Flag
 - **경로:** `Accelib.Flag/`
 - **주요 클래스:** `SO_TokenFlag` (MonoBehaviour 토큰 기반 플래그 활성화/비활성화 ScriptableObject)
-- Odin Inspector 디버깅용 의존 (`[ShowInInspector, ReadOnly]`)
+- **에디터:** `SO_TokenFlagDrawer` (Odin 커스텀 드로어 — IsActive bool 토글 + ObjectField 한 줄 표시)
+- Odin Inspector 의존 (런타임: 디버깅용, 에디터: 커스텀 드로어)
 
 ### Accelib.UI.Popup
 - **경로:** `Accelib.UI.Popup/`

@@ -4,6 +4,10 @@
 
 ## [0.2.0] - 2026-02-16
 
+### 추가
+- `SO_TokenFlagDrawer` Odin 커스텀 드로어 추가 — IsActive 상태를 bool 토글로 표시하고 옆에 ObjectField로 asset 연결
+- `Accelib.Flag.Editor` asmdef 추가 (Editor 전용)
+
 ### 변경
 - 모듈 이름 변경: `Accelib.InputState` → `Accelib.Flag`
 - 클래스 이름 변경: `SO_InputState` → `SO_TokenFlag`
