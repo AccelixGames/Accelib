@@ -5,6 +5,21 @@
 형식은 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/)를 기반으로 하며,
 [Semantic Versioning](https://semver.org/spec/v2.0.0.html)을 따른다.
 
+## [0.0.14] - 2026-02-16
+
+### 추가
+- `Accelib.Pool` 모듈 신규 생성 — 오브젝트 풀링 시스템
+  - `IPoolTarget`: 풀 대상 인터페이스
+  - `ResourcePool<T>`: Stack 기반 제네릭 리소스 풀
+  - `ComponentPool<T>`: 델리게이트 구동 컴포넌트 풀
+  - `PrefabPool<T>`: MonoBehaviour 프리팹 전용 풀
+
+### 제거
+- 레거시 `Module.ObjectPool` 삭제 (`GameObjectPool`, `IPoolableGameObject`) — `Accelib.Pool` 모듈로 대체
+
+### 변경
+- `MODULE_CATALOG.md` Pool 모듈 추가
+
 ## [0.0.13] - 2025-02-13
 
 ### 추가

@@ -11,6 +11,7 @@
 | **Accelib.Conditional** | 규칙 기반 조건식 평가 시스템 | Accelib.Reflection, Accelib.Preview, ZLinq, Collections |
 | **Accelib.OdinExtension** | R3 ReactiveProperty용 Odin Drawer | R3, Odin Inspector |
 | **Accelib.R3Extension** | R3 Observable 확장 메서드 (Delta 등) | R3 |
+| **Accelib.Pool** | 오브젝트 풀링 (리소스/컴포넌트/프리팹) | Odin Inspector |
 
 상세 내용은 [MODULE_CATALOG.md](Module/MODULE_CATALOG.md) 참조.
 
