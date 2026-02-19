@@ -33,6 +33,28 @@ namespace Accelib.Reflection
             return $"{name}.{path}";
         }
 
+        /// <summary> target이 INotifyValueChanged를 구현하면 값 변경을 구독한다. </summary>
+        public IDisposable Subscribe(Action<double> onChanged)
+        {
+            if (target is not INotifyValueChanged notifier) return null;
+
+            void Handler() => onChanged(Value);
+            notifier.OnValueChanged += Handler;
+
+            return new CallbackDisposable(() => notifier.OnValueChanged -= Handler);
+        }
+
+        private sealed class CallbackDisposable : IDisposable
+        {
+            private Action _onDispose;
+            public CallbackDisposable(Action onDispose) => _onDispose = onDispose;
+            public void Dispose()
+            {
+                _onDispose?.Invoke();
+                _onDispose = null;
+            }
+        }
+
 #region Cache
         [NonSerialized] private CachedChain _cached;
         [NonSerialized] private Func<double> _getter;

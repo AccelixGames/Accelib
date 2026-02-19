@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 namespace Accelib.Conditional
@@ -10,5 +11,8 @@ namespace Accelib.Conditional
 
         /// <summary> 평가된 double 값 </summary>
         public abstract double Value { get; }
+
+        /// <summary> 값 변경 구독. 기본 구현은 구독 미지원(null 반환). </summary>
+        public virtual IDisposable Subscribe(Action<double> onChanged) => null;
     }
 }

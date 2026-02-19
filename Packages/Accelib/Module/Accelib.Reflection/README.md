@@ -9,7 +9,8 @@ ScriptableObject의 중첩 필드/프로퍼티 경로를 인스펙터에서 드�
 Accelib.Reflection/
 ├── Accelib.Reflection.asmdef       # 어셈블리 정의
 ├── Runtime/
-│   ├── MemberRef.cs                # 멤버 참조 클래스 (인스펙터 연동)
+│   ├── MemberRef.cs                # 멤버 참조 클래스 (인스펙터 연동, Subscribe 포함)
+│   ├── INotifyValueChanged.cs      # 값 변경 알림 인터페이스
 │   ├── Data/
 │   │   ├── CachedChain.cs          # 리플렉션 체인 캐시 구조체
 │   │   └── ENumericType.cs         # 숫자 타입 열거형
@@ -30,6 +31,14 @@ Accelib.Reflection/
 - `path` — 점(`.`) 구분 멤버 경로 (예: `stats.health`)
 - `Value` — 캐시된 리플렉션을 통해 읽은 double 값
 - `GetPreview()` — `"ObjectName.path"` 형태의 미리보기 문자열 반환
+- `Subscribe(Action<double>)` — target이 `INotifyValueChanged`를 구현하면 값 변경 구독. 미구현 시 `null` 반환
+
+### INotifyValueChanged
+
+값 변경 알림 인터페이스. MemberRef의 target SO가 이 인터페이스를 구현하면 `MemberRef.Subscribe()`로 값 변경을 감지할 수 있다.
+
+- `event Action OnValueChanged` — 값 변경 이벤트
+- `NotifyValueChanged()` — 값 변경 알림 발행
 
 Odin Inspector의 `HorizontalGroup`, `ValueDropdown`, `HideLabel` 등을 사용하여 인스펙터 UI를 구성한다.
 

@@ -32,6 +32,7 @@ Accelib.Conditional/
 
 - `Evaluate()` — 전체 조건식 평가 (bool 반환)
 - `Preview` — 조건식의 텍스트 미리보기 (읽기 전용)
+- `Subscribe(Action)` — 조건 내 모든 ValueProvider의 값 변경을 구독. 값이 바뀌면 콜백 발행. `IDisposable` 반환 (구독 해제용)
 
 인스펙터에서 Odin의 ListDrawer로 조건을 추가/제거/순서 변경할 수 있으며, `[Button]`으로 실시간 평가 결과를 확인할 수 있다.
 
@@ -42,6 +43,8 @@ Accelib.Conditional/
 - `LogicalOperator` — 다음 조건과의 논리 연산자 (And/Or)
 - `Evaluate()` — 현재 조건 평가 (bool 반환)
 - `Preview` — 조건의 텍스트 표현 (예: `'MaidData.level'[5] >= 3`)
+- `SubscribeLhs(Action<double>)` — 좌변 값 변경 구독
+- `SubscribeRhs(Action<double>)` — 우변 값 변경 구독
 
 ### ValueProvider
 
@@ -58,6 +61,7 @@ Accelib.Conditional/
 - `Value` — 평가된 double 값
 - `Preview` — 값 소스의 미리보기 문자열
 - `CompareTo(ValueProvider, EComparisonOperator)` — 다른 값과 비교
+- `Subscribe(Action<double>)` — SO 또는 Custom(MemberRef) 소스의 값 변경 구독
 
 ### SO_Conditional
 
@@ -71,6 +75,7 @@ Accelib.Conditional/
 
 - `Preview` — 미리보기 문자열 (추상)
 - `Value` — double 값 (추상)
+- `Subscribe(Action<double>)` — 값 변경 구독 (가상, 기본 `null` 반환). 서브클래스에서 오버라이드하여 구독 지원 가능
 
 ### SO_PresetValue
 

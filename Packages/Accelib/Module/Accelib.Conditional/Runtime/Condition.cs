@@ -1,3 +1,4 @@
+using System;
 using Accelib.Conditional.Data;
 using Accelib.Conditional.Utility;
 using Sirenix.OdinInspector;
@@ -25,5 +26,10 @@ namespace Accelib.Conditional
         public bool Evaluate() => lhs.CompareTo(rhs, comparisonOperator);
 
         public string Preview => $"{lhs.Preview} {comparisonOperator.ToStringSign()} {rhs.Preview}";
+
+        /// <summary> 좌변 값 변경 구독 </summary>
+        public IDisposable SubscribeLhs(Action<double> onChanged) => lhs.Subscribe(onChanged);
+        /// <summary> 우변 값 변경 구독 </summary>
+        public IDisposable SubscribeRhs(Action<double> onChanged) => rhs.Subscribe(onChanged);
     }
 }

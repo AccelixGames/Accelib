@@ -5,6 +5,16 @@
 형식은 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/)를 기반으로 하며,
 [Semantic Versioning](https://semver.org/spec/v2.0.0.html)을 따른다.
 
+## [0.1.3] - 2026-02-19
+
+### 추가
+- `Accelib.Reflection` — `INotifyValueChanged` 인터페이스 신규 생성 (값 변경 알림용)
+- `Accelib.Reflection` — `MemberRef.Subscribe()` 메서드 추가 (target이 `INotifyValueChanged` 구현 시 값 변경 구독)
+- `Accelib.Conditional` — `SO_ValueProviderBase.Subscribe()` 가상 메서드 추가
+- `Accelib.Conditional` — `ValueProvider.Subscribe()` 메서드 추가 (SO/Custom 소스 구독)
+- `Accelib.Conditional` — `Condition.SubscribeLhs()`/`SubscribeRhs()` 메서드 추가
+- `Accelib.Conditional` — `Conditional.Subscribe()` 메서드 추가 (전체 조건식 값 변경 일괄 구독)
+
 ## [0.1.2] - 2026-02-19
 
 ### 변경

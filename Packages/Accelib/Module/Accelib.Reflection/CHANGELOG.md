@@ -2,6 +2,16 @@
 
 이 문서는 Accelib.Reflection 모듈의 주요 변경 내역을 기록한다.
 
+## [0.4.0] - 2026-02-19
+
+### 추가
+- `INotifyValueChanged` 인터페이스 신규 생성 (`Runtime/INotifyValueChanged.cs`)
+  - `event Action OnValueChanged` — 값 변경 이벤트
+  - `NotifyValueChanged()` — 값 변경 알림 메서드
+  - MemberRef 구독 시 대상 SO가 이 인터페이스를 구현하면 값 변경을 감지할 수 있다
+- `MemberRef.Subscribe(Action<double>)` — target이 `INotifyValueChanged`를 구현하면 값 변경을 구독한다
+  - 내부 `CallbackDisposable` 클래스로 구독/해제 관리
+
 ## [0.3.0] - 2026-02-13
 
 ### 변경

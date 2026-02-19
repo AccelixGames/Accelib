@@ -2,6 +2,15 @@
 
 이 문서는 Accelib.Conditional 모듈의 주요 변경 내역을 기록한다.
 
+## [0.3.0] - 2026-02-19
+
+### 추가
+- `SO_ValueProviderBase.Subscribe(Action<double>)` — 값 변경 구독 가상 메서드 (기본 구현: `null` 반환)
+- `ValueProvider.Subscribe(Action<double>)` — SO 타입과 Custom(MemberRef) 타입의 값 변경 구독 지원
+- `Condition.SubscribeLhs(Action<double>)` / `SubscribeRhs(Action<double>)` — 좌변/우변 값 변경 구독
+- `Conditional.Subscribe(Action)` — 모든 조건 내 ValueProvider의 값 변경을 일괄 구독
+  - 내부 `DisposableGroup` 클래스로 다중 IDisposable 관리
+
 ## [0.2.0] - 2026-02-16
 
 ### 변경

@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using Accelib.Conditional.Data;
 using Sirenix.OdinInspector;
@@ -34,6 +35,24 @@ namespace Accelib.Conditional
             return result;
         }
 
+        /// <summary> 조건 내 모든 ValueProvider의 값 변경을 구독한다. </summary>
+        public IDisposable Subscribe(Action onConditionMayChanged)
+        {
+            if (conditions is not { Count: > 0 }) return null;
+
+            var subs = new List<IDisposable>();
+            foreach (var condition in conditions)
+            {
+                var lhsSub = condition.SubscribeLhs(_ => onConditionMayChanged());
+                var rhsSub = condition.SubscribeRhs(_ => onConditionMayChanged());
+
+                if (lhsSub != null) subs.Add(lhsSub);
+                if (rhsSub != null) subs.Add(rhsSub);
+            }
+
+            return subs.Count > 0 ? new DisposableGroup(subs) : null;
+        }
+
         [ShowInInspector, TextArea, ReadOnly, PropertyOrder(float.MinValue)]
         public string Preview
         {
@@ -49,6 +68,19 @@ namespace Accelib.Conditional
                 }
 
                 return result;
+            }
+        }
+
+        /// <summary> 여러 IDisposable을 묶어 한 번에 해제하는 내부 컨테이너 </summary>
+        private sealed class DisposableGroup : IDisposable
+        {
+            private List<IDisposable> _items;
+            public DisposableGroup(List<IDisposable> items) => _items = items;
+            public void Dispose()
+            {
+                if (_items == null) return;
+                foreach (var d in _items) d?.Dispose();
+                _items = null;
             }
         }
     }

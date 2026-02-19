@@ -42,6 +42,18 @@ namespace Accelib.Conditional
             _ => Value.ToString(CultureInfo.InvariantCulture)
         };
 
+        /// <summary> 값 변경 구독. SO 또는 Custom(MemberRef) 타입일 때 구독 가능. </summary>
+        public IDisposable Subscribe(Action<double> onChanged)
+        {
+            if (sourceType == EValueSourceType.ScriptableObject && soValue != null)
+                return soValue.Subscribe(onChanged);
+
+            if (sourceType == EValueSourceType.Custom && customValue != null)
+                return customValue.Subscribe(onChanged);
+
+            return null;
+        }
+
         /// <summary> 다른 ValueProvider와 비교한다 </summary>
         public bool CompareTo(ValueProvider other, EComparisonOperator oper)
         {
