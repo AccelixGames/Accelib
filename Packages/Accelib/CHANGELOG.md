@@ -5,6 +5,20 @@
 형식은 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/)를 기반으로 하며,
 [Semantic Versioning](https://semver.org/spec/v2.0.0.html)을 따른다.
 
+## [0.1.2] - 2026-02-19
+
+### 변경
+- `Accelib.Pool` — `PrefabPool<T>` 인스펙터 레이아웃 개선 (`parent`/`prefab` 최상위 노출, 디버깅 그룹 분리)
+- `Accelib.Pool` — `ComponentPool<T>._releasedList`를 `디버깅` TitleGroup + `ReadOnly`로 변경
+- `Module.Reference` — `TransformRefFinder`에서 `FindProvider()`를 별도 메서드로 분리, LateUpdate 시 참조 소실 시 자동 재탐색
+- `LevelDesignEditorWindow` — `EditorPreviewName`이 null/빈 문자열일 때 기본 에셋 이름 유지
+- `Accelib.UI.Popup` — `SO_ModalOpenOptionLocalized.OpenAsync()`에 `[Button]` 추가
+- `Accelib.Localization` — `LocaleKey.GetLocalized()` 편의 메서드 추가
+
+### 수정
+- `Accelib.Pool` — `PrefabPool<T>.Initialize()`에서 `prefab`/`parent` null 방어 처리 추가
+- `ScriptableObjectCached` — `System` using 누락 수정
+
 ## [0.1.1] - 2026-02-16
 
 ### 추가

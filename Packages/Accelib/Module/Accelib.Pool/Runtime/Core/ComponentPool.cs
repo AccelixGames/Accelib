@@ -11,7 +11,8 @@ namespace Accelib.Pool
     [Serializable]
     public class ComponentPool<T> where T : class
     {
-        [ShowInInspector] protected List<T> _releasedList = new();
+        [TitleGroup("디버깅")]
+        [ShowInInspector, ReadOnly] protected List<T> _releasedList = new();
         public IReadOnlyList<T> ReleasedList => _releasedList;
 
         public Func<T> New = null;

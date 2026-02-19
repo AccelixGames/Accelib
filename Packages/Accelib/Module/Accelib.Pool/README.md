@@ -45,11 +45,12 @@ Accelib.Pool/
 ### PrefabPool\<T\>
 - `where T : MonoBehaviour`, ComponentPool\<T\> 확장
 - 프리팹 인스턴스화 및 활성/비활성 관리
-- `Initialize()`: 프리팹/부모 Transform 기반 초기화, 기존 자식 자동 탐색
+- `Initialize()`: 프리팹/부모 Transform 기반 초기화, 기존 자식 자동 탐색. `prefab`/`parent` 미설정 시 `InvalidOperationException` 발생
 - `Get()`: 활성 목록에 추가하며 꺼냄
 - `Release(T)`: 활성 목록에서 제거 후 풀에 반환
 - `ReleaseAll()`: 모든 활성 인스턴스를 풀에 반환
 - `EnabledList`: 현재 활성 인스턴스 목록 (읽기 전용)
+- 인스펙터: `parent`/`prefab` 최상위 노출, `_enabledList`/`IsInitialized`는 `디버깅` 그룹
 
 ## 사용 예시
 

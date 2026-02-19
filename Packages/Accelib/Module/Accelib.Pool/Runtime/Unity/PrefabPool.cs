@@ -12,18 +12,19 @@ namespace Accelib.Pool
     [Serializable]
     public class PrefabPool<T> : ComponentPool<T> where T : MonoBehaviour
     {
-        [ShowInInspector] private List<T> _enabledList  = new();
-
-        [TitleGroup("# 옵션", indent:true)]
         [SerializeField] private Transform parent;
-        [TitleGroup("# 옵션", indent:true)]
         [SerializeField] private T prefab;
+
+        [TitleGroup("디버깅")]
+        [ShowInInspector, ReadOnly] private List<T> _enabledList  = new();
 
         public IReadOnlyList<T> EnabledList => _enabledList;
         public Transform Parent => parent;
         public T Prefab => prefab;
 
         private bool _isInitialized = false;
+        [TitleGroup("디버깅")]
+        [ShowInInspector, ReadOnly]
         public bool IsInitialized => _isInitialized;
 
         /// <summary>
@@ -31,8 +32,17 @@ namespace Accelib.Pool
         /// </summary>
         /// <param name="onPooled">풀에서 꺼낼 때 콜백. null이면 기본값(SetActive + SetAsFirstSibling) 사용.</param>
         /// <param name="onReleased">풀에 반환할 때 콜백. null이면 기본값(SetActive(false)) 사용.</param>
+        /// <exception cref="InvalidOperationException">prefab 또는 parent가 설정되지 않은 경우.</exception>
         public void Initialize(Action<T> onPooled = null, Action<T> onReleased = null)
         {
+            // prefab/parent null 방어
+            if (prefab == null)
+                throw new InvalidOperationException(
+                    $"PrefabPool<{typeof(T).Name}>: prefab이 설정되지 않았습니다.");
+            if (parent == null)
+                throw new InvalidOperationException(
+                    $"PrefabPool<{typeof(T).Name}>: parent가 설정되지 않았습니다.");
+
             // 리스트 초기화
             _enabledList = new List<T>();
             _releasedList = new List<T>();

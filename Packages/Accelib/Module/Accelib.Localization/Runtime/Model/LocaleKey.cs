@@ -19,5 +19,6 @@ namespace Accelib.Module.Localization.Model
         public string EditorPreview => 
             Accelib.Localization.EditorUtility.LocaleUtility.LocaleAsset.TryGetValue(key, out var preview) ? preview : key;
 #endif
+        public string GetLocalized() => LocalizationSingleton.GetLocalizedString(key);
     }
 }

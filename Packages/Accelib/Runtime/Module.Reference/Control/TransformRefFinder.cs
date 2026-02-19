@@ -21,21 +21,13 @@ namespace Accelib.Module.Reference.Control
         
         public Transform Reference => _provider?.transform;
 
-        private void OnEnable()
-        {
-            parent ??= transform;
-            foreach (var provider in parent.GetComponentsInChildren<TransformRefProvider>())
-            {
-                if (provider.Key != key) continue;
-                
-                _provider = provider;
-                return;
-            }
-        }
+        private void OnEnable() => FindProvider();
 
         private void LateUpdate()
         {
-            if (!Reference) return;
+            if (!Reference)
+                if (!FindProvider())
+                    return;
             
             if(syncPos)
                 transform.position = Reference.position + posOffset;
@@ -43,6 +35,20 @@ namespace Accelib.Module.Reference.Control
                 transform.rotation = Reference.rotation;
             if(syncScl)
                 transform.localScale = Reference.localScale;
+        }
+
+        private bool FindProvider()
+        {
+            parent ??= transform;
+            foreach (var provider in parent.GetComponentsInChildren<TransformRefProvider>())
+            {
+                if (provider.Key != key) continue;
+                
+                _provider = provider;
+                return true;
+            }
+
+            return false;
         }
     }
 }

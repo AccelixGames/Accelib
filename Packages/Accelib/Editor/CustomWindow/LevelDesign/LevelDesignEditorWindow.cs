@@ -21,7 +21,8 @@ namespace Accelib.Editor.CustomWindow.LevelDesign
             
             var assetName = o.name;
             if (o is IPreviewNameProvider provider)
-                assetName = provider.EditorPreviewName;
+                if(!string.IsNullOrEmpty(provider.EditorPreviewName))
+                    assetName = provider.EditorPreviewName;
             
             var newPath = $"{path}/{assetName}";
                     

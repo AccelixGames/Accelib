@@ -2,6 +2,15 @@
 
 이 문서는 Accelib.Pool 모듈의 주요 변경 내역을 기록한다.
 
+## [0.1.1] - 2026-02-18
+
+### 변경
+- `PrefabPool<T>` — 인스펙터 레이아웃 개선: `# 옵션` TitleGroup 제거, `parent`/`prefab`을 최상위로 이동, `_enabledList`/`IsInitialized`를 `디버깅` TitleGroup으로 분리
+- `ComponentPool<T>` — `_releasedList`를 `디버깅` TitleGroup + `ReadOnly`로 변경
+
+### 수정
+- `PrefabPool<T>.Initialize()` — `prefab`/`parent`가 null일 때 `InvalidOperationException`을 던지도록 방어 처리 추가 (기존에는 `Object.Instantiate`에서 무의미한 NullReferenceException 발생)
+
 ## [0.1.0] - 2026-02-16
 
 ### 추가
