@@ -2,6 +2,26 @@
 
 이 문서는 Accelib.Reflection 모듈의 주요 변경 내역을 기록한다.
 
+## [0.5.0] - 2026-02-19
+
+### 추가
+- `MemberRef.Subscribe` — ReactiveProperty 자동 감지 구독 기능 추가
+  - 체인 내 ReactiveProperty<T> 객체를 자동 탐색하여 R3 Subscribe를 리플렉션으로 호출
+  - R3 어셈블리 참조 없이 동작 (타입 이름 기반 판별 + 리플렉션)
+  - 우선순위: ReactiveProperty 자동 구독 → INotifyValueChanged fallback
+  - SO에 INotifyValueChanged를 구현하지 않아도 내부 ReactiveProperty가 있으면 자동 구독됨
+- `CachedChain.ReactivePropertyChainLength` — 체인 내 ReactiveProperty 위치 정보 저장
+
+## [0.4.1] - 2026-02-19
+
+### 수정
+- `CachedReflectionUtility.BuildChain` — ReactiveProperty 계열 타입의 `.Value` 경로가 `ReadOnlyReactiveProperty<T>`에서 리졸브 실패하던 버그 수정
+  - `ReadOnlyReactiveProperty<T>`에는 `Value` 프로퍼티가 없고 `CurrentValue`만 존재함
+  - `.Value` 세그먼트를 자동으로 `CurrentValue`로 치환하는 `IsReactivePropertyType()` 판별 로직 추가
+  - 기존 에셋의 `"Level.Value"` 경로가 런타임에서 정상 동작함
+- `ReflectionUtility.ScanType` — ReactiveProperty 계열 드롭다운 경로를 `.Value` → `.CurrentValue`로 변경
+  - 에디터와 런타임의 경로 생성 방식 통일
+
 ## [0.4.0] - 2026-02-19
 
 ### 추가

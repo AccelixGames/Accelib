@@ -20,11 +20,21 @@ namespace Accelib.Reflection.Utility
 
             var names = memberPath.Split('.');
             var chain = new MemberInfo[names.Length];
+            var rpChainLength = 0;
 
             var type = target.GetType();
             for (var i = 0; i < names.Length; i++)
             {
                 var name = names[i];
+
+                // ReactiveProperty 계열 타입의 ".Value" → "CurrentValue" 치환
+                // ReadOnlyReactiveProperty<T>는 Value 프로퍼티가 없고 CurrentValue만 존재함
+                if (name == "Value" && IsReactivePropertyType(type))
+                    name = "CurrentValue";
+
+                // ReactiveProperty 위치 기록 (CurrentValue 직전이 RP 객체)
+                if (name == "CurrentValue" && IsReactivePropertyType(type))
+                    rpChainLength = i;
 
                 // Field 우선 탐색함
                 var field = type.GetField(name, Flags);
@@ -48,8 +58,24 @@ namespace Accelib.Reflection.Utility
             return new CachedChain
             {
                 Chain = chain,
-                FinalType = type
+                FinalType = type,
+                ReactivePropertyChainLength = rpChainLength
             };
+        }
+
+        /// <summary>
+        /// R3 ReactiveProperty 계열 타입인지 이름 기반으로 판별함
+        /// - R3 어셈블리 참조 없이 타입 이름으로 판별함
+        /// </summary>
+        private static bool IsReactivePropertyType(Type type)
+        {
+            if (!type.IsGenericType) return false;
+
+            var name = type.GetGenericTypeDefinition().Name;
+            return name.StartsWith("ReactiveProperty") ||
+                   name.StartsWith("SerializableReactiveProperty") ||
+                   name.StartsWith("ReadOnlyReactiveProperty") ||
+                   name.StartsWith("BindableReactiveProperty");
         }
 
         /// <summary>
@@ -106,9 +132,7 @@ namespace Accelib.Reflection.Utility
                     case ushort v: return v;
                     case byte v: return v;
                     case sbyte v: return v;
-
-                    // bool 등을 섞어 쓰는 경우가 있으면 필요에 따라 추가 가능함
-                    // case bool v: return v ? 1.0 : 0.0;
+                    case bool v: return v ? 1.0 : 0.0;
 
                     default:
                         // 그 외 타입은 Convert에 위임함 (비싸지만 예외 케이스임)

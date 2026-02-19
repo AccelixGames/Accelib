@@ -5,6 +5,18 @@
 형식은 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/)를 기반으로 하며,
 [Semantic Versioning](https://semver.org/spec/v2.0.0.html)을 따른다.
 
+## [0.1.5] - 2026-02-19
+
+### 추가
+- `Accelib.Reflection` — `MemberRef.Subscribe`에 ReactiveProperty 자동 감지 구독 추가 (R3 참조 없이 리플렉션으로 동작)
+- `Accelib.Reflection` — `CachedChain.ReactivePropertyChainLength` 필드 추가
+
+## [0.1.4] - 2026-02-19
+
+### 수정
+- `Accelib.Reflection` — `CachedReflectionUtility.BuildChain` ReactiveProperty `.Value` 경로 리졸브 실패 수정 (`.Value` → `CurrentValue` 자동 치환)
+- `Accelib.Reflection` — `ReflectionUtility` 드롭다운 경로 `.Value` → `.CurrentValue`로 통일
+
 ## [0.1.3] - 2026-02-19
 
 ### 추가

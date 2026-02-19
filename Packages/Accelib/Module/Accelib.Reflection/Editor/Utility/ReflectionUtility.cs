@@ -38,10 +38,11 @@ namespace Accelib.Reflection.Utility
                     continue;
                 }
 
-                // ReactiveProperty<T> 계열 필드 → .Value 경로 추가
+                // ReactiveProperty<T> 계열 필드 → .CurrentValue 경로 추가
+                // ReadOnlyReactiveProperty<T>에는 Value가 없고 CurrentValue만 존재함
                 if (TryGetReactivePropertyValueType(fieldType, out var rpValueType))
                 {
-                    var valuePath = $"{path}.Value";
+                    var valuePath = $"{path}.CurrentValue";
                     if (TryMapNumeric(rpValueType, out _))
                         yield return valuePath;
                     continue;
@@ -75,10 +76,11 @@ namespace Accelib.Reflection.Utility
                     continue;
                 }
 
-                // ReactiveProperty<T> 계열 프로퍼티 → .Value 경로 추가
+                // ReactiveProperty<T> 계열 프로퍼티 → .CurrentValue 경로 추가
+                // ReadOnlyReactiveProperty<T>에는 Value가 없고 CurrentValue만 존재함
                 if (TryGetReactivePropertyValueType(propType, out var rpValueType2))
                 {
-                    var valuePath = $"{path}.Value";
+                    var valuePath = $"{path}.CurrentValue";
                     if (TryMapNumeric(rpValueType2, out _))
                         yield return valuePath;
                     continue;
