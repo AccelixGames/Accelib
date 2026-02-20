@@ -23,6 +23,25 @@ namespace Accelib.Reflection
 
         public ScriptableObject Target => target;
 
+        /// <summary> 체인 끝의 원본 객체를 반환한다 (double 변환 없음). Contains 등 비숫자 비교용. </summary>
+        public object RawValue
+        {
+            get
+            {
+                if (!(_cached?.IsValid ?? false)) BuildCache();
+                if (_cached?.Chain == null) return null;
+
+                object current = target;
+                foreach (var m in _cached.Chain)
+                {
+                    if (current == null) return null;
+                    if (m is FieldInfo fi) current = fi.GetValue(current);
+                    else if (m is PropertyInfo pi) current = pi.GetValue(current);
+                }
+                return current;
+            }
+        }
+
         public string GetPreview()
         {
             if (!target || target == null) return "";

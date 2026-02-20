@@ -14,6 +14,7 @@ namespace Accelib.Conditional.Utility
             EComparisonOperator.GreaterThanOrEqual => ">=",
             EComparisonOperator.LessThan => "<",
             EComparisonOperator.LessThanOrEqual => "<=",
+            EComparisonOperator.Contains => "Contains To",
             _ => ""
         };
     }

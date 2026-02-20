@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Reflection;
 using Accelib.Reflection.Data;
 
@@ -135,6 +136,11 @@ namespace Accelib.Reflection.Utility
                     case bool v: return v ? 1.0 : 0.0;
 
                     default:
+                        // implicit 숫자 변환 연산자 시도 (e.g., PriceUnit → float)
+                        var op = GetImplicitNumericOperator(value.GetType());
+                        if (op != null)
+                            return Convert.ToDouble(op.Invoke(null, new[] { value }));
+
                         // 그 외 타입은 Convert에 위임함 (비싸지만 예외 케이스임)
                         return Convert.ToDouble(value);
                 }
@@ -143,6 +149,34 @@ namespace Accelib.Reflection.Utility
             {
                 return 0.0;
             }
+        }
+
+        /// <summary>
+        /// 타입에서 implicit 숫자 변환 연산자(op_Implicit → float/double/int/long)를 찾아 캐싱한다.
+        /// </summary>
+        private static readonly Dictionary<Type, MethodInfo> _implicitOpCache = new();
+
+        private static MethodInfo GetImplicitNumericOperator(Type type)
+        {
+            if (_implicitOpCache.TryGetValue(type, out var cached))
+                return cached;
+
+            MethodInfo found = null;
+            foreach (var m in type.GetMethods(BindingFlags.Public | BindingFlags.Static))
+            {
+                if (m.Name != "op_Implicit") continue;
+                var rt = m.ReturnType;
+                if (rt != typeof(float) && rt != typeof(double) && rt != typeof(int) && rt != typeof(long)) continue;
+                var ps = m.GetParameters();
+                if (ps.Length == 1 && ps[0].ParameterType == type)
+                {
+                    found = m;
+                    break;
+                }
+            }
+
+            _implicitOpCache[type] = found;
+            return found;
         }
     }
 }

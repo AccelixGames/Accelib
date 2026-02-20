@@ -11,5 +11,6 @@ namespace Accelib.Conditional.Data
         [InspectorName(">=")] GreaterThanOrEqual = 3,
         [InspectorName("<")]  LessThan = 4,
         [InspectorName("<=")] LessThanOrEqual = 5,
+        [InspectorName("Contains To")] Contains = 10,
     }
 }

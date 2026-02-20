@@ -20,6 +20,9 @@ namespace Accelib.Conditional
         [HideLabel][SerializeField, ShowIf("sourceType", EValueSourceType.ScriptableObject), HorizontalGroup]
         private SO_ValueProviderBase soValue;
 
+        [HideLabel][SerializeField, ShowIf("sourceType", EValueSourceType.String)]
+        private string stringValue;
+
         [HideLabel][SerializeField, ShowIf("sourceType", EValueSourceType.Custom), HorizontalGroup]
         private MemberRef customValue;
 
@@ -34,9 +37,24 @@ namespace Accelib.Conditional
             _ => 0
         };
 
+        /// <summary> 문자열 값. String 타입일 때 사용. Contains 비교의 RHS용. </summary>
+        public string StringValue => sourceType switch
+        {
+            EValueSourceType.String => stringValue,
+            _ => string.Empty
+        };
+
+        /// <summary> 원본 객체. Custom(MemberRef) 타입일 때 컬렉션 등 반환. Contains 비교의 LHS용. </summary>
+        public object GetRawValue() => sourceType switch
+        {
+            EValueSourceType.Custom => customValue?.RawValue,
+            _ => null
+        };
+
         public string Preview => sourceType switch
         {
             EValueSourceType.Boolean => booleanValue ?  "true" : "false",
+            EValueSourceType.String => $"\"{stringValue}\"",
             EValueSourceType.Custom => $"'{customValue?.GetPreview()}'[{Value}]",
             EValueSourceType.ScriptableObject => $"'{soValue?.Preview}'[{Value}]",
             _ => Value.ToString(CultureInfo.InvariantCulture)

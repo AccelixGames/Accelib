@@ -1,4 +1,6 @@
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using Accelib.Conditional.Data;
 using Accelib.Conditional.Utility;
 using Sirenix.OdinInspector;
@@ -23,7 +25,27 @@ namespace Accelib.Conditional
         internal ELogicalOperator LogicalOperator => logicalOperator;
 
         /// <summary> 조건을 평가한다 </summary>
-        public bool Evaluate() => lhs.CompareTo(rhs, comparisonOperator);
+        public bool Evaluate()
+        {
+            if (comparisonOperator == EComparisonOperator.Contains)
+                return EvaluateContains();
+            return lhs.CompareTo(rhs, comparisonOperator);
+        }
+
+        /// <summary> LHS 컬렉션이 RHS 문자열을 포함하는지 평가한다 </summary>
+        private bool EvaluateContains()
+        {
+            var collection = lhs.GetRawValue();
+            var search = rhs.StringValue;
+            if (string.IsNullOrEmpty(search) || collection == null) return false;
+
+            return collection switch
+            {
+                ICollection<string> set => set.Contains(search),
+                IEnumerable<string> enumerable => enumerable.Contains(search),
+                _ => false
+            };
+        }
 
         public string Preview => $"{lhs.Preview} {comparisonOperator.ToStringSign()} {rhs.Preview}";
 

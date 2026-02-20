@@ -5,6 +5,21 @@
 형식은 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/)를 기반으로 하며,
 [Semantic Versioning](https://semver.org/spec/v2.0.0.html)을 따른다.
 
+## [0.1.6] - 2026-02-20
+
+### 추가
+- `Accelib.Conditional` — Contains 비교 연산자 추가 (`EComparisonOperator.Contains`, 인스펙터 표기: "Contains To")
+- `Accelib.Conditional` — `EValueSourceType.String` 소스 타입 추가 (문자열 리터럴 입력)
+- `Accelib.Conditional` — `ValueProvider.StringValue` / `GetRawValue()` 추가
+- `Accelib.Conditional` — `Condition.EvaluateContains()` 추가 (ICollection<string>/IEnumerable<string> 멤버십 검사)
+- `Accelib.Reflection` — `MemberRef.RawValue` 프로퍼티 추가 (double 변환 없이 원본 객체 반환)
+- `Accelib.Reflection` — `ReflectionUtility`에 문자열 컬렉션(IEnumerable<string>) 필드/프로퍼티 드롭다운 지원 추가
+- `Accelib.Reflection` — `ReflectionUtility`에 implicit 숫자 변환 연산자(op_Implicit → float/double/int/long) 보유 타입 드롭다운 지원 추가
+- `Accelib.Reflection` — `CachedReflectionUtility.ConvertToDoubleFast`에 implicit 숫자 변환 fallback 추가 (PriceUnit 등 지원)
+
+### 수정
+- `Accelib.Reflection` — `ReflectionUtility.ShouldRecurse`에서 Delegate 타입 재귀 탐색 차단 (드롭다운 폭발 방지)
+
 ## [0.1.5] - 2026-02-19
 
 ### 추가

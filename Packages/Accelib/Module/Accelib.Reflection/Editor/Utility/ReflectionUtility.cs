@@ -1,6 +1,7 @@
 ﻿#if UNITY_EDITOR
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 using Accelib.Reflection.Data;
 using UnityEngine;
@@ -48,6 +49,13 @@ namespace Accelib.Reflection.Utility
                     continue;
                 }
 
+                // 문자열 컬렉션 필드 → Contains 비교용
+                if (IsStringCollectionType(fieldType))
+                {
+                    yield return path;
+                    continue;
+                }
+
                 if (ShouldRecurse(fieldType))
                 {
                     foreach (var sub in ScanType(fieldType, path, depth + 1))
@@ -83,6 +91,13 @@ namespace Accelib.Reflection.Utility
                     var valuePath = $"{path}.CurrentValue";
                     if (TryMapNumeric(rpValueType2, out _))
                         yield return valuePath;
+                    continue;
+                }
+
+                // 문자열 컬렉션 프로퍼티 → Contains 비교용
+                if (IsStringCollectionType(propType))
+                {
+                    yield return path;
                     continue;
                 }
 
@@ -127,6 +142,7 @@ namespace Accelib.Reflection.Utility
             if (t == typeof(string)) return false;
             if (t == typeof(Color)) return false;
             if (typeof(Object).IsAssignableFrom(t)) return false;
+            if (typeof(Delegate).IsAssignableFrom(t)) return false;
 
             // Arrays / generics (List<>) require index-path support; intentionally excluded in this drop-in.
             if (t.IsArray) return false;
@@ -158,8 +174,39 @@ namespace Accelib.Reflection.Utility
                 return true;
             }
 
+            // implicit 숫자 변환 연산자 보유 타입 (e.g., PriceUnit → float)
+            if (HasImplicitNumericConversion(t))
+            {
+                numericType = ENumericType.Float;
+                return true;
+            }
+
             numericType = default;
             return false;
+        }
+
+        /// <summary> implicit 숫자 변환 연산자(op_Implicit → float/double/int/long)가 있는지 확인한다. </summary>
+        private static bool HasImplicitNumericConversion(Type t)
+        {
+            if (t.IsPrimitive || t.IsEnum) return false;
+
+            foreach (var m in t.GetMethods(BindingFlags.Public | BindingFlags.Static))
+            {
+                if (m.Name != "op_Implicit") continue;
+                var rt = m.ReturnType;
+                if (rt != typeof(float) && rt != typeof(double) && rt != typeof(int) && rt != typeof(long)) continue;
+                var ps = m.GetParameters();
+                if (ps.Length == 1 && ps[0].ParameterType == t)
+                    return true;
+            }
+
+            return false;
+        }
+
+        /// <summary> 문자열 컬렉션 타입인지 확인한다. Contains 비교에 사용 가능한 타입. </summary>
+        private static bool IsStringCollectionType(Type t)
+        {
+            return typeof(IEnumerable<string>).IsAssignableFrom(t) && t != typeof(string);
         }
 
         private static bool IsUnityHeavyProperty(Type ownerType, PropertyInfo prop)
