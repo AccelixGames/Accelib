@@ -57,8 +57,6 @@ namespace Accelib.Module.Transition
             _seq?.Kill();
             _seq = DOTween.Sequence();
 
-            cam.gameObject.SetActive(start);
-
             // 커서 플래그: 트랜지션 시작 시 Lock, 종료 시 Unlock
             if (start) showCursor?.Lock(this);
             else showCursor?.Unlock(this);
@@ -85,11 +83,16 @@ namespace Accelib.Module.Transition
             {
                 _seq.AppendCallback(() =>
                 {
+                    cam.gameObject.SetActive(true);
                     Application.backgroundLoadingPriority = ThreadPriority.High;
 #if UNITY_SWITCH && !UNITY_EDITOR
                     UnityEngine.Switch.Performance.SetCpuBoostMode(UnityEngine.Switch.Performance.CpuBoostMode.FastLoad);
 #endif
                 });
+            }
+            else
+            {
+                _seq.AppendCallback(() => cam.gameObject.SetActive(false));
             }
             
             return _seq;

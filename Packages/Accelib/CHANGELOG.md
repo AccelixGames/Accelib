@@ -5,6 +5,12 @@
 형식은 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/)를 기반으로 하며,
 [Semantic Versioning](https://semver.org/spec/v2.0.0.html)을 따른다.
 
+## [0.1.7] - 2026-02-23
+
+### 수정
+- `Accelib.UI.Transition` — `TransitionSingleton` 카메라 활성화 타이밍 수정 (콜백 내부로 이동, 종료 시 비활성화 추가)
+- `MonoBehaviourExtension.FindComponents<T>()` — static `_visitedBuffer`를 로컬 변수로 변경 (호출 간 상태 누출 방지)
+
 ## [0.1.6] - 2026-02-20
 
 ### 추가
