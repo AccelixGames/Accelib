@@ -2,6 +2,11 @@
 
 이 문서는 Accelib.Conditional 모듈의 주요 변경 내역을 기록한다.
 
+## [0.3.1] - 2026-02-24
+
+### 변경
+- `Conditional` — `Evaluate()` 버튼을 `ListDrawerSettings.OnTitleBarGUI` 헤더 버튼으로 이동 (리스트 타이틀바에 Evaluate 버튼 통합)
+
 ## [0.3.0] - 2026-02-19
 
 ### 추가

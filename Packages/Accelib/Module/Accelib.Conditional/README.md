@@ -34,7 +34,7 @@ Accelib.Conditional/
 - `Preview` — 조건식의 텍스트 미리보기 (읽기 전용)
 - `Subscribe(Action)` — 조건 내 모든 ValueProvider의 값 변경을 구독. 값이 바뀌면 콜백 발행. `IDisposable` 반환 (구독 해제용)
 
-인스펙터에서 Odin의 ListDrawer로 조건을 추가/제거/순서 변경할 수 있으며, `[Button]`으로 실시간 평가 결과를 확인할 수 있다.
+인스펙터에서 Odin의 ListDrawer로 조건을 추가/제거/순서 변경할 수 있으며, 리스트 헤더의 Evaluate 버튼으로 실시간 평가 결과를 확인할 수 있다.
 
 ### Condition
 

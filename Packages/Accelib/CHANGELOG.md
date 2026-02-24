@@ -5,6 +5,11 @@
 형식은 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/)를 기반으로 하며,
 [Semantic Versioning](https://semver.org/spec/v2.0.0.html)을 따른다.
 
+## [0.1.10] - 2026-02-24
+
+### 변경
+- `Accelib.Conditional` — `Conditional.Evaluate()` 버튼을 리스트 헤더 버튼(`OnTitleBarGUI`)으로 이동
+
 ## [0.1.9] - 2026-02-24
 
 ### 변경

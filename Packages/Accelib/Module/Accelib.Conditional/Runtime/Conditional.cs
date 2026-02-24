@@ -3,6 +3,9 @@ using System.Collections.Generic;
 using Accelib.Conditional.Data;
 using Sirenix.OdinInspector;
 using UnityEngine;
+#if UNITY_EDITOR
+using UnityEditor;
+#endif
 
 namespace Accelib.Conditional
 {
@@ -10,11 +13,12 @@ namespace Accelib.Conditional
     [System.Serializable]
     public class Conditional
     {
-        [ListDrawerSettings(DraggableItems = true, ShowFoldout = false, ShowIndexLabels = false, ShowPaging = false, ShowItemCount = false, HideRemoveButton = false)]
+        [ListDrawerSettings(DraggableItems = true, ShowFoldout = false, ShowIndexLabels = false,
+            ShowPaging = false, ShowItemCount = false, HideRemoveButton = false,
+            OnTitleBarGUI = "DrawEvaluateButton")]
         [SerializeField] private List<Condition> conditions;
 
         /// <summary> 전체 조건식을 평가한다 </summary>
-        [Button(DirtyOnClick = false, DrawResult = true)]
         public bool Evaluate()
         {
             if (conditions is not { Count: > 0 }) return false;
@@ -53,7 +57,8 @@ namespace Accelib.Conditional
             return subs.Count > 0 ? new DisposableGroup(subs) : null;
         }
 
-        [ShowInInspector, TextArea, ReadOnly, PropertyOrder(float.MinValue)]
+        [BoxGroup]
+        [ShowInInspector, TextArea, ReadOnly, PropertyOrder(float.MinValue), HideLabel, SuffixLabel("미리보기", true)]
         public string Preview
         {
             get
@@ -70,6 +75,14 @@ namespace Accelib.Conditional
                 return result;
             }
         }
+
+#if UNITY_EDITOR
+        private void DrawEvaluateButton()
+        {
+            if (GUILayout.Button("Evaluate", EditorStyles.toolbarButton, GUILayout.Width(60)))
+                Debug.Log($"[Conditional] Evaluate: {Evaluate()}");
+        }
+#endif
 
         /// <summary> 여러 IDisposable을 묶어 한 번에 해제하는 내부 컨테이너 </summary>
         private sealed class DisposableGroup : IDisposable

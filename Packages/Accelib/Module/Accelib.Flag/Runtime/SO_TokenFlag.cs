@@ -17,7 +17,7 @@ namespace Accelib.Flag
         [ShowInInspector, ReadOnly] public int LockCount => _lockTokens.Count;
         
         [TitleGroup("디버그", indent:true)]
-        [ShowInInspector, ReadOnly] private readonly HashSet<MonoBehaviour> _lockTokens = new();
+        [ShowInInspector, ReadOnly] private HashSet<MonoBehaviour> _lockTokens = new();
 
         /// <summary>상태 변경 콜백. bool 인자는 IsActive 값.</summary>
         public event Action<bool> OnStateChanged;
@@ -49,5 +49,11 @@ namespace Accelib.Flag
         }
 
         private void OnDisable() => _lockTokens.Clear();
+
+        private void Reset()
+        {
+            _lockTokens ??= new  HashSet<MonoBehaviour>();
+            _lockTokens.Clear();
+        }
     }
 }
