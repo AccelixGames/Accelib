@@ -9,8 +9,11 @@ namespace Accelib.Editor.AutoBuild.Steamwork.Control
     {
         public override int OpenTerminal(string sdkPath, string username, in List<UploadInfo> uploadInfoList)
         {
-            var steamCmdCommand  = $"{sdkPath}/tools/ContentBuilder/builder_osx/steamcmd.sh ";
-            
+            var steamCmdScript = $"{sdkPath}/tools/ContentBuilder/builder_osx/steamcmd.sh";
+            EnsureExecutable(steamCmdScript);
+
+            var steamCmdCommand  = $"{steamCmdScript} ";
+
             steamCmdCommand     += $"+login {username} ";
             foreach (var uploadInfo in uploadInfoList) 
                 steamCmdCommand += $"+run_app_build_http \"{uploadInfo.vdfPath}\" ";
@@ -70,7 +73,21 @@ namespace Accelib.Editor.AutoBuild.Steamwork.Control
         public override int VerifyLogin(string sdkPath, string username)
         {
             var steamCmdPath = Path.Combine(sdkPath, "tools", "ContentBuilder", "builder_osx", "steamcmd.sh");
+            EnsureExecutable(steamCmdPath);
             return RunSteamcmdCommand($"{steamCmdPath} +login {username} +quit");
+        }
+
+        /// <summary>파일에 실행 권한을 부여한다. (chmod +x)</summary>
+        private static void EnsureExecutable(string filePath)
+        {
+            using var process = Process.Start(new ProcessStartInfo
+            {
+                FileName = "/bin/chmod",
+                Arguments = $"+x \"{filePath}\"",
+                UseShellExecute = false,
+                CreateNoWindow = true
+            });
+            process?.WaitForExit();
         }
     }
 }

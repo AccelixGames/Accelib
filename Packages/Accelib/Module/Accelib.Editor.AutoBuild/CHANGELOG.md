@@ -2,6 +2,12 @@
 
 이 문서는 Accelib.Editor.AutoBuild 모듈의 주요 변경 내역을 기록한다.
 
+## [0.1.9] - 2026-02-24
+
+### 수정
+- macOS `steamcmd.sh` 실행 권한 문제 수정 — 실행 전 `chmod +x` 자동 적용 (`EnsureExecutable`)
+- `VerifyLogin()`과 `OpenTerminal()` 양쪽에 적용
+
 ## [0.1.8] - 2026-02-24
 
 ### 추가

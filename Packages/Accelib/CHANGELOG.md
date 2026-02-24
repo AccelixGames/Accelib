@@ -5,6 +5,11 @@
 형식은 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/)를 기반으로 하며,
 [Semantic Versioning](https://semver.org/spec/v2.0.0.html)을 따른다.
 
+## [0.1.9] - 2026-02-24
+
+### 수정
+- `Accelib.Editor.AutoBuild` — macOS `steamcmd.sh` 실행 권한 문제 수정 (실행 전 `chmod +x` 자동 적용)
+
 ## [0.1.8] - 2026-02-24
 
 ### 추가
