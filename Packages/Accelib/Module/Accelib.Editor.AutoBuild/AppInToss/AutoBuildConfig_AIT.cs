@@ -5,7 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using Accelib.Editor.Utility.Discord;
-using NaughtyAttributes;
+using Sirenix.OdinInspector;
 using UnityEditor;
 using UnityEditor.SceneManagement;
 using UnityEngine;
@@ -16,28 +16,28 @@ namespace Accelib.Editor.AppInToss
     [CreateAssetMenu(fileName = "AutoBuildConfig_AIT", menuName = "Accelib/AutoBuildConfig_AIT")]
     public class AutoBuildConfig_AIT : ScriptableObject
     {
-        [Header("# 디스코드 메세지")]
+        [Title("# 디스코드 메세지")]
         [SerializeField] private bool sendDiscordMessage = true;
         [SerializeField, TextArea, ShowIf(nameof(sendDiscordMessage))] private string discordWebhookUrl = "https://discord.com/api/webhooks/1359366072817422466/2aUjhMzBL6vtczywmaNQxnajuJxBTFJs7dUCkQkCs3dHRfGb8gyB15Nmi-DqNoOFcYFn";
         
-        [Header("# 프로젝트 설정")]
+        [Title("# 프로젝트 설정")]
         [SerializeField] private string companyName;
         [SerializeField] private string productName;
         [SerializeField, ReadOnly] private string appVersion;
 
-        [Header("# 빌드 설정")]
+        [Title("# 빌드 설정")]
         [SerializeField] private bool isDev;
         [SerializeField, Range(0, 32)] private int buildIndex = 1;
         [SerializeField, ReadOnly] private string buildVersion;
         [SerializeField, ReadOnly] private string buildPath;
         
-        [Header("# AIT 설정")]
+        [Title("# AIT 설정")]
         [SerializeField, ReadOnly] private string aitProjectFolder;
         [SerializeField, ReadOnly] private string aitBuildFolder;
         [SerializeField, ReadOnly] private string aitBuildName;
         [SerializeField] private string[] copyFolderNames = {"Build", "StreamingAssets", "TemplateData"};
 
-        [Header("# WebGLTemplate")]
+        [Title("# WebGLTemplate")]
         [SerializeField, ReadOnly] private string accelibWebglTemplatePath = @"C:\WorkSpace\github.com\AccelixGames\Accelib\Packages\Accelib\WebGLTemplates\AccelixWeb";
         [SerializeField, ReadOnly] private string webglTemplatePath = Path.Combine(Application.dataPath, "WebGLTemplates", "AccelixWeb");
         

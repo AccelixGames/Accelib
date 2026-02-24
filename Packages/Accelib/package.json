@@ -1,6 +1,6 @@
 {
   "name": "com.accelix.accelib",
-  "version": "0.1.7",
+  "version": "0.1.8",
   "displayName": "Accelib",
   "description": "A handy library is a must for the lazy developer. We've gathered all the features necessary for game development.",
   "unity": "2022.3",

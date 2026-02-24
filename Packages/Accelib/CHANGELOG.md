@@ -5,6 +5,25 @@
 형식은 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/)를 기반으로 하며,
 [Semantic Versioning](https://semver.org/spec/v2.0.0.html)을 따른다.
 
+## [0.1.8] - 2026-02-24
+
+### 추가
+- `Accelib.Editor.AutoBuild` — SteamCMD 사전 검증 추가 (SDK 경로/실행파일 존재 확인, InfoBox 실시간 피드백)
+- `Accelib.Editor.AutoBuild` — SteamCMD 로그인 검증 (`TerminalControl.VerifyLogin`) — 빌드 전 로그인 상태 확인, 실패 시 즉시 중단
+- `Accelib.Editor.AutoBuild` — SteamCMD 로그인 테스트 버튼 추가 (수동 검증용)
+- `Accelib.Editor.AutoBuild` — Addressables 빌드 옵션 (`EAddressablesBuildMode`: Skip/ContentUpdate/CleanBuild)
+- `Accelib.Editor.AutoBuild` — Addressables Remote 콘텐츠 자동 복사 (빌드 출력 폴더에 `Remote/` 포함)
+- `Accelib.Editor.AutoBuild` — 인스펙터 경로 표시: UnityBuildPath, AddressablesSrcPath, AddressablesDstPath, SteamCmdPath (ReadOnly + 폴더 열기 버튼)
+- `Accelib.Editor.AutoBuild` — `Editor/AutoBuild/`에서 `Module/Accelib.Editor.AutoBuild/`로 독립 모듈화
+- `Accelib.Editor.AutoBuild` — 모듈 README.md, CHANGELOG.md 신규 작성
+
+### 변경
+- `Accelib.Editor.AutoBuild` — asmdef에서 NaughtyAttributes 제거, Addressables 참조 추가
+- `Accelib.Editor.AutoBuild` — `AppConfig` 어트리뷰트를 NaughtyAttributes `[Header]`에서 Odin `[TitleGroup]`으로 마이그레이션
+- `Accelib.Editor.AutoBuild` — 빌드 파이프라인 Phase 분리 (Phase 0 사전 검증 → Phase 1 준비 → Phase 2 VDF → Phase 3 Addressables → Phase 4 플레이어 빌드 → Phase 5 업로드)
+- `Accelib.Editor.AutoBuild` — Discord 빌드 성공 알림에 Addressables 복사 결과 포함
+- `Accelib.Editor.AutoBuild` — 인스펙터 레이아웃 재구성 (계정 및 앱 → 앱, Username → 빌드 옵션으로 이동)
+
 ## [0.1.7] - 2026-02-23
 
 ### 수정

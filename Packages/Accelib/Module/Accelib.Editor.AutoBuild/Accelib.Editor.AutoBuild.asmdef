@@ -2,8 +2,9 @@
   "name": "Accelib.Editor.AutoBuild",
   "rootNamespace": "Accelib.Editor",
   "references": [
-    "NaughtyAttributes.Core",
-    "UniTask"
+    "UniTask",
+    "Unity.Addressables",
+    "Unity.Addressables.Editor"
   ],
   "includePlatforms": [
     "Editor"

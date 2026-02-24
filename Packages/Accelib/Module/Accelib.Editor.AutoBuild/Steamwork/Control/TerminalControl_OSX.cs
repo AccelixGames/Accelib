@@ -65,5 +65,12 @@ namespace Accelib.Editor.AutoBuild.Steamwork.Control
             UnityEngine.Debug.Log($"steamcmd 프로세스가 종료되었습니다. 종료 코드: {exitCode}");
             return exitCode;
         }
+
+        /// <inheritdoc/>
+        public override int VerifyLogin(string sdkPath, string username)
+        {
+            var steamCmdPath = Path.Combine(sdkPath, "tools", "ContentBuilder", "builder_osx", "steamcmd.sh");
+            return RunSteamcmdCommand($"{steamCmdPath} +login {username} +quit");
+        }
     }
 }

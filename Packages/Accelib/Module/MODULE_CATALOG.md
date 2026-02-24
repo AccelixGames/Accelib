@@ -19,6 +19,7 @@
 | **Accelib.UI.Popup** | 레이어 팝업 및 모달 다이얼로그. 스택 기반 레이어 관리, 비동기 모달 패턴 | Accelib.Core, Accelib.Flag, Accelib.Localization, UniTask, Unity Atoms | [README](Accelib.UI.Popup/README.md) |
 | **Accelib.UI.Transition** | 화면 전환 이펙트 (페이드, 마스크, 도어 등). DOTween 기반 트랜지션 | Accelib.Runtime, Accelib.Flag, DOTween, Odin | [README](Accelib.UI.Transition/README.md) |
 | **Accelib.Localization** | 로컬라이제이션 시스템. 다국어 텍스트, 언어별 폰트 교체, Google Sheets 다운로드 | Accelib.Runtime, TMP, SerializedCollections, Odin | [README](Accelib.Localization/README.md) |
+| **Accelib.Editor.AutoBuild** | Steam 빌드 자동화. Unity 빌드 → SteamCMD 업로드 → Discord 알림 파이프라인. Addressables 빌드 통합 | Odin Inspector, UniTask, Addressables | [README](Accelib.Editor.AutoBuild/README.md) |
 
 ## 모듈 상세
 
@@ -88,6 +89,12 @@
 - `Accelib.Runtime`의 `Module.Localization`에서 독립 모듈로 추출
 - Editor 코드 별도 asmdef(`Accelib.Localization.Editor`)로 분리
 
+### Accelib.Editor.AutoBuild
+- **경로:** `Accelib.Editor.AutoBuild/`
+- **주요 클래스:** `AutoBuildConfig` (빌드 자동화 SO), `AppConfig` (앱 설정), `TerminalUtility` (SteamCMD 실행), `DiscordWebhook` (Discord 알림), `EAddressablesBuildMode` (빌드 모드 enum)
+- **빌드 파이프라인:** Phase 0(사전 검증) → Phase 1(준비) → Phase 2(VDF) → Phase 3(Addressables) → Phase 4(플레이어 빌드 + Remote 복사) → Phase 5(SteamCMD 업로드)
+- Editor 전용 모듈. Odin Inspector, UniTask, Addressables 의존
+
 ## 의존성 그래프
 
 ```
@@ -114,6 +121,8 @@ Accelib.Flag (Odin 디버깅용 의존)
 Accelib.Localization (Accelib.Runtime, TMP, SerializedCollections, Odin 외부 의존)
     ↑
     └── Accelib.Localization.Editor (Editor 전용, UniTask 외부 의존)
+
+Accelib.Editor.AutoBuild (Editor 전용, Odin, UniTask, Addressables 외부 의존, 독립)
 ```
 
 ## 코어 어셈블리
