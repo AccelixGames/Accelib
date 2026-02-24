@@ -231,9 +231,8 @@ namespace Accelib.Editor
                         // 빌드 실행 (에러 시 throw)
                         var summary = Internal_Build(in buildInfo);
 
-                        // Addressables Remote 콘텐츠 복사
-                        var buildDir = Path.GetDirectoryName(buildInfo.buildPath);
-                        var copyCount = Internal_CopyAddressablesRemote(buildDir, buildInfo.depot.buildTarget);
+                        // Addressables Remote 콘텐츠 복사 (_Data 폴더로)
+                        var copyCount = Internal_CopyAddressablesRemote(buildInfo.buildPath, buildInfo.depot.buildTarget);
 
                         // 빌드 성공 Discord 알림
                         Internal_SendBuildSuccess(in buildInfo, in summary, copyCount);
@@ -397,7 +396,8 @@ namespace Accelib.Editor
 
             if (sendDiscordMessage)
                 DiscordWebhook.SendMsg(discordWebhookUrl,
-                    $":package: **Addressables 빌드 시작!** [{GetNowTime()}] ({addressablesBuildMode})");
+                    $":package: **Addressables 빌드 시작!** [{GetNowTime()}] \n" +
+                    $"({addressablesBuildMode})");
 
             switch (addressablesBuildMode)
             {
@@ -433,13 +433,10 @@ namespace Accelib.Editor
                     $":white_check_mark: **Addressables 빌드 완료!** [{GetNowTime()}]");
         }
 
-        /// <summary>Addressables Remote 콘텐츠를 빌드 출력 폴더로 복사한다.</summary>
+        /// <summary>Addressables Remote 콘텐츠를 빌드 출력의 _Data 폴더로 복사한다.</summary>
         /// <returns>복사된 파일 수</returns>
-        private int Internal_CopyAddressablesRemote(string buildOutputDir, BuildTarget buildTarget)
+        private int Internal_CopyAddressablesRemote(string buildPath, BuildTarget buildTarget)
         {
-            if (addressablesBuildMode == EAddressablesBuildMode.Skip)
-                return 0;
-
             var projectRoot = Path.GetDirectoryName(Application.dataPath);
             var targetName = buildTarget.ToString();
             var remoteSrcBase = Path.Combine(projectRoot, "Remote");
@@ -470,9 +467,11 @@ namespace Accelib.Editor
                 }
             }
 
-            // 대상 폴더에 복사
+            // _Data 폴더 내부에 복사
+            var buildDir = Path.GetDirectoryName(buildPath);
+            var exeName = Path.GetFileNameWithoutExtension(buildPath);
             var folderName = Path.GetFileName(remoteSrcPath);
-            var remoteDstPath = Path.Combine(buildOutputDir, "Remote", folderName);
+            var remoteDstPath = Path.Combine(buildDir, $"{exeName}_Data", "Remote", folderName);
             var copyCount = CopyDirectoryRecursive(remoteSrcPath, remoteDstPath);
 
             Debug.Log($"Addressables Remote 복사 완료: {copyCount}개 파일 → {remoteDstPath}");
@@ -601,10 +600,10 @@ namespace Accelib.Editor
         private string GetAddressablesDstPath()
         {
             var buildPath = GetUnityBuildPath();
-            if (string.IsNullOrEmpty(buildPath)) return "(미설정)";
+            if (string.IsNullOrEmpty(buildPath) || string.IsNullOrEmpty(appName)) return "(미설정)";
 
             var target = EditorUserBuildSettings.activeBuildTarget.ToString();
-            return Path.Combine(buildPath, "Remote", target);
+            return Path.Combine(buildPath, $"{appName}_Data", "Remote", target);
         }
 
         private static int CopyDirectoryRecursive(string srcDir, string dstDir)

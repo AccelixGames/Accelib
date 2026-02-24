@@ -4,6 +4,10 @@
 
 ## [0.1.9] - 2026-02-24
 
+### 변경
+- Addressables Remote 복사 대상을 `{buildDir}/Remote/` → `{exeName}_Data/Remote/`로 변경
+- Addressables 빌드 모드가 Skip이어도 Remote 폴더 복사 수행 (기존 빌드 콘텐츠 활용)
+
 ### 수정
 - macOS `steamcmd.sh` 실행 권한 문제 수정 — 실행 전 `chmod +x` 자동 적용 (`EnsureExecutable`)
 - `VerifyLogin()`과 `OpenTerminal()` 양쪽에 적용

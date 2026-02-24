@@ -7,6 +7,10 @@
 
 ## [0.1.9] - 2026-02-24
 
+### 변경
+- `Accelib.Editor.AutoBuild` — Remote 복사 대상을 `{buildDir}/Remote/` → `{exeName}_Data/Remote/`로 변경
+- `Accelib.Editor.AutoBuild` — Addressables 빌드 Skip 모드에서도 Remote 폴더 복사 수행
+
 ### 수정
 - `Accelib.Editor.AutoBuild` — macOS `steamcmd.sh` 실행 권한 문제 수정 (실행 전 `chmod +x` 자동 적용)
 
