@@ -16,7 +16,8 @@ namespace Accelib.Module.Prefs.Data.Base
             try
             {
                 var json = PlayerPrefs.GetString(Variable.name, null);
-                if (json == null) 
+                //if (json == null)
+                if(string.IsNullOrEmpty(json))
                     Variable.Value = (T)Variable.BaseValue;
                 else 
                     Variable.Value = JsonConvert.DeserializeObject<T>(json);
