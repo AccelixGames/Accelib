@@ -5,6 +5,16 @@
 형식은 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/)를 기반으로 하며,
 [Semantic Versioning](https://semver.org/spec/v2.0.0.html)을 따른다.
 
+## [0.1.11] - 2026-02-26
+
+### 추가
+- `ScriptableObjectCached<T>` / `SerializedScriptableObjectCached<T>` — 인스펙터 컨텍스트 메뉴에 `ResetInstance` 추가 (에디터 에셋 캐시 초기화 후 재탐색)
+
+### 수정
+- `SceneManagerAddressable.AddScnAsync` — Stale OperationHandle 감지 및 해제 추가 (ChangeScnAsync의 Single 모드로 파괴된 Additive 씬의 핸들 잔류 문제 수정)
+- `SceneManagerAddressable.AddScnAsync` — null/빈 AssetReference 검증 추가 (LogError)
+- `SceneManagerAddressable.RemoveScnAsync` — null/빈 AssetReference 및 이미 해제된 핸들 검증 추가 (LogError/LogWarning)
+
 ## [0.1.10] - 2026-02-24
 
 ### 변경

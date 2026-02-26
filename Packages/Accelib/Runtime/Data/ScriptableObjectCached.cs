@@ -17,7 +17,7 @@ namespace Accelib.Data
 #if  UNITY_EDITOR
         private static T _editorInstance;
         [FoldoutGroup("에디터 에셋", Order = float.MinValue, Expanded = true)]
-        [ShowInInspector, HideLabel] public static T EditorInstance
+        [ShowInInspector, HideLabel, InlineButton("ResetInstance", "Reset")] public static T EditorInstance
         {
             get
             {
@@ -26,6 +26,13 @@ namespace Accelib.Data
                     .Select(AssetDatabase.LoadAssetByGUID<T>).FirstOrDefault();
                 return _editorInstance;
             }
+        }
+        
+        private void ResetInstance()
+        {
+            _editorInstance = null;
+            _ = EditorInstance;
+            Debug.Log($"[{typeof(T).Name}] EditorInstance reset: {_editorInstance?.name ?? "null"}");
         }
 #endif
     }

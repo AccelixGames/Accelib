@@ -26,6 +26,15 @@ namespace Accelib.Data
                 return _editorInstance;
             }
         }
+
+        [FoldoutGroup("에디터 에셋")]
+        [Button("Reset Instance"), PropertyOrder(1)]
+        private void ResetInstance()
+        {
+            _editorInstance = null;
+            _ = EditorInstance;
+            Debug.Log($"[{typeof(T).Name}] EditorInstance reset: {_editorInstance?.name ?? "null"}");
+        }
 #endif
     }
 }

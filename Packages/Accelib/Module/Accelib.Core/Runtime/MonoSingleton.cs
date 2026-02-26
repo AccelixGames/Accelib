@@ -1,13 +1,16 @@
-﻿using UnityEngine;
+﻿using Sirenix.OdinInspector;
+using UnityEngine;
 
 namespace Accelib.Core
 {
     [DefaultExecutionOrder(-1000)]
     public class MonoSingleton<T> : MonoBehaviour where T : MonoBehaviour
     {
+        [TitleGroup("MonoSingleton", indent: true)]
+        [ShowInInspector, ReadOnly, PropertyOrder(-1)] public static T Instance { get; private set; }
+        [TitleGroup("MonoSingleton")]
         [SerializeField] private bool dontDestroyOnLoad = false;
         
-        public static T Instance { get; private set; }
 
         public static T GetInstanceSafe()
         {

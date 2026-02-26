@@ -10,17 +10,19 @@ namespace Accelib.Module.Transition
 {
     public class TransitionSingleton : MonoSingleton<TransitionSingleton>
     {
-        [Header("플래그")]
+        [Title("플래그")]
         [SerializeField] private SO_TokenFlag showCursor;
 
-        [Header("상태")]
+        [Title("설정")]
+        [SerializeField] private AudioListener audioListener;
         [SerializeField] private Camera cam;
+        
+        [Title("상태")]
         [SerializeField] private TransitionEffect[] targetEffects;
         [SerializeField, ReadOnly] private bool isMoving;
         [SerializeField, ReadOnly] private int currIndex;
 
-        // [Header("오디오")]
-        // [SerializeField, Range(0f, 1f)] private float transitionControlVolume = 1f;
+        public void ToggleAudioListener(bool enable) => audioListener.gameObject.SetActive(enable);
 
         private Sequence _seq;
         public static bool IsActive => Instance?.targetEffects.Any(x => x.IsActive) ?? false;
@@ -29,6 +31,7 @@ namespace Accelib.Module.Transition
         {
             currIndex = 0;
             cam.gameObject.SetActive(false);
+            ToggleAudioListener(false);
         }
     
         [HorizontalGroup("# 테스트")]
