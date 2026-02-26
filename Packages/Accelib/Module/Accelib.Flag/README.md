@@ -24,7 +24,7 @@ Accelib.Flag/
 
 `ScriptableObject` 기반 토큰 플래그 관리자. `HashSet<MonoBehaviour>`으로 잠금 토큰을 관리한다.
 
-- `IsActive` — 하나 이상의 토큰이 잠금 중인지 여부 (`bool`)
+- `IsActive` — 하나 이상의 토큰이 잠금 중인지 여부 (`bool`). 접근 시 파괴된 토큰 자동 정리
 - `LockCount` — 현재 잠금 토큰 수 (`int`)
 - `Lock(MonoBehaviour token)` — 플래그 활성화 요청. 중복 호출 시 무시. 상태 변경 시 `OnStateChanged` 발생
 - `Unlock(MonoBehaviour token)` — 플래그 비활성화 요청. 상태 변경 시 `OnStateChanged` 발생

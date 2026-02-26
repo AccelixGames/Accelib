@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Sirenix.OdinInspector;
 using UnityEngine;
 
@@ -13,7 +14,17 @@ namespace Accelib.Flag
     public class SO_TokenFlag : ScriptableObject
     {
         [TitleGroup("상태", indent:true)]
-        [ShowInInspector, ReadOnly] public bool IsActive => _lockTokens.Count > 0;
+        [ShowInInspector, ReadOnly] public bool IsActive
+        {
+            get
+            {
+                // 파괴된 토큰 자동 정리
+                if (_lockTokens.Count > 0 && _lockTokens.RemoveWhere(t => t == null) > 0)
+                    OnStateChanged?.Invoke(_lockTokens.Count > 0);
+
+                return _lockTokens.Count > 0;
+            }
+        }
         [ShowInInspector, ReadOnly] public int LockCount => _lockTokens.Count;
         
         [TitleGroup("디버그", indent:true)]

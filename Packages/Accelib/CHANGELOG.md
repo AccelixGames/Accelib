@@ -14,6 +14,7 @@
 - `SceneManagerAddressable.AddScnAsync` — Stale OperationHandle 감지 및 해제 추가 (ChangeScnAsync의 Single 모드로 파괴된 Additive 씬의 핸들 잔류 문제 수정)
 - `SceneManagerAddressable.AddScnAsync` — null/빈 AssetReference 검증 추가 (LogError)
 - `SceneManagerAddressable.RemoveScnAsync` — null/빈 AssetReference 및 이미 해제된 핸들 검증 추가 (LogError/LogWarning)
+- `Accelib.Flag` — `SO_TokenFlag.IsActive`에서 파괴된 토큰 자동 정리 (씬 전환 시 플래그 잔류 버그 수정)
 
 ## [0.1.10] - 2026-02-24
 
