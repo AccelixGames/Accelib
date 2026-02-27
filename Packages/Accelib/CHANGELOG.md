@@ -5,6 +5,17 @@
 형식은 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/)를 기반으로 하며,
 [Semantic Versioning](https://semver.org/spec/v2.0.0.html)을 따른다.
 
+## [0.1.13] - 2026-02-27
+
+### 추가
+- `Accelib.Editor.AutoBuild` — 빌드 크기 추적 기능 (플레이어 빌드 크기 + Addressables 크기 측정, 직전 빌드 대비 변화량 콘솔/Discord 출력)
+- `Accelib.Editor.AutoBuild` — `BuildSizeRecord` 데이터 모델, `BuildSizeUtility` 측정/포맷/히스토리 유틸리티
+
+## [0.1.12] - 2026-02-27
+
+### 수정
+- `Accelib.Core` — `MonoSingleton<T>.Awake()` 중복 인스턴스 가드 추가 (DontDestroyOnLoad 씬 재진입 시 assertion 에러 수정)
+
 ## [0.1.11] - 2026-02-26
 
 ### 추가

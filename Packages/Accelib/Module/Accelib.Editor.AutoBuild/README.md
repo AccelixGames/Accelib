@@ -12,6 +12,8 @@ Accelib.Editor.AutoBuild/
 ├── Architecture/
 │   ├── AppConfig.cs                  # Steam 앱 설정 (앱 ID, 브랜치, 디포)
 │   ├── BuildInfo.cs                  # 빌드 정보 구조체
+│   ├── BuildSizeRecord.cs            # 빌드 크기 기록 데이터 모델
+│   ├── BuildSizeUtility.cs           # 빌드 크기 측정/포맷/히스토리 유틸리티
 │   ├── DepotConfig.cs                # 디포 설정 구조체
 │   ├── EAddressablesBuildMode.cs     # Addressables 빌드 모드 열거형
 │   └── UploadInfo.cs                 # 업로드 정보 구조체
@@ -46,7 +48,7 @@ Phase 3: Addressables 빌드 (선택)
   → Skip / CleanBuild / ContentUpdate
 
 Phase 4: 플레이어 빌드
-  → 디포별 BuildPlayer → Remote 콘텐츠 복사 → Discord 결과 알림
+  → 디포별 BuildPlayer → Remote 콘텐츠 복사 → 크기 측정/비교 → Discord 결과 알림
 
 Phase 5: SteamCMD 업로드 (선택)
   → steamcmd +login +run_app_build_http +quit → Discord 결과 알림
@@ -81,6 +83,32 @@ Phase 5: SteamCMD 업로드 (선택)
 | #빌드 | `addressablesBuildMode` | Addressables 빌드 모드 (Skip/ContentUpdate/CleanBuild) |
 | #빌드 | `skipBuild`, `skipUpload` | 빌드/업로드 건너뛰기 토글 |
 | #빌드 | `patchNote` | 패치 노트 텍스트 |
+
+### BuildSizeUtility
+
+빌드 크기 측정 및 히스토리 관리 정적 유틸리티.
+
+- `MeasureDirectorySize(path)` — 디렉토리 전체 파일 크기 합산 (bytes)
+- `MeasurePlayerBuildSize(buildOutputPath)` — 빌드 exe 경로에서 상위 디렉토리 크기 측정
+- `FormatBytes(long)` — 사람이 읽기 쉬운 크기 문자열 (`"847.23 MB"`, `"1.23 GB"`)
+- `FormatDiff(current, previous)` — 크기 변화량 (`"+12.45 MB (+1.5%)"`, `"(첫 빌드)"`)
+- `LoadPreviousRecord(appId, target)` — 히스토리 JSON에서 이전 기록 조회
+- `SaveRecord(record)` — 히스토리 JSON에 현재 기록 저장 (같은 앱+타겟 교체)
+
+히스토리 파일 위치: `{ProjectRoot}/Library/Accelib/AutoBuild/build_size_history.json`
+
+### BuildSizeRecord
+
+빌드 크기 기록 데이터 모델. `appId + buildTarget` 조합별로 직전 빌드 1건만 보관된다.
+
+| 필드 | 설명 |
+|------|------|
+| `appId` | Steam 앱 ID |
+| `buildTarget` | 빌드 타겟 (StandaloneWindows64 등) |
+| `version` | 빌드 버전 문자열 |
+| `timestamp` | 빌드 완료 시각 |
+| `playerBuildSizeBytes` | 플레이어 빌드 크기 (bytes) |
+| `addressablesSizeBytes` | Addressables Remote 크기 (bytes) |
 
 ### EAddressablesBuildMode
 

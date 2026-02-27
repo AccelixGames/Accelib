@@ -225,7 +225,7 @@ namespace Accelib.Editor
                     if (sendDiscordMessage)
                         DiscordWebhook.SendMsg(discordWebhookUrl, buildStartMsg);
 
-                    // 각 디포 빌드 + Remote 복사 + 결과 알림
+                    // 각 디포 빌드 + Remote 복사 + 크기 측정 + 결과 알림
                     foreach (var buildInfo in buildInfos)
                     {
                         // 빌드 실행 (에러 시 throw)
@@ -234,8 +234,8 @@ namespace Accelib.Editor
                         // Addressables Remote 콘텐츠 복사 (_Data 폴더로)
                         var copyCount = Internal_CopyAddressablesRemote(buildInfo.buildPath, buildInfo.depot.buildTarget);
 
-                        // 빌드 성공 Discord 알림
-                        Internal_SendBuildSuccess(in buildInfo, in summary, copyCount);
+                        // 빌드 크기 측정 + 기록 + Discord 알림
+                        Internal_MeasureAndReportBuildSize(in buildInfo, in summary, copyCount);
                     }
 
                     SetLogTypes(StackTraceLogType.ScriptOnly);
@@ -532,17 +532,62 @@ namespace Accelib.Editor
             return summary;
         }
 
-        /// <summary>빌드 성공 Discord 알림을 전송한다.</summary>
-        private void Internal_SendBuildSuccess(in BuildInfo buildInfo, in BuildSummary summary, int copyCount)
+        /// <summary>빌드 크기를 측정하고, 이전 빌드와 비교하여 콘솔 및 Discord로 보고한다.</summary>
+        private void Internal_MeasureAndReportBuildSize(in BuildInfo buildInfo, in BuildSummary summary, int copyCount)
         {
+            var targetStr = buildInfo.depot.buildTarget.ToString();
+
+            // 빌드 크기 측정
+            var playerSize = BuildSizeUtility.MeasurePlayerBuildSize(summary.outputPath);
+
+            // Addressables Remote 크기 측정
+            var projectRoot = Path.GetDirectoryName(Application.dataPath);
+            var addressablesSrcPath = Path.Combine(projectRoot, "Remote", targetStr);
+            var addressablesSize = BuildSizeUtility.MeasureDirectorySize(addressablesSrcPath);
+
+            // 이전 빌드 기록 로드
+            var previous = BuildSizeUtility.LoadPreviousRecord(buildInfo.app.appID, targetStr);
+
+            // 현재 기록 저장
+            var record = new BuildSizeRecord
+            {
+                appId = buildInfo.app.appID,
+                buildTarget = targetStr,
+                version = buildInfo.versionStr,
+                timestamp = GetNowTime(),
+                playerBuildSizeBytes = playerSize,
+                addressablesSizeBytes = addressablesSize
+            };
+            BuildSizeUtility.SaveRecord(record);
+
+            // 크기 문자열 포맷
+            var playerSizeStr = BuildSizeUtility.FormatBytes(playerSize);
+            var addressablesSizeStr = BuildSizeUtility.FormatBytes(addressablesSize);
+            var playerDiffStr = previous != null
+                ? BuildSizeUtility.FormatDiff(playerSize, previous.playerBuildSizeBytes)
+                : "(첫 빌드)";
+            var addressablesDiffStr = previous != null
+                ? BuildSizeUtility.FormatDiff(addressablesSize, previous.addressablesSizeBytes)
+                : "(첫 빌드)";
+
+            // 콘솔 로그
             var totalTime = $"{summary.totalTime.Minutes}분 {summary.totalTime.Seconds}초";
+            Debug.Log($"빌드 성공: {buildInfo.app.name}/{targetStr} ({totalTime})\n" +
+                      $"  빌드 크기: {playerSizeStr} [{playerDiffStr}]\n" +
+                      $"  Addressables 크기: {addressablesSizeStr} [{addressablesDiffStr}]");
+
+            // Discord Embed
             var desc = $"- **버전**: v{Application.version}({buildInfo.versionNumber})\n" +
-                       $"- **타겟**: {buildInfo.depot.buildTarget}\n" +
+                       $"- **타겟**: {targetStr}\n" +
                        $"- **경로**: {summary.outputPath}\n" +
-                       $"- **소요시간**: {totalTime}\n";
+                       $"- **소요시간**: {totalTime}\n" +
+                       $"- **빌드 크기**: {playerSizeStr} `{playerDiffStr}`\n";
+
+            if (addressablesSize > 0 || addressablesBuildMode != EAddressablesBuildMode.Skip)
+                desc += $"- **Addressables 크기**: {addressablesSizeStr} `{addressablesDiffStr}`\n";
 
             if (copyCount > 0)
-                desc += $"- **Addressables**: {copyCount}개 파일 복사 완료\n";
+                desc += $"- **Addressables 복사**: {copyCount}개 파일\n";
 
             var msg = new JDiscordMsg { embeds = new JDiscordEmbed[1] };
             msg.embeds[0] = new JDiscordEmbed
@@ -553,7 +598,6 @@ namespace Accelib.Editor
 
             if (sendDiscordMessage)
                 DiscordWebhook.SendMsg(discordWebhookUrl, msg);
-            Debug.Log($"빌드 성공: {buildInfo.app.name}/{buildInfo.depot.buildTarget} ({totalTime})");
         }
 
         #endregion

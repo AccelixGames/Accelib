@@ -2,6 +2,15 @@
 
 이 문서는 Accelib.Editor.AutoBuild 모듈의 주요 변경 내역을 기록한다.
 
+## [0.1.13] - 2026-02-27
+
+### 추가
+- 빌드 크기 추적 기능 — 플레이어 빌드 크기 + Addressables 크기 측정 및 보고
+- 빌드 크기 히스토리 — 직전 빌드 기록을 JSON 파일로 보관 (`Library/Accelib/AutoBuild/`)
+- 이전 빌드 대비 크기 변화량 콘솔 로그 및 Discord 알림에 출력 (절대값 + 백분율)
+- `BuildSizeRecord` — 빌드 크기 기록 데이터 모델
+- `BuildSizeUtility` — 디렉토리 크기 측정, 포맷팅, 히스토리 I/O 정적 유틸리티
+
 ## [0.1.9] - 2026-02-24
 
 ### 변경

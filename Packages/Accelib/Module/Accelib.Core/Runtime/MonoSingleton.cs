@@ -1,4 +1,5 @@
-﻿using Sirenix.OdinInspector;
+﻿using System;
+using Sirenix.OdinInspector;
 using UnityEngine;
 
 namespace Accelib.Core
@@ -34,10 +35,17 @@ namespace Accelib.Core
         
         protected virtual void Awake()
         {
-            Instance = GetComponent<T>();
-            
-            if(dontDestroyOnLoad)
-                DontDestroyOnLoad(this);
+            try
+            {
+                Instance = GetComponent<T>();
+
+                if (dontDestroyOnLoad)
+                    DontDestroyOnLoad(gameObject);
+            }
+            catch (Exception e)
+            {
+                // ignored
+            }
         }
         
         protected static void Initialize() => Instance = null;
