@@ -18,6 +18,10 @@ namespace Accelib.Module.SceneManagement
         public static UniTask<SceneInstance?> ChangeScnPreviousAsync(int transitionIndex = 0) =>
             ChangeScnAsync(Config.prevScn, transitionIndex);
 
+        /// <summary>게임 씬으로 전환한다.</summary>
+        public static UniTask<SceneInstance?> ChangeScnGameAsync(int transitionIndex = 0) =>
+            ChangeScnAsync(Config.GameScn, transitionIndex);
+
         public static async UniTask<SceneInstance?> ChangeScnAsync(AssetReference scnRef, int transitionIndex = 0)
         {
             // 로딩 우선도 캐싱

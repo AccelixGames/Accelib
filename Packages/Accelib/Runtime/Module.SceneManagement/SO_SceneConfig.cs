@@ -13,6 +13,7 @@ namespace Accelib.Module.SceneManagement
         
         [field: SerializeField, NaughtyAttributes.Scene] public string BootScnName { get; private set; }
         [field: SerializeField, NaughtyAttributes.Scene] public string EmptyScnName { get; private set; }
+        [field: SerializeField] public AssetReference GameScn { get; private set; }
         
         [field: TitleGroup("옵션", indent:true)]
         [field: SerializeField] public bool ChangeBackgroundLoadSpd { get; private set; }
