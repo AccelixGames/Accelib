@@ -26,7 +26,7 @@ namespace Accelib.Utility.Rb
         public Rigidbody PrimaryRigidbody => rigidbodies[primaryIndex];
         public Collider PrimaryCollider => colliders[primaryIndex];
         
-        private void Awake()
+        public void Awake()
         {
             if(autoFindRigidBody)
                 rigidbodies = GetComponentsInChildren<Rigidbody>();
@@ -78,6 +78,7 @@ namespace Accelib.Utility.Rb
                         rbDataArray[i] = rigidbodies[i].ToData();
                     
                     // 리지드바디 삭제
+                    rigidbodies[i].isKinematic = true;
                     Destroy(rigidbodies[i]);
                     rigidbodies[i] = null;
                 }
