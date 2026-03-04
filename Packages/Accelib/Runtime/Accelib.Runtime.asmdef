@@ -33,7 +33,8 @@
         "Accelib.Flag",
         "Accelib.Core",
         "Accelib.Localization",
-        "Accelib.Extensions"
+        "Accelib.Extensions",
+        "Accelib.OdinExtension.Runtime"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

@@ -1,33 +1,39 @@
 using System;
-using Sirenix.OdinInspector;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
+using UnityEngine.Serialization;
 
 namespace Accelib.Module.SceneManagement
 {
+    /// <summary>씬 참조 유형.</summary>
+    public enum ESceneRefType
+    {
+        Addressable = 0,
+        BuiltIn = 1,
+    }
+
     /// <summary>
     /// Addressable 또는 Built-in 씬을 통합하여 참조하는 직렬화 가능한 구조체.
     /// </summary>
     [Serializable]
     public struct SceneRef
     {
-        [SerializeField] private bool _isBuiltIn;
+        [FormerlySerializedAs("_isBuiltIn")]
+        [SerializeField] private ESceneRefType _type;
 
-        [ShowIf("_isBuiltIn")]
-        [NaughtyAttributes.Scene]
         [SerializeField] private string _builtInSceneName;
 
-        [HideIf("_isBuiltIn")]
         [SerializeField] private AssetReference _addressableRef;
 
-        public bool IsBuiltIn => _isBuiltIn;
+        public ESceneRefType Type => _type;
+        public bool IsBuiltIn => _type == ESceneRefType.BuiltIn;
         public string BuiltInSceneName => _builtInSceneName;
         public AssetReference AddressableRef => _addressableRef;
 
         /// <summary>이 참조가 유효한지 확인한다.</summary>
         public bool IsValid()
         {
-            if (_isBuiltIn)
+            if (_type == ESceneRefType.BuiltIn)
                 return !string.IsNullOrEmpty(_builtInSceneName);
 
             return _addressableRef != null && _addressableRef.RuntimeKeyIsValid();
@@ -36,7 +42,7 @@ namespace Accelib.Module.SceneManagement
         /// <summary>Addressable 씬으로 생성한다.</summary>
         public SceneRef(AssetReference assetRef)
         {
-            _isBuiltIn = false;
+            _type = ESceneRefType.Addressable;
             _builtInSceneName = null;
             _addressableRef = assetRef;
         }
@@ -44,7 +50,7 @@ namespace Accelib.Module.SceneManagement
         /// <summary>Built-in 씬으로 생성한다.</summary>
         public SceneRef(string sceneName)
         {
-            _isBuiltIn = true;
+            _type = ESceneRefType.BuiltIn;
             _builtInSceneName = sceneName;
             _addressableRef = null;
         }

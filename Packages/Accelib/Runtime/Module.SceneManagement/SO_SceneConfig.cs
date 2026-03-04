@@ -1,4 +1,5 @@
 ﻿using Accelib.Data;
+using Accelib.OdinExtension;
 using Sirenix.OdinInspector;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -10,8 +11,8 @@ namespace Accelib.Module.SceneManagement
     {
         public override string EditorPreviewName => "씬 설정";
         
-        [field: SerializeField, NaughtyAttributes.Scene] public string BootScnName { get; private set; }
-        [field: SerializeField, NaughtyAttributes.Scene] public string EmptyScnName { get; private set; }
+        [field: SerializeField, SceneDropdown] public string BootScnName { get; private set; }
+        [field: SerializeField, SceneDropdown] public string EmptyScnName { get; private set; }
         [field: SerializeField] public SceneRef GameScn { get; private set; }
         
         [field: TitleGroup("옵션", indent:true)]

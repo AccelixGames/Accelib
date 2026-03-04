@@ -5,6 +5,23 @@
 형식은 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/)를 기반으로 하며,
 [Semantic Versioning](https://semver.org/spec/v2.0.0.html)을 따른다.
 
+## [0.1.18] - 2026-03-04
+
+### 추가
+- `Module.SceneManagement` — `SceneRefDrawer` Odin 커스텀 드로어 추가 (한 줄 레이아웃: Enum + 씬/Addressable 필드)
+
+### 변경
+- `Module.SceneManagement` — `SceneRef.bool _isBuiltIn` → `ESceneRefType _type` enum 변경 (`FormerlySerializedAs`로 직렬화 호환 유지)
+
+## [0.1.17] - 2026-03-04
+
+### 추가
+- `Accelib.OdinExtension` — `SceneDropdownAttribute` 추가: Build Settings 씬 목록을 드롭다운으로 표시하는 Odin 속성 (NaughtyAttributes.Scene 대체)
+- `Accelib.OdinExtension` — Runtime/Editor asmdef 분리 (`Accelib.OdinExtension.Runtime` + `Accelib.OdinExtension.Editor`)
+
+### 변경
+- `Module.SceneManagement` — `SO_SceneConfig`/`SceneRef`의 `[NaughtyAttributes.Scene]` → `[SceneDropdown]` 교체
+
 ## [0.1.16] - 2026-03-04
 
 ### 추가

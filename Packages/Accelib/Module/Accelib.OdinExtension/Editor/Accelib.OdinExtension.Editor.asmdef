@@ -1,8 +1,9 @@
 {
-  "name": "Accelib.OdinExtension",
-  "rootNamespace": "Accelib.OdinExtension",
+  "name": "Accelib.OdinExtension.Editor",
+  "rootNamespace": "Accelib.OdinExtension.Editor",
   "references": [
-    "R3.Unity"
+    "R3.Unity",
+    "Accelib.OdinExtension.Runtime"
   ],
   "includePlatforms": [
     "Editor"

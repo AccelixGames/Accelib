@@ -2,6 +2,16 @@
 
 이 문서는 Accelib.OdinExtension 모듈의 주요 변경 내역을 기록한다.
 
+## [0.3.0] - 2026-03-04
+
+### 추가
+- `SceneDropdownAttribute` — Build Settings 씬 목록을 드롭다운으로 표시하는 Odin 속성 (NaughtyAttributes.Scene 대체)
+- `SceneDropdownAttributeDrawer` — SceneDropdownAttribute 전용 Odin 드로어 (Popup 기반)
+- `Accelib.OdinExtension.Runtime` asmdef — 런타임 속성 전용 어셈블리 (빌드 포함)
+
+### 변경
+- 기존 `Accelib.OdinExtension` asmdef → `Accelib.OdinExtension.Editor`로 리네임 (Runtime/Editor 분리)
+
 ## [0.2.1] - 2026-02-13
 
 ### 수정

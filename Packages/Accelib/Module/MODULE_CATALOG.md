@@ -12,7 +12,7 @@
 | **Accelib.Preview** | 프리뷰 이름/아이콘/서브에셋 인터페이스 정의 | Odin Inspector (조건부) | [README](Accelib.Preview/README.md) |
 | **Accelib.Reflection** | 리플렉션 기반 멤버 접근 및 UI 바인딩. SO의 중첩 필드 경로를 드롭다운으로 선택, 캐시된 리플렉션으로 런타임 읽기 | Accelib.Preview | [README](Accelib.Reflection/README.md) |
 | **Accelib.Conditional** | 조건식 평가 시스템. 비교/논리 연산자로 규칙 기반 로직 구성. 인스펙터에서 조건 편집 및 텍스트 프리뷰 | Accelib.Reflection, Accelib.Preview, Odin Inspector, ZLinq, Collections | [README](Accelib.Conditional/README.md) |
-| **Accelib.OdinExtension** | R3 ReactiveProperty용 Odin Drawer. SerializableReactiveProperty 순수 값 편집 | R3, Odin Inspector | [README](Accelib.OdinExtension/README.md) |
+| **Accelib.OdinExtension** | Odin 커스텀 속성 및 드로어. SceneDropdownAttribute (씬 드롭다운), R3 ReactiveProperty 순수 값 편집 | R3 (Editor), Odin Inspector | [README](Accelib.OdinExtension/README.md) |
 | **Accelib.R3Extension** | R3 Observable 확장 메서드. Delta() 등 자주 쓰는 연산자 조합 제공 | R3 | [README](Accelib.R3Extension/README.md) |
 | **Accelib.Pool** | 오브젝트 풀링 (리소스/컴포넌트/프리팹) | Odin Inspector | [README](Accelib.Pool/README.md) |
 | **Accelib.Flag** | 토큰 기반 플래그 관리. MonoBehaviour를 토큰으로 사용하여 플래그 활성화/비활성화 | Odin Inspector (디버깅) | [README](Accelib.Flag/README.md) |
@@ -51,8 +51,9 @@
 - Odin Inspector 필수 의존 (`defineConstraints: ODIN_INSPECTOR`)
 
 ### Accelib.OdinExtension
-- **경로:** `Accelib.OdinExtension/`
-- **드로어:** `SerializableReactiveProperty<int/bool/float>` (편집)
+- **경로:** `Accelib.OdinExtension/` (Runtime + Editor 분리)
+- **런타임 속성:** `SceneDropdownAttribute` (Build Settings 씬 드롭다운, NaughtyAttributes.Scene 대체)
+- **드로어:** `SceneDropdownAttributeDrawer`, `SerializableReactiveProperty<int/bool/float>` (편집)
 - **유틸리티:** `ReactivePropertyDrawerHelper` (ForceNotify 리플렉션 캐시)
 
 ### Accelib.R3Extension
