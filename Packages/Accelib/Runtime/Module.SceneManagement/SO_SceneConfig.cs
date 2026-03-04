@@ -17,7 +17,9 @@ namespace Accelib.Module.SceneManagement
         
         [field: TitleGroup("옵션", indent:true)]
         [field: SerializeField] public bool ChangeBackgroundLoadSpd { get; private set; }
-        [field: SerializeField] public bool GCOnUnload { get; private set; }
+
+        [field: SerializeField] public bool UnloadUnUsed { get; private set; } = false;
+        [field: SerializeField] public bool GCOnUnload { get; private set; } = false;
         
         [TitleGroup("디버그-상태", indent:true)]
         [ShowInInspector, ReadOnly] internal bool isLocked;

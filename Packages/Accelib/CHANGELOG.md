@@ -5,6 +5,14 @@
 형식은 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/)를 기반으로 하며,
 [Semantic Versioning](https://semver.org/spec/v2.0.0.html)을 따른다.
 
+## [0.1.15] - 2026-03-04
+
+### 변경
+- `Module.SceneManagement` — `Resources.UnloadUnusedAssets()`를 `SO_SceneConfig.UnloadUnUsed` 옵션으로 조건부 실행 (기본값: false)
+- `Module.SceneManagement` — `SO_SceneConfig`에 `UnloadUnUsed` 필드 추가, `GCOnUnload` 기본값 false로 변경
+- `Module.SceneManagement` — `CollectGarbage()`에 디버그 로그 추가 (`Deb.Log`)
+- `Accelib.UI.Transition` — `TransitionSingleton`의 `backgroundLoadingPriority` 변경 코드 비활성화 (주석 처리)
+
 ## [0.1.14] - 2026-03-03
 
 ### 추가

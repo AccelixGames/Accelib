@@ -2,6 +2,11 @@
 
 이 문서는 Accelib.UI.Transition 모듈의 주요 변경 내역을 기록한다.
 
+## [0.1.2] - 2026-03-04
+
+### 변경
+- `TransitionSingleton` — `Application.backgroundLoadingPriority` 변경 코드 비활성화 (주석 처리)
+
 ## [0.1.1] - 2026-02-23
 
 ### 수정

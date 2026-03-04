@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Accelib.Logging;
 using Accelib.Module.Transition;
 using Cysharp.Threading.Tasks;
 using UnityEngine;
@@ -194,10 +195,17 @@ namespace Accelib.Module.SceneManagement
 
         private static void CollectGarbage()
         {
-            Resources.UnloadUnusedAssets();
+            if (Config.UnloadUnUsed)
+            {
+                Deb.Log("Resources.UnloadUnusedAssets()");
+                Resources.UnloadUnusedAssets();
+            }
 
             if (Config.GCOnUnload)
+            {
+                Deb.Log("GC.Collect()");
                 GC.Collect();
+            }
         }
 
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]

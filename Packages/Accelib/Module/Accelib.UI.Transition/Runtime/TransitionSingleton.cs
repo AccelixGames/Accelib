@@ -68,7 +68,7 @@ namespace Accelib.Module.Transition
             if(!start)
                 _seq.AppendCallback(() =>
                 {
-                    Application.backgroundLoadingPriority = ThreadPriority.Low;
+                    // Application.backgroundLoadingPriority = ThreadPriority.Low;
 #if UNITY_SWITCH && !UNITY_EDITOR
                     UnityEngine.Switch.Performance.SetCpuBoostMode(UnityEngine.Switch.Performance.CpuBoostMode.Normal);
 #endif
@@ -87,7 +87,7 @@ namespace Accelib.Module.Transition
                 _seq.AppendCallback(() =>
                 {
                     cam.gameObject.SetActive(true);
-                    Application.backgroundLoadingPriority = ThreadPriority.High;
+                    // Application.backgroundLoadingPriority = ThreadPriority.High;
 #if UNITY_SWITCH && !UNITY_EDITOR
                     UnityEngine.Switch.Performance.SetCpuBoostMode(UnityEngine.Switch.Performance.CpuBoostMode.FastLoad);
 #endif
