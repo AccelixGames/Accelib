@@ -1,7 +1,6 @@
 ﻿using Accelib.Data;
 using Sirenix.OdinInspector;
 using UnityEngine;
-using UnityEngine.AddressableAssets;
 using UnityEngine.SceneManagement;
 
 namespace Accelib.Module.SceneManagement
@@ -13,7 +12,7 @@ namespace Accelib.Module.SceneManagement
         
         [field: SerializeField, NaughtyAttributes.Scene] public string BootScnName { get; private set; }
         [field: SerializeField, NaughtyAttributes.Scene] public string EmptyScnName { get; private set; }
-        [field: SerializeField] public AssetReference GameScn { get; private set; }
+        [field: SerializeField] public SceneRef GameScn { get; private set; }
         
         [field: TitleGroup("옵션", indent:true)]
         [field: SerializeField] public bool ChangeBackgroundLoadSpd { get; private set; }
@@ -29,9 +28,9 @@ namespace Accelib.Module.SceneManagement
         [ShowInInspector, ReadOnly] private string ActiveScnName => SceneManager.GetActiveScene().name;
         
         [TitleGroup("디버그-캐싱", indent:true)]
-        [ShowInInspector, ReadOnly] internal AssetReference prevScn;
+        [ShowInInspector, ReadOnly] internal SceneRef prevScn;
         [TitleGroup("디버그-캐싱")]
-        [ShowInInspector, ReadOnly] internal AssetReference currScn;
+        [ShowInInspector, ReadOnly] internal SceneRef currScn;
 
         protected override void OnEnable()
         {
@@ -45,8 +44,8 @@ namespace Accelib.Module.SceneManagement
         {
             isLocked = false;
             isLockedAdditive = false;
-            prevScn = null;
-            currScn = null;
+            prevScn = default;
+            currScn = default;
         }
     }
 }

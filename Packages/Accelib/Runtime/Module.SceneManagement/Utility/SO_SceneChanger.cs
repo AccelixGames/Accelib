@@ -11,11 +11,11 @@ namespace Accelib.Module.SceneManagement.Utility
     {
         [Title("옵션")]
         [SerializeField] private LoadSceneMode loadMode = LoadSceneMode.Single;
-        
+
         [ShowIf("loadMode", LoadSceneMode.Single)]
         [SerializeField] private int transitionIndex = 0;
         [ShowIf("loadMode", LoadSceneMode.Single)]
-        [SerializeField] private AssetReference sceneAsset;
+        [SerializeField] private SceneRef sceneAsset;
         [ShowIf("loadMode", LoadSceneMode.Additive)]
         [SerializeField] private AssetReference[] sceneAssets;
         

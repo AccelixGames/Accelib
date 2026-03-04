@@ -34,6 +34,12 @@ namespace Accelib.Module.Localization
         private bool IsSupportedLang(SystemLanguage lang) => locales.Any(x => x.Language == lang);
         private LocaleSO GetLocale(SystemLanguage lang) => locales.FirstOrDefault(x => x.Language == lang) ?? locales[0];
 
+        protected override void Awake()
+        {
+            base.Awake();
+            Internal_Init();
+        }
+
         private void Internal_Init()
         {
             if (_isInitialized) return;

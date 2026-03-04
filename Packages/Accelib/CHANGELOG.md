@@ -5,6 +5,16 @@
 형식은 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/)를 기반으로 하며,
 [Semantic Versioning](https://semver.org/spec/v2.0.0.html)을 따른다.
 
+## [0.1.16] - 2026-03-04
+
+### 추가
+- `Module.SceneManagement` — `SceneRef` 구조체 추가: Addressable/Built-in 씬을 통합 참조하는 직렬화 가능한 타입 (암묵적 `AssetReference` → `SceneRef` 변환 지원)
+
+### 변경
+- `Module.SceneManagement` — `SceneManagerAddressable.ChangeScnAsync()` 매개변수 `AssetReference` → `SceneRef`, 반환 타입 `UniTask<SceneInstance?>` → `UniTask<Scene?>` (Built-in 씬 지원, 하위 호환 유지)
+- `Module.SceneManagement` — `SO_SceneConfig.GameScn`/`prevScn`/`currScn` 타입 `AssetReference` → `SceneRef`
+- `Module.SceneManagement` — `SceneChanger`/`SO_SceneChanger`의 `sceneAsset` 타입 `AssetReference` → `SceneRef`
+
 ## [0.1.15] - 2026-03-04
 
 ### 변경

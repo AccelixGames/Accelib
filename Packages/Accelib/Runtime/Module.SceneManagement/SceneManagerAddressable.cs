@@ -6,7 +6,6 @@ using Accelib.Module.Transition;
 using Cysharp.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
-using UnityEngine.ResourceManagement.ResourceProviders;
 using UnityEngine.SceneManagement;
 // ReSharper disable PossibleMultipleEnumeration
 
@@ -16,14 +15,14 @@ namespace Accelib.Module.SceneManagement
     {
         private static SO_SceneConfig Config => SO_SceneConfig.Instance;
 
-        public static UniTask<SceneInstance?> ChangeScnPreviousAsync(int transitionIndex = 0) =>
+        public static UniTask<Scene?> ChangeScnPreviousAsync(int transitionIndex = 0) =>
             ChangeScnAsync(Config.prevScn, transitionIndex);
 
         /// <summary>게임 씬으로 전환한다.</summary>
-        public static UniTask<SceneInstance?> ChangeScnGameAsync(int transitionIndex = 0) =>
+        public static UniTask<Scene?> ChangeScnGameAsync(int transitionIndex = 0) =>
             ChangeScnAsync(Config.GameScn, transitionIndex);
 
-        public static async UniTask<SceneInstance?> ChangeScnAsync(AssetReference scnRef, int transitionIndex = 0)
+        public static async UniTask<Scene?> ChangeScnAsync(SceneRef scnRef, int transitionIndex = 0)
         {
             // 로딩 우선도 캐싱
             var defaultLoadPriority = Application.backgroundLoadingPriority;
@@ -31,7 +30,7 @@ namespace Accelib.Module.SceneManagement
             try
             {
                 // 에러처리
-                if (scnRef == null) throw new Exception("변경하려는 씬이 NULL 입니다.");
+                if (!scnRef.IsValid()) throw new Exception("변경하려는 씬이 유효하지 않습니다.");
 
                 // 잠금 처리
                 if (Config.isLocked) throw new Exception("씬이 이미 변경중입니다.");
@@ -47,23 +46,36 @@ namespace Accelib.Module.SceneManagement
 
                 // 빈 씬으로 교체 (완전 교체)
                 await SceneManager.LoadSceneAsync(Config.EmptyScnName, LoadSceneMode.Single);
-                
+
                 // 오디오 켜기
                 TransitionSingleton.Instance.ToggleAudioListener(true);
 
                 // 가비지 컬렉팅
                 CollectGarbage();
 
-                // 다운로드 대기 
-                var instance = await scnRef.LoadSceneAsync();
+                // 씬 로드 분기
+                Scene loadedScene;
+                if (scnRef.IsBuiltIn)
+                {
+                    // Built-in 경로
+                    await SceneManager.LoadSceneAsync(scnRef.BuiltInSceneName, LoadSceneMode.Single);
+                    loadedScene = SceneManager.GetSceneByName(scnRef.BuiltInSceneName);
+                }
+                else
+                {
+                    // Addressable 경로
+                    var instance = await scnRef.AddressableRef.LoadSceneAsync();
+                    loadedScene = instance.Scene;
+                }
+
                 Config.prevScn = Config.currScn;
                 Config.currScn = scnRef;
 
                 // 오디오 끄기
                 TransitionSingleton.Instance.ToggleAudioListener(false);
-                
+
                 // 핸들러 가져오기
-                var handlers = instance.Scene.GetRootGameObjects()
+                var handlers = loadedScene.GetRootGameObjects()
                     .SelectMany(o => o.GetComponentsInChildren<ISceneChangedEventHandler>(true))
                     .Where(h => h != null)
                     .ToArray();
@@ -73,7 +85,7 @@ namespace Accelib.Module.SceneManagement
                     await handler.OnAfterSceneChanged();
 
                 // 반환
-                return instance;
+                return loadedScene;
             }
             catch (Exception e)
             {
