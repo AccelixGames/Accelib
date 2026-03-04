@@ -215,7 +215,7 @@ namespace Accelib.Editor
                 if (!skipBuild)
                 {
                     // Phase 3: Addressables 빌드
-                    Internal_BuildAddressables();
+                    Internal_BuildAddressables(builderMsg);
 
                     // Phase 4: 플레이어 빌드
                     var buildStartMsg = $":computer: **빌드를 시작합니다!** [{GetNowTime()}]\n";
@@ -382,7 +382,7 @@ namespace Accelib.Editor
         #region Internal — Addressables
 
         /// <summary>Addressables 빌드를 수행한다.</summary>
-        private void Internal_BuildAddressables()
+        private void Internal_BuildAddressables(string builderMsg)
         {
             if (addressablesBuildMode == EAddressablesBuildMode.Skip)
             {
@@ -396,8 +396,11 @@ namespace Accelib.Editor
 
             if (sendDiscordMessage)
                 DiscordWebhook.SendMsg(discordWebhookUrl,
-                    $":package: **Addressables 빌드 시작!** [{GetNowTime()}] \n" +
-                    $"({addressablesBuildMode})");
+                    $":package: **Addressables 빌드 시작!** [{GetNowTime()}]\n" +
+                    builderMsg +
+                    $"- {addressablesBuildMode}");
+
+            var duration = 0.0;
 
             switch (addressablesBuildMode)
             {
@@ -407,7 +410,8 @@ namespace Accelib.Editor
                     AddressableAssetSettings.BuildPlayerContent(out var result);
                     if (!string.IsNullOrEmpty(result?.Error))
                         throw new Exception($"Addressables 클린 빌드 실패: {result.Error}");
-                    Debug.Log($"Addressables 클린 빌드 성공! ({result.Duration:F1}초)");
+                    duration = result.Duration;
+                    Debug.Log($"Addressables 클린 빌드 성공! ({duration:F1}초)");
                     break;
                 }
                 case EAddressablesBuildMode.ContentUpdate:
@@ -423,48 +427,35 @@ namespace Accelib.Editor
                     var updateResult = ContentUpdateScript.BuildContentUpdate(settings, contentStatePath);
                     if (!string.IsNullOrEmpty(updateResult?.Error))
                         throw new Exception($"Addressables 콘텐츠 업데이트 실패: {updateResult.Error}");
-                    Debug.Log($"Addressables 콘텐츠 업데이트 성공! ({updateResult.Duration:F1}초)");
+                    duration = updateResult.Duration;
+                    Debug.Log($"Addressables 콘텐츠 업데이트 성공! ({duration:F1}초)");
                     break;
                 }
             }
 
+            // Addressables 빌드 완료 — 크기 측정
+            var remoteSrcPath = FindRemoteSrcPath(EditorUserBuildSettings.activeBuildTarget);
+            var addressablesSize = remoteSrcPath != null
+                ? BuildSizeUtility.MeasureDirectorySize(remoteSrcPath)
+                : 0;
+            var sizeStr = BuildSizeUtility.FormatBytes(addressablesSize);
+
             if (sendDiscordMessage)
                 DiscordWebhook.SendMsg(discordWebhookUrl,
-                    $":white_check_mark: **Addressables 빌드 완료!** [{GetNowTime()}]");
+                    $":white_check_mark: **Addressables 빌드 완료!** [{GetNowTime()}]\n" +
+                    $"- **크기**: {sizeStr}\n" +
+                    $"- **소요시간**: {duration:F1}초");
         }
 
         /// <summary>Addressables Remote 콘텐츠를 빌드 출력의 _Data 폴더로 복사한다.</summary>
         /// <returns>복사된 파일 수</returns>
         private int Internal_CopyAddressablesRemote(string buildPath, BuildTarget buildTarget)
         {
-            var projectRoot = Path.GetDirectoryName(Application.dataPath);
-            var targetName = buildTarget.ToString();
-            var remoteSrcBase = Path.Combine(projectRoot, "Remote");
-
-            if (!Directory.Exists(remoteSrcBase))
+            var remoteSrcPath = FindRemoteSrcPath(buildTarget);
+            if (remoteSrcPath == null)
             {
-                Debug.LogWarning($"Remote 폴더가 존재하지 않습니다: {remoteSrcBase}");
+                Debug.LogWarning($"Remote/{buildTarget} 폴더를 찾을 수 없습니다.");
                 return 0;
-            }
-
-            // 정확한 BuildTarget 폴더 탐색
-            var remoteSrcPath = Path.Combine(remoteSrcBase, targetName);
-            if (!Directory.Exists(remoteSrcPath))
-            {
-                // StandaloneWindows ↔ StandaloneWindows64 등 유사 이름 탐색
-                var baseName = targetName.Replace("64", "");
-                var dirs = Directory.GetDirectories(remoteSrcBase);
-                remoteSrcPath = dirs.FirstOrDefault(d =>
-                {
-                    var name = Path.GetFileName(d);
-                    return name != null && name.StartsWith(baseName);
-                });
-
-                if (remoteSrcPath == null)
-                {
-                    Debug.LogWarning($"Remote/{targetName} 폴더를 찾을 수 없습니다.");
-                    return 0;
-                }
             }
 
             // _Data 폴더 내부에 복사
@@ -541,9 +532,10 @@ namespace Accelib.Editor
             var playerSize = BuildSizeUtility.MeasurePlayerBuildSize(summary.outputPath);
 
             // Addressables Remote 크기 측정
-            var projectRoot = Path.GetDirectoryName(Application.dataPath);
-            var addressablesSrcPath = Path.Combine(projectRoot, "Remote", targetStr);
-            var addressablesSize = BuildSizeUtility.MeasureDirectorySize(addressablesSrcPath);
+            var remoteSrcPath = FindRemoteSrcPath(buildInfo.depot.buildTarget);
+            var addressablesSize = remoteSrcPath != null
+                ? BuildSizeUtility.MeasureDirectorySize(remoteSrcPath)
+                : 0;
 
             // 이전 빌드 기록 로드
             var previous = BuildSizeUtility.LoadPreviousRecord(buildInfo.app.appID, targetStr);
@@ -604,6 +596,31 @@ namespace Accelib.Editor
 
         #region Helpers
 
+        /// <summary>Remote 폴더에서 BuildTarget에 해당하는 소스 경로를 탐색한다. 정확 매칭 실패 시 퍼지 매칭.</summary>
+        private static string FindRemoteSrcPath(BuildTarget buildTarget)
+        {
+            var projectRoot = Path.GetDirectoryName(Application.dataPath);
+            var targetName = buildTarget.ToString();
+            var remoteSrcBase = Path.Combine(projectRoot, "Remote");
+
+            if (!Directory.Exists(remoteSrcBase))
+                return null;
+
+            // 정확 매칭
+            var remoteSrcPath = Path.Combine(remoteSrcBase, targetName);
+            if (Directory.Exists(remoteSrcPath))
+                return remoteSrcPath;
+
+            // 퍼지 매칭 (StandaloneWindows64 → StandaloneWindows 등)
+            var baseName = targetName.Replace("64", "");
+            var dirs = Directory.GetDirectories(remoteSrcBase);
+            return dirs.FirstOrDefault(d =>
+            {
+                var name = Path.GetFileName(d);
+                return name != null && name.StartsWith(baseName);
+            });
+        }
+
         private string GetSteamCmdPath()
         {
             if (string.IsNullOrEmpty(sdkPath)) return null;
@@ -636,9 +653,8 @@ namespace Accelib.Editor
 
         private string GetAddressablesSrcPath()
         {
-            var projectRoot = Path.GetDirectoryName(Application.dataPath);
-            var target = EditorUserBuildSettings.activeBuildTarget.ToString();
-            return Path.Combine(projectRoot, "Remote", target);
+            return FindRemoteSrcPath(EditorUserBuildSettings.activeBuildTarget)
+                   ?? Path.Combine(Path.GetDirectoryName(Application.dataPath), "Remote", EditorUserBuildSettings.activeBuildTarget.ToString());
         }
 
         private string GetAddressablesDstPath()

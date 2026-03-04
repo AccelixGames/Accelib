@@ -2,6 +2,17 @@
 
 이 문서는 Accelib.Editor.AutoBuild 모듈의 주요 변경 내역을 기록한다.
 
+## [0.1.15] - 2026-03-04
+
+### 변경
+- Addressables 빌드 시작 메시지에 빌더 정보(`*Username | version | note*`) 및 빌드 모드(`- CleanBuild`) 표시 추가
+- Addressables 빌드 완료 메시지에 크기 및 소요시간 표시 추가
+
+### 수정
+- Addressables 크기 측정 시 Remote 폴더 퍼지 매칭 누락 수정 — `StandaloneWindows64` ↔ `StandaloneWindows` 등 폴더명 불일치로 항상 0 B 표시되던 버그
+- `FindRemoteSrcPath()` 헬퍼 추출 — 복사(`Internal_CopyAddressablesRemote`)와 측정(`Internal_MeasureAndReportBuildSize`)에서 동일한 경로 탐색 로직 재사용
+- 인스펙터 `AddressablesSrcPath` 표시에도 퍼지 매칭 적용
+
 ## [0.1.13] - 2026-02-27
 
 ### 추가

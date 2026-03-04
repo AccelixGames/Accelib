@@ -39,6 +39,10 @@
 - `Module.SceneManagement` — `SO_SceneConfig`에 `UnloadUnUsed` 필드 추가, `GCOnUnload` 기본값 false로 변경
 - `Module.SceneManagement` — `CollectGarbage()`에 디버그 로그 추가 (`Deb.Log`)
 - `Accelib.UI.Transition` — `TransitionSingleton`의 `backgroundLoadingPriority` 변경 코드 비활성화 (주석 처리)
+- `Accelib.Editor.AutoBuild` — Addressables 빌드 시작/완료 Discord 메시지 포맷 통일 (빌더 정보, 빌드 모드, 크기, 소요시간 표시)
+
+### 수정
+- `Accelib.Editor.AutoBuild` — Addressables 크기 측정 시 Remote 폴더 퍼지 매칭 누락 수정 (항상 0 B 표시되던 버그)
 
 ## [0.1.14] - 2026-03-03
 
