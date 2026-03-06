@@ -5,6 +5,7 @@ using Accelib.Module.Transition.Effect;
 using DG.Tweening;
 using Sirenix.OdinInspector;
 using UnityEngine;
+using UnityEngine.Events;
 
 namespace Accelib.Module.Transition
 {
@@ -17,6 +18,9 @@ namespace Accelib.Module.Transition
         [SerializeField] private AudioListener audioListener;
         [SerializeField] private Camera cam;
         
+        [Title("이벤트")]
+        [SerializeField] private UnityEvent onTransitionStarted;
+
         [Title("상태")]
         [SerializeField] private TransitionEffect[] targetEffects;
         [SerializeField, ReadOnly] private bool isMoving;
@@ -73,6 +77,8 @@ namespace Accelib.Module.Transition
                     UnityEngine.Switch.Performance.SetCpuBoostMode(UnityEngine.Switch.Performance.CpuBoostMode.Normal);
 #endif
                 }).AppendInterval(0.2f);
+
+            if (start) onTransitionStarted?.Invoke();
 
             var eff = targetEffects[currIndex];
             _seq.Append(start ? eff.StartTransition() : eff.EndTransition());
