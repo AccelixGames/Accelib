@@ -19,6 +19,7 @@
 | **Accelib.UI.Popup** | 레이어 팝업 및 모달 다이얼로그. 스택 기반 레이어 관리, 비동기 모달 패턴 | Accelib.Core, Accelib.Flag, Accelib.Localization, UniTask, Unity Atoms | [README](Accelib.UI.Popup/README.md) |
 | **Accelib.UI.Transition** | 화면 전환 이펙트 (페이드, 마스크, 도어 등). DOTween 기반 트랜지션 | Accelib.Runtime, Accelib.Flag, DOTween, Odin | [README](Accelib.UI.Transition/README.md) |
 | **Accelib.Localization** | 로컬라이제이션 시스템. 다국어 텍스트, 언어별 폰트 교체, Google Sheets 다운로드 | Accelib.Runtime, TMP, SerializedCollections, Odin | [README](Accelib.Localization/README.md) |
+| **Accelib.SonityExtension** | Sonity SoundEvent 확장 유틸리티. Intensity 기반 루프 사운드 재생/정지 + 커스텀 에디터 | Sonity, Odin Inspector | [README](Accelib.SonityExtension/README.md) |
 | **Accelib.Editor.AutoBuild** | Steam 빌드 자동화. Unity 빌드 → SteamCMD 업로드 → Discord 알림 파이프라인. Addressables 빌드 통합 | Odin Inspector, UniTask, Addressables | [README](Accelib.Editor.AutoBuild/README.md) |
 
 ## 모듈 상세
@@ -90,6 +91,13 @@
 - `Accelib.Runtime`의 `Module.Localization`에서 독립 모듈로 추출
 - Editor 코드 별도 asmdef(`Accelib.Localization.Editor`)로 분리
 
+### Accelib.SonityExtension
+- **경로:** `Accelib.SonityExtension/` (Runtime + Editor 분리)
+- **주요 클래스:** `LoopSoundPlayer` (Intensity 기반 루프 사운드 재생/정지 MonoBehaviour)
+- **에디터:** `LoopSoundPlayerEditor` (OdinEditor 기반 — SoundContainer Loop/Pitch Intensity 원클릭 설정)
+- Sonity의 SoundContainer Intensity 커브를 활용한 인스펙터 중심 사운드 변조
+- Sonity, Odin Inspector 의존
+
 ### Accelib.Editor.AutoBuild
 - **경로:** `Accelib.Editor.AutoBuild/`
 - **주요 클래스:** `AutoBuildConfig` (빌드 자동화 SO), `AppConfig` (앱 설정), `TerminalUtility` (SteamCMD 실행), `DiscordWebhook` (Discord 알림), `EAddressablesBuildMode` (빌드 모드 enum)
@@ -122,6 +130,10 @@ Accelib.Flag (Odin 디버깅용 의존)
 Accelib.Localization (Accelib.Runtime, TMP, SerializedCollections, Odin 외부 의존)
     ↑
     └── Accelib.Localization.Editor (Editor 전용, UniTask 외부 의존)
+
+Accelib.SonityExtension (Sonity, Odin 외부 의존, 독립)
+    ↑
+    └── Accelib.SonityExtension.Editor (Editor 전용, OdinEditor 기반)
 
 Accelib.Editor.AutoBuild (Editor 전용, Odin, UniTask, Addressables 외부 의존, 독립)
 ```

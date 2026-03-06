@@ -1,0 +1,23 @@
+{
+  "name": "Accelib.SonityExtension.Editor",
+  "rootNamespace": "Accelib.SonityExtension.Editor",
+  "references": [
+    "Accelib.SonityExtension",
+    "Sonity.Public.Runtime",
+    "Sonity.Internal.Runtime"
+  ],
+  "includePlatforms": [
+    "Editor"
+  ],
+  "excludePlatforms": [],
+  "allowUnsafeCode": false,
+  "overrideReferences": true,
+  "precompiledReferences": [
+    "Sirenix.OdinInspector.Attributes.dll",
+    "Sirenix.OdinInspector.Editor.dll"
+  ],
+  "autoReferenced": true,
+  "defineConstraints": [],
+  "versionDefines": [],
+  "noEngineReferences": false
+}

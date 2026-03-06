@@ -9,6 +9,9 @@
 
 ### 추가
 - `Accelib.UI.Transition` — `TransitionSingleton`에 `onTransitionStarted` UnityEvent 추가 (트랜지션 시작 시 발화, SFX 바인딩용)
+- `Accelib.SonityExtension` — 신규 모듈. Sonity SoundEvent 확장 유틸리티
+- `Accelib.SonityExtension` — `LoopSoundPlayer` 컴포넌트: duration 기반 Intensity 자동 보간 루프 사운드 재생기
+- `Accelib.SonityExtension` — `LoopSoundPlayerEditor`: SoundContainer Loop/Pitch Intensity 원클릭 설정 에디터
 
 ## [0.1.18] - 2026-03-04
 

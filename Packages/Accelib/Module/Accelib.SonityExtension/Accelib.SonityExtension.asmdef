@@ -1,0 +1,19 @@
+{
+  "name": "Accelib.SonityExtension",
+  "rootNamespace": "Accelib.SonityExtension",
+  "references": [
+    "Sonity.Public.Runtime",
+    "Sonity.Internal.Runtime"
+  ],
+  "includePlatforms": [],
+  "excludePlatforms": [],
+  "allowUnsafeCode": false,
+  "overrideReferences": true,
+  "precompiledReferences": [
+    "Sirenix.OdinInspector.Attributes.dll"
+  ],
+  "autoReferenced": true,
+  "defineConstraints": [],
+  "versionDefines": [],
+  "noEngineReferences": false
+}

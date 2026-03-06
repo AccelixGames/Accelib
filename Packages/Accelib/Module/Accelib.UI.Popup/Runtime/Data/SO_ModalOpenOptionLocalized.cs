@@ -33,6 +33,9 @@ namespace Accelib.UI.Popup.Runtime.Data
         }
 
         [Button]
+        public void Open() => OpenAsync().Forget();
+
+        [Button]
         public async UniTask<LayerPopup_Modal.Result> OpenAsync(params object[] param)
         {
             SetParams(param);
