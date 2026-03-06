@@ -2,6 +2,17 @@
 
 이 문서는 Accelib.Editor.AutoBuild 모듈의 주요 변경 내역을 기록한다.
 
+## [0.1.16] - 2026-03-06
+
+### 추가
+- `DiscordWebhookQueue` — Discord Webhook 메시지 큐잉 전송 클래스 신규 추가 (ConcurrentQueue + 백그라운드 HttpClient, 429 Rate Limit 재시도 지원)
+- Addressables 빌드 완료 메시지에 이전 빌드 대비 증감량 표시 추가
+
+### 변경
+- Discord 알림을 `DiscordWebhook`(fire-and-forget) → `DiscordWebhookQueue`(큐잉)로 전환하여 메시지 순서 보장
+- 최종 빌드 완료 메시지에 순수 빌드/Addressables/총 용량 3개로 분리 표시
+- 불필요한 `Thread.Sleep(10)` 제거
+
 ## [0.1.15] - 2026-03-04
 
 ### 변경

@@ -5,6 +5,16 @@
 형식은 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/)를 기반으로 하며,
 [Semantic Versioning](https://semver.org/spec/v2.0.0.html)을 따른다.
 
+## [0.1.20] - 2026-03-06
+
+### 추가
+- `Accelib.Editor.AutoBuild` — `DiscordWebhookQueue` 큐잉 전송 클래스 추가 (ConcurrentQueue + 백그라운드 HttpClient, 429 Rate Limit 재시도)
+- `Accelib.Editor.AutoBuild` — Addressables 빌드 완료 메시지에 이전 빌드 대비 증감량 표시
+
+### 변경
+- `Accelib.Editor.AutoBuild` — Discord 알림을 큐잉 방식으로 전환하여 메시지 순서 보장
+- `Accelib.Editor.AutoBuild` — 최종 빌드 완료 메시지에 순수 빌드/Addressables/총 용량 3개로 분리 표시
+
 ## [0.1.19] - 2026-03-06
 
 ### 추가

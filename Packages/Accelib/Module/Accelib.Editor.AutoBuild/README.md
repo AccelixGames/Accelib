@@ -18,7 +18,8 @@ Accelib.Editor.AutoBuild/
 │   ├── EAddressablesBuildMode.cs     # Addressables 빌드 모드 열거형
 │   └── UploadInfo.cs                 # 업로드 정보 구조체
 ├── Discord/
-│   ├── DiscordWebhook.cs             # Discord Webhook 전송 유틸리티
+│   ├── DiscordWebhook.cs             # Discord Webhook 전송 (fire-and-forget)
+│   ├── DiscordWebhookQueue.cs        # Discord Webhook 큐잉 전송 (순서 보장)
 │   ├── JDiscordEmbed.cs              # Discord Embed JSON 구조체
 │   └── JDiscordMsg.cs                # Discord Message JSON 구조체
 ├── Steamwork/
@@ -138,11 +139,20 @@ SteamCMD 실행 유틸리티. 플랫폼에 따라 적절한 `TerminalControl`을
 
 ### DiscordWebhook
 
-Discord Webhook API를 통해 메시지를 전송한다.
+Discord Webhook API를 통해 메시지를 전송한다 (fire-and-forget, UniTask 기반).
 
 - `SendMsg(url, message)` — 일반 텍스트 메시지 전송
 - `SendMsg(url, message, embed)` — Embed 포함 메시지 전송
 - `SendMsg(url, JDiscordMsg)` — 구조화된 메시지 전송
+
+### DiscordWebhookQueue
+
+Discord Webhook 메시지를 큐잉하여 순차 전송한다. 메시지 순서가 보장되며, 빌드 중 메인 스레드가 블로킹되어도 백그라운드 스레드에서 전송한다.
+
+- `SendMsg(url, message)` — 일반 텍스트 메시지를 큐에 추가
+- `SendMsg(url, message, embed)` — Embed 포함 메시지를 큐에 추가
+- `SendMsg(url, JDiscordMsg)` — 구조화된 메시지를 큐에 추가
+- 429 Rate Limit 자동 재시도 (최대 3회, 지수 백오프)
 
 ## 사용 예시
 
@@ -168,5 +178,5 @@ Accelib.Editor                              — AutoBuildConfig
 Accelib.Editor.Architecture                 — AppConfig, BuildInfo, DepotConfig, UploadInfo, EAddressablesBuildMode
 Accelib.Editor.Steamwork                    — TerminalUtility, TerminalControl
 Accelib.Editor.AutoBuild.Steamwork          — DepotUtility
-Accelib.Editor.Utility.Discord              — DiscordWebhook, JDiscordEmbed, JDiscordMsg
+Accelib.Editor.Utility.Discord              — DiscordWebhook, DiscordWebhookQueue, JDiscordEmbed, JDiscordMsg
 ```

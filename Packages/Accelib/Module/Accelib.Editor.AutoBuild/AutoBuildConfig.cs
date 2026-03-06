@@ -223,7 +223,7 @@ namespace Accelib.Editor
                     foreach (var buildInfo in buildInfos)
                         buildStartMsg += $"- {buildInfo.app.name} | {buildInfo.depot.buildTarget}\n";
                     if (sendDiscordMessage)
-                        DiscordWebhook.SendMsg(discordWebhookUrl, buildStartMsg);
+                        DiscordWebhookQueue.SendMsg(discordWebhookUrl, buildStartMsg);
 
                     // 각 디포 빌드 + Remote 복사 + 크기 측정 + 결과 알림
                     foreach (var buildInfo in buildInfos)
@@ -241,8 +241,6 @@ namespace Accelib.Editor
                     SetLogTypes(StackTraceLogType.ScriptOnly);
                 }
 
-                Thread.Sleep(10);
-
                 if (!skipUpload)
                 {
                     // Phase 5: SteamCMD 업로드
@@ -254,7 +252,7 @@ namespace Accelib.Editor
                         foreach (var uploadInfo in uploadInfos)
                             uploadStartMsg +=
                                 $"- {uploadInfo.app.name}({uploadInfo.app.appID}) | 브랜치({uploadInfo.app.liveBranch})\n";
-                        DiscordWebhook.SendMsg(discordWebhookUrl, uploadStartMsg);
+                        DiscordWebhookQueue.SendMsg(discordWebhookUrl, uploadStartMsg);
                     }
 
                     // 업로드 실행
@@ -278,7 +276,7 @@ namespace Accelib.Editor
                             description = resultString
                         };
                         if (sendDiscordMessage)
-                            DiscordWebhook.SendMsg(discordWebhookUrl, resultMsg);
+                            DiscordWebhookQueue.SendMsg(discordWebhookUrl, resultMsg);
                     }
                 }
             }
@@ -395,7 +393,7 @@ namespace Accelib.Editor
                 throw new Exception("AddressableAssetSettings를 찾을 수 없습니다.");
 
             if (sendDiscordMessage)
-                DiscordWebhook.SendMsg(discordWebhookUrl,
+                DiscordWebhookQueue.SendMsg(discordWebhookUrl,
                     $":package: **Addressables 빌드 시작!** [{GetNowTime()}]\n" +
                     builderMsg +
                     $"- {addressablesBuildMode}");
@@ -440,10 +438,26 @@ namespace Accelib.Editor
                 : 0;
             var sizeStr = BuildSizeUtility.FormatBytes(addressablesSize);
 
+            // 이전 빌드 대비 증감량 계산 (첫 번째 앱의 첫 번째 활성 디포 기준)
+            var addrDiffStr = "";
+            if (apps.Count > 0)
+            {
+                var firstApp = apps[0];
+                var firstTarget = firstApp.depots
+                    .FirstOrDefault(d => d.includeInBuild)?.buildTarget.ToString();
+                if (firstTarget != null)
+                {
+                    var previous = BuildSizeUtility.LoadPreviousRecord(firstApp.appID, firstTarget);
+                    addrDiffStr = previous != null
+                        ? $" `{BuildSizeUtility.FormatDiff(addressablesSize, previous.addressablesSizeBytes)}`"
+                        : " `(첫 빌드)`";
+                }
+            }
+
             if (sendDiscordMessage)
-                DiscordWebhook.SendMsg(discordWebhookUrl,
+                DiscordWebhookQueue.SendMsg(discordWebhookUrl,
                     $":white_check_mark: **Addressables 빌드 완료!** [{GetNowTime()}]\n" +
-                    $"- **크기**: {sizeStr}\n" +
+                    $"- **크기**: {sizeStr}{addrDiffStr}\n" +
                     $"- **소요시간**: {duration:F1}초");
         }
 
@@ -516,7 +530,7 @@ namespace Accelib.Editor
                     embed.description += $"{error}\n";
 
                 if (sendDiscordMessage)
-                    DiscordWebhook.SendMsg(discordWebhookUrl, null, embed);
+                    DiscordWebhookQueue.SendMsg(discordWebhookUrl, null, embed);
                 throw new Exception(embed.title);
             }
 
@@ -552,31 +566,47 @@ namespace Accelib.Editor
             };
             BuildSizeUtility.SaveRecord(record);
 
+            // 크기 계산: 순수 빌드 = 전체 - Addressables, 총 용량 = 전체
+            var pureBuildSize = playerSize - addressablesSize;
+            var totalSize = playerSize;
+
             // 크기 문자열 포맷
-            var playerSizeStr = BuildSizeUtility.FormatBytes(playerSize);
+            var pureBuildSizeStr = BuildSizeUtility.FormatBytes(pureBuildSize);
             var addressablesSizeStr = BuildSizeUtility.FormatBytes(addressablesSize);
-            var playerDiffStr = previous != null
-                ? BuildSizeUtility.FormatDiff(playerSize, previous.playerBuildSizeBytes)
+            var totalSizeStr = BuildSizeUtility.FormatBytes(totalSize);
+
+            // 이전 빌드 대비 diff
+            var previousPureBuild = previous != null
+                ? previous.playerBuildSizeBytes - previous.addressablesSizeBytes
+                : 0;
+            var pureBuildDiffStr = previous != null
+                ? BuildSizeUtility.FormatDiff(pureBuildSize, previousPureBuild)
                 : "(첫 빌드)";
             var addressablesDiffStr = previous != null
                 ? BuildSizeUtility.FormatDiff(addressablesSize, previous.addressablesSizeBytes)
+                : "(첫 빌드)";
+            var totalDiffStr = previous != null
+                ? BuildSizeUtility.FormatDiff(totalSize, previous.playerBuildSizeBytes)
                 : "(첫 빌드)";
 
             // 콘솔 로그
             var totalTime = $"{summary.totalTime.Minutes}분 {summary.totalTime.Seconds}초";
             Debug.Log($"빌드 성공: {buildInfo.app.name}/{targetStr} ({totalTime})\n" +
-                      $"  빌드 크기: {playerSizeStr} [{playerDiffStr}]\n" +
-                      $"  Addressables 크기: {addressablesSizeStr} [{addressablesDiffStr}]");
+                      $"  순수 빌드: {pureBuildSizeStr} [{pureBuildDiffStr}]\n" +
+                      $"  Addressables: {addressablesSizeStr} [{addressablesDiffStr}]\n" +
+                      $"  총 용량: {totalSizeStr} [{totalDiffStr}]");
 
             // Discord Embed
             var desc = $"- **버전**: v{Application.version}({buildInfo.versionNumber})\n" +
                        $"- **타겟**: {targetStr}\n" +
                        $"- **경로**: {summary.outputPath}\n" +
                        $"- **소요시간**: {totalTime}\n" +
-                       $"- **빌드 크기**: {playerSizeStr} `{playerDiffStr}`\n";
+                       $"- **순수 빌드**: {pureBuildSizeStr} `{pureBuildDiffStr}`\n";
 
             if (addressablesSize > 0 || addressablesBuildMode != EAddressablesBuildMode.Skip)
-                desc += $"- **Addressables 크기**: {addressablesSizeStr} `{addressablesDiffStr}`\n";
+                desc += $"- **Addressables**: {addressablesSizeStr} `{addressablesDiffStr}`\n";
+
+            desc += $"- **총 용량**: {totalSizeStr} `{totalDiffStr}`\n";
 
             if (copyCount > 0)
                 desc += $"- **Addressables 복사**: {copyCount}개 파일\n";
@@ -589,7 +619,7 @@ namespace Accelib.Editor
             };
 
             if (sendDiscordMessage)
-                DiscordWebhook.SendMsg(discordWebhookUrl, msg);
+                DiscordWebhookQueue.SendMsg(discordWebhookUrl, msg);
         }
 
         #endregion
