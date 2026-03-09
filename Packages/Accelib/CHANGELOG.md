@@ -5,6 +5,31 @@
 형식은 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/)를 기반으로 하며,
 [Semantic Versioning](https://semver.org/spec/v2.0.0.html)을 따른다.
 
+## [0.1.23] - 2026-03-09
+
+### 변경
+- `Accelib.DebugServer` — `Runtime/` 디렉토리를 서브폴더로 정리: `Core/`, `Endpoint/`, `Http/` (네임스페이스 변경 없음)
+
+## [0.1.22] - 2026-03-09
+
+### 추가
+- `Accelib.DebugServer` — `DebugServerGUI`: IMGUI 상태 오버레이 (인스펙터에서 직접 추가, scale/alpha 자체 설정)
+- `Accelib.DebugServer` — `DebugServerCore`에 `IsRunning`, `Port`, `RegisteredEndpointCount` public 프로퍼티 추가
+
+### 제거
+- `Accelib.DebugServer` — `DebugServerCore`의 `showOverlay`, `overlayScale`, `overlayAlpha` 필드 제거 (오버레이 설정은 `DebugServerGUI` 자체 필드로 이동)
+
+## [0.1.21] - 2026-03-09
+
+### 추가
+- `Accelib.DebugServer` — 신규 모듈. 컴포지션 기반 디버그 HTTP 서버 프레임워크
+- `Accelib.DebugServer` — `DebugServerCore`: HttpListener 기반 sealed 싱글톤. 하위 `IDebugEndpointProvider` 컴포넌트 자동 탐색
+- `Accelib.DebugServer` — `IDebugEndpointProvider`: 엔드포인트 마커 인터페이스
+- `Accelib.DebugServer` — `[DebugEndpoint]` 어트리뷰트: 메서드에 HTTP 엔드포인트 선언, 리플렉션 자동 라우팅
+- `Accelib.DebugServer` — `RequestContextExtensions`: 응답 전송 + POST body 파싱 확장 메서드
+- `Accelib.DebugServer` — 내장 엔드포인트: `/api/ping` (연결 확인), `/api/help` (JSON 문서), `/api/help/markdown` (Markdown 문서)
+- `Accelib.DebugServer` — `RequestContext`: HTTP 요청 캡슐화 (Method, Path, Body, PathParams)
+
 ## [0.1.20] - 2026-03-06
 
 ### 추가

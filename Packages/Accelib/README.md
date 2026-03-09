@@ -18,6 +18,7 @@
 | **Accelib.UI.Popup** | 레이어 팝업 및 모달 다이얼로그 | Accelib.Core, Accelib.Flag, Accelib.Localization, UniTask |
 | **Accelib.UI.Transition** | 화면 전환 이펙트 (페이드, 마스크, 도어 등) | Accelib.Runtime, Accelib.Flag, DOTween, Odin |
 | **Accelib.Localization** | 로컬라이제이션 (다국어 텍스트, 폰트 교체, Google Sheets 연동) | Accelib.Runtime, TMP, SerializedCollections, Odin |
+| **Accelib.DebugServer** | 디버그 HTTP 서버 프레임워크 (어트리뷰트 기반 라우팅, 자동 문서 생성) | Accelib.Core, Odin Inspector (조건부) |
 | **Accelib.Editor.AutoBuild** | Steam 빌드 자동화 (빌드 → 업로드 → Discord 알림, Addressables 통합) | Odin Inspector, UniTask, Addressables |
 
 상세 내용은 [MODULE_CATALOG.md](Module/MODULE_CATALOG.md) 참조.
