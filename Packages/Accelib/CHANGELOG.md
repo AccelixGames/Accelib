@@ -5,6 +5,11 @@
 형식은 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/)를 기반으로 하며,
 [Semantic Versioning](https://semver.org/spec/v2.0.0.html)을 따른다.
 
+## [0.1.24] - 2026-03-09
+
+### 수정
+- `Accelib.DebugServer` — `DebugServerGUI` 우측 하단 앵커 수정 (`GUI.matrix` 제거, 직접 픽셀 계산 방식)
+
 ## [0.1.23] - 2026-03-09
 
 ### 변경
