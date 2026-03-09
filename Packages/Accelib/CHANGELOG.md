@@ -5,6 +5,15 @@
 형식은 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/)를 기반으로 하며,
 [Semantic Versioning](https://semver.org/spec/v2.0.0.html)을 따른다.
 
+## [0.1.25] - 2026-03-09
+
+### 변경
+- `Accelib.DebugServer` — `IDebugEndpointProvider`에 `RoutePrefix`, `CategoryName` 프로퍼티 추가 (Provider 레벨에서 라우트 prefix·카테고리 정의)
+- `Accelib.DebugServer` — `DebugServerCore.RegisterEndpointsFrom()` 수정: Provider의 `RoutePrefix`를 라우트에 자동 결합, `CategoryName`을 기본 카테고리로 사용
+
+### 추가
+- `Accelib.DebugServer` — `DebugEndpointProviderBase` 추상 기반 클래스: Odin 인스펙터에 `RoutePrefix`/`CategoryName` 자동 표시
+
 ## [0.1.24] - 2026-03-09
 
 ### 수정

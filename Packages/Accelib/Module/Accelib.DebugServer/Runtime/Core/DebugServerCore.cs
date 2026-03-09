@@ -177,6 +177,11 @@ namespace Accelib.DebugServer
 
         private void RegisterEndpointsFrom(MonoBehaviour target)
         {
+            // Provider 레벨 메타데이터
+            var provider = target as IDebugEndpointProvider;
+            var routePrefix = provider?.RoutePrefix ?? "";
+            var categoryName = provider?.CategoryName ?? "";
+
             var methods = target.GetType().GetMethods(
                 BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
 
@@ -206,9 +211,14 @@ namespace Accelib.DebugServer
                     continue;
                 }
 
-                var entry = new RouteEntry(attr.HttpMethod, attr.Route, handler);
+                // 라우트: prefix + attr.Route
+                var fullRoute = routePrefix + attr.Route;
+                // 카테고리: provider 레벨 우선, attr 폴백
+                var category = !string.IsNullOrEmpty(categoryName) ? categoryName : attr.Category;
+
+                var entry = new RouteEntry(attr.HttpMethod, fullRoute, handler);
                 _routes.Add(entry);
-                _endpointInfos.Add(new DebugEndpointInfo(attr));
+                _endpointInfos.Add(new DebugEndpointInfo(attr.HttpMethod, fullRoute, attr.Description, category));
             }
         }
 

@@ -2,6 +2,15 @@
 
 이 문서는 Accelib.DebugServer 모듈의 주요 변경 내역을 기록한다.
 
+## [0.6.0] - 2026-03-09
+
+### 변경
+- `IDebugEndpointProvider` — `RoutePrefix`, `CategoryName` 프로퍼티 추가. Provider 레벨에서 라우트 prefix와 카테고리를 정의
+- `DebugServerCore` — `RegisterEndpointsFrom()` 수정: Provider의 `RoutePrefix`를 라우트에 자동 결합, `CategoryName`을 기본 카테고리로 사용
+
+### 추가
+- `DebugEndpointProviderBase` — 추상 기반 클래스. Odin 인스펙터에 `RoutePrefix`/`CategoryName` 자동 표시
+
 ## [0.5.0] - 2026-03-09
 
 ### 수정
