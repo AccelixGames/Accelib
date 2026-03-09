@@ -25,44 +25,44 @@ namespace Accelib.DebugServer
         private void OnGUI()
         {
             if (!DebugServerCore.TryGetInstance(out var core)) return;
-            if (_boxStyle == null) InitStyles();
+            if (_boxStyle == null || _bgTex == null) InitStyles();
             DrawOverlay(core);
         }
 
         private void InitStyles()
         {
             // 배경 텍스처 (투명도는 GUI.color.a로 제어)
-            _bgTex = new Texture2D(1, 1);
+            _bgTex = new Texture2D(1, 1) { hideFlags = HideFlags.HideAndDontSave };
             _bgTex.SetPixel(0, 0, Color.black);
             _bgTex.Apply();
 
             _boxStyle = new GUIStyle(GUI.skin.box)
             {
-                normal = { background = _bgTex },
                 padding = new RectOffset(10, 10, 8, 8)
             };
+            SetAllBackgrounds(_boxStyle, _bgTex);
 
             _headerStyle = new GUIStyle(GUI.skin.label)
             {
                 fontSize = 13,
                 fontStyle = FontStyle.Bold,
-                normal = { textColor = Color.white },
                 alignment = TextAnchor.MiddleRight
             };
+            SetAllTextColors(_headerStyle, Color.white);
 
             _valueStyle = new GUIStyle(GUI.skin.label)
             {
                 fontSize = 12,
-                normal = { textColor = new Color(0.85f, 0.85f, 0.85f) },
                 alignment = TextAnchor.MiddleRight
             };
+            SetAllTextColors(_valueStyle, new Color(0.85f, 0.85f, 0.85f));
 
             _cmdStyle = new GUIStyle(GUI.skin.label)
             {
                 fontSize = 11,
-                normal = { textColor = new Color(0.55f, 0.55f, 0.55f) },
                 alignment = TextAnchor.MiddleRight
             };
+            SetAllTextColors(_cmdStyle, new Color(0.55f, 0.55f, 0.55f));
         }
 
         private void DrawOverlay(DebugServerCore core)
@@ -130,6 +130,30 @@ namespace Accelib.DebugServer
 
             // 복원
             GUI.color = prevColor;
+        }
+
+        private static void SetAllTextColors(GUIStyle style, Color color)
+        {
+            style.normal.textColor = color;
+            style.hover.textColor = color;
+            style.active.textColor = color;
+            style.focused.textColor = color;
+            style.onNormal.textColor = color;
+            style.onHover.textColor = color;
+            style.onActive.textColor = color;
+            style.onFocused.textColor = color;
+        }
+
+        private static void SetAllBackgrounds(GUIStyle style, Texture2D tex)
+        {
+            style.normal.background = tex;
+            style.hover.background = tex;
+            style.active.background = tex;
+            style.focused.background = tex;
+            style.onNormal.background = tex;
+            style.onHover.background = tex;
+            style.onActive.background = tex;
+            style.onFocused.background = tex;
         }
 
         private void OnDestroy()

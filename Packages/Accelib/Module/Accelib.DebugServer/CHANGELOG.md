@@ -2,6 +2,33 @@
 
 이 문서는 Accelib.DebugServer 모듈의 주요 변경 내역을 기록한다.
 
+## [0.8.0] - 2026-03-09
+
+### 수정
+- `DebugServerGUI` — 박스 배경이 간헐적으로 보이지 않던 버그 수정 (Texture2D 파괴 감지 + HideFlags 적용)
+- `DebugServerGUI` — 폰트 색상이 실행마다 변동되던 버그 수정 (모든 GUIStyleState에 색상 명시적 설정)
+
+## [0.7.0] - 2026-03-09
+
+### 추가
+- **SSE (Server-Sent Events) 실시간 이벤트 스트림 지원**
+  - `DebugEvent` — 이벤트 데이터 구조체 (`EventType`, `DataJson`, `Timestamp`)
+  - `DebugEventBus` — 스레드 안전 이벤트 버스 (ConcurrentQueue + 링 버퍼 256개)
+    - `Publish()` — 모든 스레드에서 이벤트 발행
+    - `PublishSafe()` — 서버 비활성 시 무시하는 정적 헬퍼
+  - `SseClient` — SSE 클라이언트 연결 관리 (필터링, 자동 끊김 감지)
+  - `DebugServerCore.EventBus` — 이벤트 버스 public 접근자
+- 빌트인 엔드포인트:
+  - `GET /api/events/recent` — 링 버퍼 조회 (폴링 폴백)
+  - `GET /api/events/clients` — 연결된 SSE 클라이언트 수
+
+### 변경
+- `DebugServerCore` — SSE 클라이언트 수명 관리 추가 (수락, 브로드캐스트, 하트비트, 정리)
+  - `ListenLoop()` — `GET /api/events/stream` SSE 요청 인터셉트 (`?filter=type1,type2` 필터링)
+  - `Update()` — 클라이언트 수락, 이벤트 브로드캐스트, 15초 간격 하트비트
+  - `StopServer()` — SSE 클라이언트 Dispose
+  - 다중 연결 시 `warning` 이벤트 자동 전송
+
 ## [0.6.0] - 2026-03-09
 
 ### 변경

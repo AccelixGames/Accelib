@@ -12,15 +12,19 @@ Accelib.DebugServer/
 ├── CHANGELOG.md                       # 변경 이력
 └── Runtime/
     ├── Core/                          # 서버 인프라
-    │   ├── DebugServerCore.cs         # sealed MonoSingleton — HTTP, 라우팅, 내장 엔드포인트
+    │   ├── DebugServerCore.cs         # sealed MonoSingleton — HTTP, 라우팅, SSE, 내장 엔드포인트
     │   └── DebugServerGUI.cs          # IMGUI 상태 오버레이 (internal)
     ├── Endpoint/                      # 엔드포인트 정의 API
     │   ├── DebugEndpointAttribute.cs  # [DebugEndpoint] 어트리뷰트 정의
     │   ├── DebugEndpointInfo.cs       # 엔드포인트 메타데이터 (문서 생성용)
     │   └── IDebugEndpointProvider.cs  # 마커 인터페이스 (엔드포인트 컴포넌트 탐색용)
-    └── Http/                          # HTTP 요청/응답
-        ├── RequestContext.cs          # HTTP 요청/응답 캡슐화
-        └── RequestContextExtensions.cs # 확장 메서드 (응답, 파싱, 유틸리티)
+    ├── Http/                          # HTTP 요청/응답
+    │   ├── RequestContext.cs          # HTTP 요청/응답 캡슐화
+    │   └── RequestContextExtensions.cs # 확장 메서드 (응답, 파싱, 유틸리티)
+    └── Sse/                           # SSE 실시간 이벤트 스트림
+        ├── DebugEvent.cs              # 이벤트 데이터 구조체
+        ├── DebugEventBus.cs           # 스레드 안전 이벤트 버스 + 링 버퍼
+        └── SseClient.cs              # SSE 클라이언트 연결 관리
 ```
 
 ## 아키텍처
@@ -128,6 +132,56 @@ public sealed class MyEndpoints : MonoBehaviour, IDebugEndpointProvider
 // curl http://localhost:7860/api/player/3
 // curl http://localhost:7860/api/help
 ```
+
+## SSE (Server-Sent Events) 실시간 이벤트 스트림
+
+게임 시스템에서 발생하는 이벤트를 실시간으로 클라이언트에 푸시한다.
+
+### 이벤트 발행
+
+```csharp
+// 메인 스레드에서 (대부분의 게임 코드)
+DebugEventBus.PublishSafe("player.jumped", "{\"position\":{\"x\":1,\"y\":0,\"z\":3}}");
+
+// 또는 EventBus 직접 접근
+DebugServerCore.Instance.EventBus.Publish("custom.event", "{\"data\":42}", Time.realtimeSinceStartup);
+```
+
+### 클라이언트 연결
+
+```bash
+# 전체 이벤트 수신
+curl -N http://localhost:7860/api/events/stream
+
+# 특정 이벤트만 필터링
+curl -N "http://localhost:7860/api/events/stream?filter=player.jumped,player.landed"
+
+# 최근 이벤트 버퍼 조회 (폴링 폴백)
+curl http://localhost:7860/api/events/recent
+
+# 연결된 SSE 클라이언트 수 확인
+curl http://localhost:7860/api/events/clients
+```
+
+### SSE 출력 형식
+
+```
+event: player.jumped
+data: {"position":{"x":1.2,"y":0.0,"z":3.4}}
+
+: heartbeat
+
+event: warning
+data: {"message":"다른 클라이언트가 이미 연결되어 있습니다","activeClients":1}
+```
+
+### 주요 특성
+
+- **스레드 안전:** `DebugEventBus.Publish()`는 모든 스레드에서 호출 가능
+- **링 버퍼:** 최근 256개 이벤트를 저장. 늦게 연결한 클라이언트에 catch-up 전송
+- **다중 연결 경고:** 이미 연결된 클라이언트가 있으면 `warning` 이벤트 자동 전송
+- **하트비트:** 15초 간격으로 `: heartbeat` SSE 코멘트 전송 (연결 유지 확인)
+- **자동 정리:** 끊긴 클라이언트는 다음 전송 시 자동 감지 및 제거
 
 ## 상태 오버레이
 

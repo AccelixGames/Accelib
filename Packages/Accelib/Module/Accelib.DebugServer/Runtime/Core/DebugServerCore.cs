@@ -45,6 +45,15 @@ namespace Accelib.DebugServer
         private readonly List<RouteEntry> _routes = new List<RouteEntry>();
         private readonly List<DebugEndpointInfo> _endpointInfos = new List<DebugEndpointInfo>();
 
+        // SSE
+        private readonly List<SseClient> _sseClients = new List<SseClient>();
+        private readonly ConcurrentQueue<SseClient> _pendingSseClients = new ConcurrentQueue<SseClient>();
+        private readonly DebugEventBus _eventBus = new DebugEventBus();
+        private float _lastHeartbeatTime;
+        private const float HeartbeatIntervalSec = 15f;
+        private const string SseStreamPath = "/api/events/stream";
+        private static readonly byte[] HeartbeatBytes = Encoding.UTF8.GetBytes(": heartbeat\n\n");
+
         #endregion
 
         #region Public Properties
@@ -52,6 +61,7 @@ namespace Accelib.DebugServer
         public bool IsRunning => _isRunning;
         public int Port => port;
         public int RegisteredEndpointCount => _registeredEndpointCount;
+        public DebugEventBus EventBus => _eventBus;
 
         #endregion
 
@@ -90,6 +100,60 @@ namespace Accelib.DebugServer
                 }
             }
 
+            // SSE: 대기 중인 클라이언트 수락
+            while (_pendingSseClients.TryDequeue(out var newClient))
+            {
+                // 다중 연결 경고
+                if (_sseClients.Count > 0)
+                {
+                    var warning = new DebugEvent("warning",
+                        $"{{\"message\":\"다른 클라이언트가 이미 연결되어 있습니다\",\"activeClients\":{_sseClients.Count}}}",
+                        Time.realtimeSinceStartup);
+                    newClient.TrySendEvent(warning);
+                }
+
+                // catch-up: 링 버퍼의 최근 이벤트 전송
+                foreach (var evt in _eventBus.GetRecentEvents())
+                {
+                    if (newClient.AcceptsEvent(evt))
+                        newClient.TrySendEvent(evt);
+                }
+
+                _sseClients.Add(newClient);
+            }
+
+            // SSE: 보류 중인 이벤트를 모든 클라이언트에 브로드캐스트
+            while (_eventBus.TryDequeueEvent(out var evt))
+            {
+                for (var i = _sseClients.Count - 1; i >= 0; i--)
+                {
+                    var client = _sseClients[i];
+                    if (!client.IsConnected)
+                    {
+                        client.Dispose();
+                        _sseClients.RemoveAt(i);
+                        continue;
+                    }
+
+                    if (client.AcceptsEvent(evt))
+                        client.TrySendEvent(evt);
+                }
+            }
+
+            // SSE: 하트비트
+            if (_sseClients.Count > 0 &&
+                Time.realtimeSinceStartup - _lastHeartbeatTime > HeartbeatIntervalSec)
+            {
+                _lastHeartbeatTime = Time.realtimeSinceStartup;
+                for (var i = _sseClients.Count - 1; i >= 0; i--)
+                {
+                    if (!_sseClients[i].WriteRaw(HeartbeatBytes))
+                    {
+                        _sseClients[i].Dispose();
+                        _sseClients.RemoveAt(i);
+                    }
+                }
+            }
         }
 
         #endregion
@@ -142,6 +206,11 @@ namespace Accelib.DebugServer
 
             _isRunning = false;
 
+            // SSE 클라이언트 정리
+            for (var i = _sseClients.Count - 1; i >= 0; i--)
+                _sseClients[i].Dispose();
+            _sseClients.Clear();
+
             try
             {
                 _listener?.Stop();
@@ -171,6 +240,10 @@ namespace Accelib.DebugServer
             var providers = GetComponentsInChildren<IDebugEndpointProvider>();
             foreach (var provider in providers)
                 RegisterEndpointsFrom((MonoBehaviour)provider);
+
+            // SSE 엔드포인트 (ListenLoop에서 인터셉트, help에 표시)
+            _endpointInfos.Add(new DebugEndpointInfo("SSE", SseStreamPath,
+                "SSE 실시간 이벤트 스트림. ?filter=type1,type2 로 필터링", "이벤트"));
 
             _registeredEndpointCount = _routes.Count;
         }
@@ -242,6 +315,28 @@ namespace Accelib.DebugServer
                         httpContext.Response.Headers.Add("Access-Control-Allow-Headers", "Content-Type");
                         httpContext.Response.StatusCode = 204;
                         httpContext.Response.Close();
+                        continue;
+                    }
+
+                    // SSE 스트림 요청 인터셉트 (스트림을 닫지 않고 유지)
+                    if (httpContext.Request.HttpMethod == "GET"
+                        && string.Equals(httpContext.Request.Url?.AbsolutePath, SseStreamPath,
+                            StringComparison.OrdinalIgnoreCase))
+                    {
+                        var response = httpContext.Response;
+                        response.StatusCode = 200;
+                        response.ContentType = "text/event-stream";
+                        response.Headers.Add("Cache-Control", "no-cache");
+                        response.Headers.Add("Access-Control-Allow-Origin", "*");
+
+                        // 필터 파싱: ?filter=player.snapshot,player.jumped
+                        var filterParam = httpContext.Request.QueryString["filter"];
+                        string[] filters = null;
+                        if (!string.IsNullOrEmpty(filterParam))
+                            filters = filterParam.Split(',');
+
+                        var client = new SseClient(response, filters);
+                        _pendingSseClients.Enqueue(client);
                         continue;
                     }
 
@@ -350,6 +445,30 @@ namespace Accelib.DebugServer
         {
             var md = GenerateMarkdownDoc();
             ctx.Respond($"\"{RequestContextExtensions.EscapeJson(md)}\"");
+        }
+
+        [DebugEndpoint("GET", "/api/events/recent", "최근 이벤트 버퍼 조회 (폴링 폴백)", Category = "이벤트")]
+        private void GetRecentEvents(RequestContext ctx)
+        {
+            var events = _eventBus.GetRecentEvents();
+            var sb = new StringBuilder("[");
+            for (var i = 0; i < events.Count; i++)
+            {
+                if (i > 0) sb.Append(",");
+                var e = events[i];
+                sb.Append($"{{\"event\":\"{RequestContextExtensions.EscapeJson(e.EventType)}\"");
+                sb.Append($",\"data\":{e.DataJson}");
+                sb.Append($",\"timestamp\":{e.Timestamp.ToString("F3")}}}");
+            }
+
+            sb.Append("]");
+            ctx.Respond(sb.ToString());
+        }
+
+        [DebugEndpoint("GET", "/api/events/clients", "현재 연결된 SSE 클라이언트 수", Category = "이벤트")]
+        private void GetSseClientCount(RequestContext ctx)
+        {
+            ctx.Respond($"{{\"count\":{_sseClients.Count}}}");
         }
 
         #endregion

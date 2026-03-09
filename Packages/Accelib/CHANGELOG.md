@@ -5,6 +5,22 @@
 형식은 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/)를 기반으로 하며,
 [Semantic Versioning](https://semver.org/spec/v2.0.0.html)을 따른다.
 
+## [0.1.27] - 2026-03-09
+
+### 수정
+- `Accelib.DebugServer` — `DebugServerGUI` IMGUI 렌더링 안정성 수정 (배경 텍스처 소실, 폰트 색상 변동)
+
+## [0.1.26] - 2026-03-09
+
+### 추가
+- `Accelib.DebugServer` — **SSE (Server-Sent Events) 실시간 이벤트 스트림 지원**
+  - `DebugEvent`, `DebugEventBus`, `SseClient` — 스레드 안전 이벤트 발행/링 버퍼/SSE 전송
+  - `DebugServerCore.EventBus` — 이벤트 버스 public 접근자
+  - `GET /api/events/stream` — SSE 스트림 (`?filter=` 필터링)
+  - `GET /api/events/recent` — 링 버퍼 조회 (폴링 폴백)
+  - `GET /api/events/clients` — SSE 클라이언트 수 조회
+  - 다중 연결 경고, 15초 하트비트, 자동 끊김 감지
+
 ## [0.1.25] - 2026-03-09
 
 ### 변경
