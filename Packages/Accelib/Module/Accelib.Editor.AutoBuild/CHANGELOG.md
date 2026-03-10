@@ -2,6 +2,12 @@
 
 이 문서는 Accelib.Editor.AutoBuild 모듈의 주요 변경 내역을 기록한다.
 
+## [0.1.17] - 2026-03-10
+
+### 수정
+- Addressables 빌드 실패 시 에러 사유가 Discord에 출력되지 않던 문제 수정 — 최상위 catch 블록에 Discord Embed 실패 알림 추가
+- `BuildPlayerContent` / `BuildContentUpdate` 결과가 null인 경우 에러로 감지하지 않던 문제 수정
+
 ## [0.1.16] - 2026-03-06
 
 ### 추가

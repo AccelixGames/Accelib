@@ -284,6 +284,17 @@ namespace Accelib.Editor
             {
                 Debug.LogException(e, this);
                 EditorApplication.Beep();
+
+                if (sendDiscordMessage)
+                {
+                    var errorMsg = new JDiscordMsg { embeds = new JDiscordEmbed[1] };
+                    errorMsg.embeds[0] = new JDiscordEmbed
+                    {
+                        title = $":x: 빌드 프로세스 실패 [{GetNowTime()}]",
+                        description = e.Message
+                    };
+                    DiscordWebhookQueue.SendMsg(discordWebhookUrl, errorMsg);
+                }
             }
             finally
             {
@@ -406,7 +417,9 @@ namespace Accelib.Editor
                 {
                     Debug.Log("Addressables 클린 빌드 시작...");
                     AddressableAssetSettings.BuildPlayerContent(out var result);
-                    if (!string.IsNullOrEmpty(result?.Error))
+                    if (result == null)
+                        throw new Exception("Addressables 클린 빌드 실패: 빌드 결과가 null입니다.");
+                    if (!string.IsNullOrEmpty(result.Error))
                         throw new Exception($"Addressables 클린 빌드 실패: {result.Error}");
                     duration = result.Duration;
                     Debug.Log($"Addressables 클린 빌드 성공! ({duration:F1}초)");
@@ -423,7 +436,9 @@ namespace Accelib.Editor
                             $"Content state 파일을 찾을 수 없습니다: {contentStatePath}\n클린 빌드를 먼저 실행해주세요.");
 
                     var updateResult = ContentUpdateScript.BuildContentUpdate(settings, contentStatePath);
-                    if (!string.IsNullOrEmpty(updateResult?.Error))
+                    if (updateResult == null)
+                        throw new Exception("Addressables 콘텐츠 업데이트 실패: 빌드 결과가 null입니다.");
+                    if (!string.IsNullOrEmpty(updateResult.Error))
                         throw new Exception($"Addressables 콘텐츠 업데이트 실패: {updateResult.Error}");
                     duration = updateResult.Duration;
                     Debug.Log($"Addressables 콘텐츠 업데이트 성공! ({duration:F1}초)");

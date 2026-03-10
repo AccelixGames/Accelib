@@ -5,6 +5,12 @@
 형식은 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/)를 기반으로 하며,
 [Semantic Versioning](https://semver.org/spec/v2.0.0.html)을 따른다.
 
+## [0.1.28] - 2026-03-10
+
+### 수정
+- `Accelib.Editor.AutoBuild` — Addressables 빌드 실패 시 에러 사유가 Discord에 출력되지 않던 문제 수정
+- `Accelib.Editor.AutoBuild` — 빌드 결과 null 감지 누락 수정
+
 ## [0.1.27] - 2026-03-09
 
 ### 수정
