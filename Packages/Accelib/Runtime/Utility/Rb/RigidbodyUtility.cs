@@ -72,11 +72,13 @@ namespace Accelib.Utility.Rb
             {
                 for (var i = 0; i < rigidbodies.Length; i++)
                 {
+                    if (!rigidbodies[i]) continue;
+
                     // 매번 캐싱 해줘야 한다면,
                     if(alwaysReinitialize)
                         // 저장
                         rbDataArray[i] = rigidbodies[i].ToData();
-                    
+
                     // 리지드바디 삭제
                     rigidbodies[i].isKinematic = true;
                     Destroy(rigidbodies[i]);

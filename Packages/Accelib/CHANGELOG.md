@@ -5,6 +5,11 @@
 형식은 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/)를 기반으로 하며,
 [Semantic Versioning](https://semver.org/spec/v2.0.0.html)을 따른다.
 
+## [0.1.30] - 2026-03-11
+
+### 수정
+- `RigidbodyUtility.Toggle(false)` — 이미 비활성화된 상태에서 재호출 시 null Rigidbody 접근으로 NRE 발생하던 문제 수정
+
 ## [0.1.29] - 2026-03-10
 
 ### 수정
