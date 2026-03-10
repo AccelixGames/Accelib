@@ -415,6 +415,14 @@ namespace Accelib.Editor
             {
                 case EAddressablesBuildMode.CleanBuild:
                 {
+                    // 클린 빌드 전 이전 Remote 출력 폴더 정리 (과거 해시 번들 누적 방지)
+                    var prevRemotePath = FindRemoteSrcPath(EditorUserBuildSettings.activeBuildTarget);
+                    if (prevRemotePath != null && Directory.Exists(prevRemotePath))
+                    {
+                        Debug.Log($"Addressables Remote 폴더 정리: {prevRemotePath}");
+                        Directory.Delete(prevRemotePath, true);
+                    }
+
                     Debug.Log("Addressables 클린 빌드 시작...");
                     AddressableAssetSettings.BuildPlayerContent(out var result);
                     if (result == null)
@@ -492,6 +500,14 @@ namespace Accelib.Editor
             var exeName = Path.GetFileNameWithoutExtension(buildPath);
             var folderName = Path.GetFileName(remoteSrcPath);
             var remoteDstPath = Path.Combine(buildDir, $"{exeName}_Data", "Remote", folderName);
+
+            // 이전 파일 누적 방지 — 대상 폴더 정리 후 복사
+            if (Directory.Exists(remoteDstPath))
+            {
+                Debug.Log($"Addressables Remote 대상 폴더 정리: {remoteDstPath}");
+                Directory.Delete(remoteDstPath, true);
+            }
+
             var copyCount = CopyDirectoryRecursive(remoteSrcPath, remoteDstPath);
 
             Debug.Log($"Addressables Remote 복사 완료: {copyCount}개 파일 → {remoteDstPath}");
