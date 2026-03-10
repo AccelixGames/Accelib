@@ -63,21 +63,22 @@ namespace Accelib.Editor
         [SerializeField, ReadOnly] private int versionNumber;
 
         [TitleGroup("#빌드 옵션")]
-        [ShowInInspector, ReadOnly, PropertyOrder(10)]
+        [ShowInInspector, EnableGUI, PropertyOrder(10)]
+        [InlineButton(nameof(OpenSteamCmdPath), "열기")]
         private string SteamCmdPath => GetSteamCmdPath() ?? "(미설정)";
 
         [TitleGroup("#빌드 옵션")]
-        [ShowInInspector, ReadOnly, PropertyOrder(11)]
+        [ShowInInspector, EnableGUI, PropertyOrder(11)]
         [InlineButton(nameof(OpenUnityBuildPath), "열기")]
         private string UnityBuildPath => GetUnityBuildPath() ?? "(미설정)";
 
         [TitleGroup("#빌드 옵션")]
-        [ShowInInspector, ReadOnly, PropertyOrder(12)]
+        [ShowInInspector, EnableGUI, PropertyOrder(12)]
         [InlineButton(nameof(OpenAddressablesSrcPath), "열기")]
         private string AddressablesSrcPath => GetAddressablesSrcPath();
 
         [TitleGroup("#빌드 옵션")]
-        [ShowInInspector, ReadOnly, PropertyOrder(13)]
+        [ShowInInspector, EnableGUI, PropertyOrder(13)]
         [InlineButton(nameof(OpenAddressablesDstPath), "열기")]
         private string AddressablesDstPath => GetAddressablesDstPath();
 
@@ -776,6 +777,7 @@ namespace Accelib.Editor
 
         #region Folder Open
 
+        private void OpenSteamCmdPath() => RevealFolder(Path.GetDirectoryName(GetSteamCmdPath()));
         private void OpenUnityBuildPath() => RevealFolder(GetUnityBuildPath());
         private void OpenAddressablesSrcPath() => RevealFolder(GetAddressablesSrcPath());
         private void OpenAddressablesDstPath() => RevealFolder(GetAddressablesDstPath());

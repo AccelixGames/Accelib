@@ -7,6 +7,7 @@
 ### 수정
 - Addressables CleanBuild 시 이전 Remote 출력 폴더를 삭제하지 않아 과거 해시 번들이 누적되던 문제 수정
 - `Internal_CopyAddressablesRemote` 복사 전 대상 폴더를 정리하지 않아 이전 빌드 파일이 잔류하던 문제 수정
+- 인스펙터 경로 열기 버튼(`UnityBuildPath`, `AddressablesSrcPath`, `AddressablesDstPath`)이 `[ReadOnly]`로 인해 클릭 불가하던 문제 수정 — `[EnableGUI]`로 교체
 
 ## [0.1.17] - 2026-03-10
 

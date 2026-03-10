@@ -10,6 +10,7 @@
 ### 수정
 - `Accelib.Editor.AutoBuild` — Addressables CleanBuild 시 이전 Remote 폴더 미정리로 과거 번들 누적되던 문제 수정
 - `Accelib.Editor.AutoBuild` — Remote 복사 시 대상 폴더 미정리로 이전 빌드 파일 잔류하던 문제 수정
+- `Accelib.Editor.AutoBuild` — 인스펙터 경로 열기 버튼 클릭 불가 수정 (`[ReadOnly]` → `[EnableGUI]`)
 
 ## [0.1.28] - 2026-03-10
 
