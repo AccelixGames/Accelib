@@ -5,6 +5,21 @@
 형식은 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/)를 기반으로 하며,
 [Semantic Versioning](https://semver.org/spec/v2.0.0.html)을 따른다.
 
+## [0.1.31] - 2026-03-12
+
+### 제거
+- NaughtyAttributes 의존성 완전 제거 — 모든 사용처를 Odin Inspector로 대체
+  - `[Scene]` → `[SceneDropdown]` (Accelib.OdinExtension)
+  - `[AnimatorParam]` → 제거 (Odin 동등 기능 없음, 런타임 무관)
+  - `[EnumFlags]` → 제거 (C# `[Flags]` + Odin 자동 처리)
+  - `[ShowNativeProperty]` → `[ShowInInspector, ReadOnly]`
+  - `[ResizableTextArea]` → `[TextArea]` (Unity 내장)
+  - `[ShowAssetPreview]` → `[PreviewField]`
+  - `[AllowNesting]` → 제거 (Odin 기본 지원)
+  - `[Button(EButtonEnableMode)]` → `[Button, EnableIf("@...")]`
+- 5개 asmdef에서 `NaughtyAttributes.Core` 참조 제거
+- `Accelib.Localization`, `Accelib.UI.Transition` README에서 NaughtyAttributes 의존성 표기 제거
+
 ## [0.1.30] - 2026-03-11
 
 ### 수정
