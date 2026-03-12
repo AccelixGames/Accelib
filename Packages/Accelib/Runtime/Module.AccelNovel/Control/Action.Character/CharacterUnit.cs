@@ -2,7 +2,7 @@
 using Accelib.Extensions;
 using Accelib.Module.AccelNovel.Control.Action.Sprite.Unit;
 using DG.Tweening;
-using NaughtyAttributes;
+using Sirenix.OdinInspector;
 using Newtonsoft.Json;
 using UnityEngine;
 

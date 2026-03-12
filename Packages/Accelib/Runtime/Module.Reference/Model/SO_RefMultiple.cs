@@ -2,7 +2,7 @@
 using System.Linq;
 using Accelib.Extensions;
 using Accelib.Logging;
-using NaughtyAttributes;
+using Sirenix.OdinInspector;
 using UnityEngine;
 
 namespace Accelib.Module.Reference.Model

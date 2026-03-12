@@ -1,6 +1,6 @@
 #if ACCELIX_SPINE
 using Accelib.Extensions;
-using NaughtyAttributes;
+using Sirenix.OdinInspector;
 using Spine.Unity;
 using UnityEngine;
 using AnimationState = Spine.AnimationState;

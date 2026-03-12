@@ -1,6 +1,6 @@
 ﻿using Accelib.Data;
 using DG.Tweening;
-using NaughtyAttributes;
+using Sirenix.OdinInspector;
 using UnityEngine;
 
 namespace Accelib.Effect
@@ -19,10 +19,10 @@ namespace Accelib.Effect
             target.DOShakeRotation(tweenConfig.duration, tweenConfig.strength, tweenConfig.vibrato, tweenConfig.randomness, 
                 tweenConfig.fadeOut, tweenConfig.randomnessMode);
 
-        [Button(enabledMode: EButtonEnableMode.Playmode)]
+        [Button, EnableIf("@UnityEngine.Application.isPlaying")]
         public void Shake() => DoShake();
         
-        [Button(enabledMode: EButtonEnableMode.Playmode)]
+        [Button, EnableIf("@UnityEngine.Application.isPlaying")]
         public void ShakeRotation() => DoShakeRotation();
     }
 }

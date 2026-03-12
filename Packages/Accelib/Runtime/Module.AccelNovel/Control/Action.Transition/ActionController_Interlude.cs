@@ -6,7 +6,7 @@ using Accelix.Accelib.AccelNovel.Model;
 using Accelix.Accelib.AccelNovel.Model.Enum;
 using DG.Tweening;
 using Febucci.UI.Core;
-using NaughtyAttributes;
+using Sirenix.OdinInspector;
 using UnityAtoms.BaseAtoms;
 using UnityEngine;
 using UnityEngine.Events;

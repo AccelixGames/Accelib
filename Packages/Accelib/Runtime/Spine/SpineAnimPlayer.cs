@@ -2,7 +2,7 @@
 using System;
 using System.Collections.Generic;
 using Accelib.Spine.Architecture;
-using NaughtyAttributes;
+using Sirenix.OdinInspector;
 using Spine.Unity;
 using UnityEngine;
 

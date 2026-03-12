@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using Accelib.Core;
 using Accelib.Logging;
 using Cysharp.Threading.Tasks;
-using NaughtyAttributes;
+using Sirenix.OdinInspector;
 using UnityEngine;
 using Accelib.Module.AccelNovel.Control.Resource.Internal;
 

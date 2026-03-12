@@ -1,7 +1,7 @@
 ﻿#if UNITY_EDITOR
 using Accelib.EditorTool.Google.Model;
 using Cysharp.Threading.Tasks;
-using NaughtyAttributes;
+using Sirenix.OdinInspector;
 using UnityEngine;
 using UnityEngine.Serialization;
 
@@ -20,7 +20,7 @@ namespace Accelib.EditorTool.Google.Control.Sheets
         
         public abstract UniTask<string> DownloadAsync();
         
-        [Button("다운로드(테스트)", EButtonEnableMode.Editor)]
+        [Button("다운로드(테스트)"), EnableIf("@!UnityEngine.Application.isPlaying")]
         private void Download() => DownloadAsync().Forget();
     }
 }

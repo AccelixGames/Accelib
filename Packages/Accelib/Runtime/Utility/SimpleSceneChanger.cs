@@ -1,6 +1,7 @@
 ﻿using System;
 using Cysharp.Threading.Tasks;
-using NaughtyAttributes;
+using Accelib.OdinExtension;
+using Sirenix.OdinInspector;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -16,8 +17,8 @@ namespace Accelib.Utility
 
         [Header("LoadScn")]
         [SerializeField]  private SceneType sceneType = SceneType.Name;
-        [ShowIf(nameof(sceneType), SceneType.Name), SerializeField, Scene] private string targetScene;
-        [ShowIf(nameof(sceneType), SceneType.Index), SerializeField, Scene] private int targetIndex;
+        [ShowIf(nameof(sceneType), SceneType.Name), SerializeField, SceneDropdown] private string targetScene;
+        [ShowIf(nameof(sceneType), SceneType.Index), SerializeField, SceneDropdown] private int targetIndex;
         
         [Header("LoadMode")]
         [SerializeField] private LoadSceneMode loadMode = LoadSceneMode.Single;

@@ -1,5 +1,5 @@
 ﻿using DG.Tweening;
-using NaughtyAttributes;
+using Sirenix.OdinInspector;
 using UnityEngine;
 
 namespace Accelib.Effect
@@ -13,7 +13,7 @@ namespace Accelib.Effect
 
         private Tweener _tween;
         
-        [Button(enabledMode: EButtonEnableMode.Playmode)]
+        [Button, EnableIf("@UnityEngine.Application.isPlaying")]
         public void DoPunch()
         {
             _tween?.Kill(true);

@@ -9,7 +9,8 @@ using Accelix.Accelib.AccelNovel.Model.Enum;
 using Accelix.Singleton.SaveLoad.Statistics;
 using AYellowpaper.SerializedCollections;
 using Cysharp.Threading.Tasks;
-using NaughtyAttributes;
+using Accelib.OdinExtension;
+using Sirenix.OdinInspector;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -33,7 +34,7 @@ namespace Accelib.Module.AccelNovel.Control.Action.Function
         [SerializeField, TextArea] private string unlockedText = "새로운 엔딩이 해금되었습니다!";
         
         [Header("Next Scene")]
-        [SerializeField, Scene] private string nextScene;
+        [SerializeField, SceneDropdown] private string nextScene;
         
         public override void Initialize()
         {

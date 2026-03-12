@@ -1,7 +1,7 @@
 ﻿using Accelib.Module.AccelNovel.Implements.SaveLoad.Collective;
 using Accelib.Module.AccelNovel.Model.Collective.Enum;
 using Accelib.Module.SaveLoad;
-using NaughtyAttributes;
+using Sirenix.OdinInspector;
 using UnityEngine;
 
 namespace Accelib.Module.AccelNovel.Model.Collective.SO.Base

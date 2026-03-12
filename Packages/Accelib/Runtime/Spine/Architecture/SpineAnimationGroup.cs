@@ -1,5 +1,5 @@
 ﻿#if ACCELIX_SPINE
-using NaughtyAttributes;
+using Sirenix.OdinInspector;
 using Spine;
 using Spine.Unity;
 using UnityEngine;

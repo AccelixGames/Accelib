@@ -1,6 +1,6 @@
 ﻿using Accelib.Data;
 using DG.Tweening;
-using NaughtyAttributes;
+using Sirenix.OdinInspector;
 using UnityEngine;
 
 namespace Accelib.Module.AccelNovel.Control.Action.Sprite.Unit

@@ -1,5 +1,5 @@
 ﻿using Accelib.Module.UI.Utility;
-using NaughtyAttributes;
+using Sirenix.OdinInspector;
 using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;

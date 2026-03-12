@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using Accelib.Module.Initialization.Base;
-using NaughtyAttributes;
+using Sirenix.OdinInspector;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.SceneManagement;

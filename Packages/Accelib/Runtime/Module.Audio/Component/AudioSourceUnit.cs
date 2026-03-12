@@ -1,7 +1,7 @@
 ﻿using Accelib.Logging;
 using Accelib.Module.Audio.Data;
 using Accelib.Module.Audio.Data._Base;
-using NaughtyAttributes;
+using Sirenix.OdinInspector;
 using UnityEngine;
 
 namespace Accelib.Module.Audio.Component

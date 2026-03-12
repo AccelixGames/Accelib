@@ -1,7 +1,7 @@
 ﻿using Accelib.Effect;
 using Accelib.Module.Audio.Data._Base;
 using DG.Tweening;
-using NaughtyAttributes;
+using Sirenix.OdinInspector;
 using UnityEngine;
 
 namespace Accelib.Module.AccelNovel.Control.ControlBar

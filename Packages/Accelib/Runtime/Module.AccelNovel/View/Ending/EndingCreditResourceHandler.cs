@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Accelib.Module.AccelNovel.Control.Resource;
 using Cysharp.Threading.Tasks;
-using NaughtyAttributes;
+using Sirenix.OdinInspector;
 using UnityEngine;
 
 namespace Accelib.Module.AccelNovel.View.Ending

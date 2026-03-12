@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using Accelib.Module.AccelNovel.Model.Collective.SO;
-using NaughtyAttributes;
+using Sirenix.OdinInspector;
 using UnityEditor;
 using UnityEngine;
 

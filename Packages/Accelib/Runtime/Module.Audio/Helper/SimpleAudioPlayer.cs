@@ -1,5 +1,5 @@
 ﻿using Accelib.Module.Audio.Data;
-using NaughtyAttributes;
+using Sirenix.OdinInspector;
 using UnityEngine;
 
 namespace Accelib.Module.Audio.Helper
@@ -18,12 +18,12 @@ namespace Accelib.Module.Audio.Helper
         [SerializeField] private Mode onEnableMode = Mode.None;
         [SerializeField] private AudioRefSO audioRef;
 
-        [Button(enabledMode: EButtonEnableMode.Playmode)] private void Play() => audioRef?.Play();
-        [Button(enabledMode: EButtonEnableMode.Playmode)] private void PlayFadeIn() => audioRef?.Play(true);
-        [Button(enabledMode: EButtonEnableMode.Playmode)] private void Stop() => audioRef?.Stop();
-        [Button(enabledMode: EButtonEnableMode.Playmode)] private void StopFadeOut() => audioRef?.Stop(true);
-        [Button(enabledMode: EButtonEnableMode.Playmode)] private void SwitchFade() => audioRef?.SwitchFade();
-        [Button(enabledMode: EButtonEnableMode.Playmode)] private void PlayOneShot() => audioRef?.PlayOneShot();
+        [Button, EnableIf("@UnityEngine.Application.isPlaying")] private void Play() => audioRef?.Play();
+        [Button, EnableIf("@UnityEngine.Application.isPlaying")] private void PlayFadeIn() => audioRef?.Play(true);
+        [Button, EnableIf("@UnityEngine.Application.isPlaying")] private void Stop() => audioRef?.Stop();
+        [Button, EnableIf("@UnityEngine.Application.isPlaying")] private void StopFadeOut() => audioRef?.Stop(true);
+        [Button, EnableIf("@UnityEngine.Application.isPlaying")] private void SwitchFade() => audioRef?.SwitchFade();
+        [Button, EnableIf("@UnityEngine.Application.isPlaying")] private void PlayOneShot() => audioRef?.PlayOneShot();
 
         private void OnEnable()
         {

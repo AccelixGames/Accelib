@@ -9,7 +9,7 @@ using Accelib.Module.Audio.Data;
 using Accelib.Module.SaveLoad;
 using Accelix.Accelib.AccelNovel.Model;
 using AYellowpaper.SerializedCollections;
-using NaughtyAttributes;
+using Sirenix.OdinInspector;
 using UnityEngine;
 using UnityEngine.Events;
 

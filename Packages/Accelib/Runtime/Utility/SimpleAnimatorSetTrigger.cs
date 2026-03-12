@@ -1,5 +1,5 @@
 ﻿using System;
-using NaughtyAttributes;
+using Sirenix.OdinInspector;
 using UnityEngine;
 
 namespace Accelib.Utility
@@ -8,7 +8,7 @@ namespace Accelib.Utility
     [RequireComponent(typeof(Animator))]
     public class SimpleAnimatorSetTrigger : MonoBehaviour
     {
-        [SerializeField, AnimatorParam(nameof(_animator), AnimatorControllerParameterType.Trigger)] private string triggerName;
+        [SerializeField] private string triggerName;
         [SerializeField] private bool resetTriggerOnEnable;
         
         private Animator _animator;
@@ -20,9 +20,9 @@ namespace Accelib.Utility
             if(resetTriggerOnEnable) ResetTrigger();
         }
 
-        [Button(enabledMode: EButtonEnableMode.Playmode)]
+        [Button, EnableIf("@UnityEngine.Application.isPlaying")]
         public void SetTrigger()=> _animator.SetTrigger(triggerName);
-        [Button(enabledMode: EButtonEnableMode.Playmode)]
+        [Button, EnableIf("@UnityEngine.Application.isPlaying")]
         public void ResetTrigger() => _animator.ResetTrigger(triggerName);
 
 #if UNITY_EDITOR

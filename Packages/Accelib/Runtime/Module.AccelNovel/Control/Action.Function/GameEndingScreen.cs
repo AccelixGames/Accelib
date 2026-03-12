@@ -1,7 +1,8 @@
 ﻿using Accelib.Module.Audio;
 using Accelib.Module.Audio.Data._Base;
 using Cysharp.Threading.Tasks;
-using NaughtyAttributes;
+using Accelib.OdinExtension;
+using Sirenix.OdinInspector;
 using UnityEngine;
 
 namespace Accelib.Module.AccelNovel.Control.Action.Function
@@ -10,7 +11,7 @@ namespace Accelib.Module.AccelNovel.Control.Action.Function
     {
         [Header("")]
         [SerializeField, Range(0f, 10f)] private float delayTime = 3f;
-        [SerializeField, Scene] private string nextScn;
+        [SerializeField, SceneDropdown] private string nextScn;
         
         [Header("Audio")]
         [SerializeField] private AudioRefBase[] audioRefs;

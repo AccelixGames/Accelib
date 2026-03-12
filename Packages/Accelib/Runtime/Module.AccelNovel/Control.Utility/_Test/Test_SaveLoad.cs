@@ -2,7 +2,7 @@
 using Accelib.Logging;
 using Accelib.Module.AccelNovel.Model;
 using Accelix.Accelib.AccelNovel.Model;
-using NaughtyAttributes;
+using Sirenix.OdinInspector;
 using UnityEngine;
 
 namespace Accelib.Module.AccelNovel.Control.Utility._Test

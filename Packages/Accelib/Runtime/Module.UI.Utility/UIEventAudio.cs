@@ -1,5 +1,5 @@
 ﻿using Accelib.Module.Audio.Data._Base;
-using NaughtyAttributes;
+using Sirenix.OdinInspector;
 using UnityEngine;
 using UnityEngine.EventSystems;
 

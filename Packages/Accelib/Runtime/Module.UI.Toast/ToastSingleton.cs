@@ -2,7 +2,7 @@
 using Accelib.Data;
 using Accelib.Helper;
 using DG.Tweening;
-using NaughtyAttributes;
+using Sirenix.OdinInspector;
 using TMPro;
 using UnityEngine;
 
@@ -52,7 +52,7 @@ namespace Accelib.Module.UI.Toast
             }
         }
 
-        [Button(enabledMode: EButtonEnableMode.Playmode)]
+        [Button, EnableIf("@UnityEngine.Application.isPlaying")]
         private void TestOpen()
         {
             Internal_Open("토스트 메세지입니다!");

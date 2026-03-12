@@ -6,7 +6,7 @@ using Accelib.Core;
 using Accelib.Helper;
 using Accelib.Module.UI.SafeArea.Architecture;
 using AYellowpaper.SerializedCollections;
-using NaughtyAttributes;
+using Sirenix.OdinInspector;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -33,8 +33,8 @@ namespace Accelib.Module.UI.SafeArea
   
         [Header("옵션")]
         [SerializeField] private Canvas refCanvas;
-        [SerializeField, EnumFlags] private AreaOption safeAreaOption = (AreaOption)int.MaxValue;
-        [SerializeField, EnumFlags] private AreaOption customAreaOption = (AreaOption)int.MaxValue;
+        [SerializeField] private AreaOption safeAreaOption = (AreaOption)int.MaxValue;
+        [SerializeField] private AreaOption customAreaOption = (AreaOption)int.MaxValue;
         [SerializeField] private bool showLog = false;
         [SerializeField] private Timer refreshTimer;
 

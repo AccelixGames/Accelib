@@ -10,7 +10,7 @@ using Accelib.Module.AccelNovel.Model.SO;
 using Accelix.Accelib.AccelNovel.Model;
 using Accelix.Accelib.AccelNovel.Model.Enum;
 using DG.Tweening;
-using NaughtyAttributes;
+using Sirenix.OdinInspector;
 using UnityEngine;
 using UnityEngine.Events;
 

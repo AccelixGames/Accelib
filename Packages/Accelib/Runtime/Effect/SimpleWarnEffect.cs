@@ -1,7 +1,7 @@
 ﻿using System;
 using Accelib.Tween;
 using DG.Tweening;
-using NaughtyAttributes;
+using Sirenix.OdinInspector;
 using UnityEngine;
 
 namespace Accelib.Effect
@@ -28,7 +28,7 @@ namespace Accelib.Effect
             DoWarn();
         }
 
-        [Button(enabledMode: EButtonEnableMode.Playmode)]
+        [Button, EnableIf("@UnityEngine.Application.isPlaying")]
         public void DoWarn()
         {
             if (!gameObject.activeSelf)

@@ -2,7 +2,7 @@
 using System;
 using Accelib.Extensions;
 using Accelib.Helper;
-using NaughtyAttributes;
+using Sirenix.OdinInspector;
 using Spine.Unity;
 using UnityEngine;
 

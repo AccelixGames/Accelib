@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using Accelib.Logging;
 using Accelib.Module.Deck.Base.Model;
-using NaughtyAttributes;
+using Sirenix.OdinInspector;
 using UnityEngine;
 using UnityEngine.Events;
 

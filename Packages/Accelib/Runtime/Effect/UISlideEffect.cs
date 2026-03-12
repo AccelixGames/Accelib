@@ -1,7 +1,6 @@
 ﻿using System;
 using Accelib.Data;
 using DG.Tweening;
-using NaughtyAttributes;
 using Sirenix.OdinInspector;
 using UnityEngine;
 
@@ -38,10 +37,10 @@ namespace Accelib.Effect
 
         private void OnDestroy() => _tween?.Kill();
 
-        [NaughtyAttributes.Button(enabledMode:EButtonEnableMode.Playmode)] 
+        [Button, EnableIf("@UnityEngine.Application.isPlaying")] 
         public DG.Tweening.Tween Show() => DoSlide(false, showPos, hidePos);
         
-        [NaughtyAttributes.Button(enabledMode:EButtonEnableMode.Playmode)]
+        [Button, EnableIf("@UnityEngine.Application.isPlaying")]
         public DG.Tweening.Tween Hide() => DoSlide(true, hidePos, showPos);
 
         private DG.Tweening.Tween DoSlide(bool show, RectTransform initPos, RectTransform endPos)

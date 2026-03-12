@@ -1,6 +1,6 @@
 ﻿using Accelib.Tween;
 using DG.Tweening;
-using NaughtyAttributes;
+using Sirenix.OdinInspector;
 using TMPro;
 using UnityEngine;
 
@@ -33,7 +33,7 @@ namespace Accelib.Module.AccelNovel.Control.Action.Input
         }
         
 #if UNITY_EDITOR
-        [Button(enabledMode: EButtonEnableMode.Playmode)]
+        [Button, EnableIf("@UnityEngine.Application.isPlaying")]
         private void OpenTest() => Open("테스트 문장입니다.", new DefaultTweenValue(0.5f, 0.3f, Ease.OutSine));
 #endif
     }

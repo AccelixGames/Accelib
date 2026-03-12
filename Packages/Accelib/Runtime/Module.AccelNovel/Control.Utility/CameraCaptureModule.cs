@@ -1,5 +1,5 @@
 ﻿using Accelib.Core;
-using NaughtyAttributes;
+using Sirenix.OdinInspector;
 using UnityEngine;
 
 namespace Accelib.Module.AccelNovel.Control.Utility

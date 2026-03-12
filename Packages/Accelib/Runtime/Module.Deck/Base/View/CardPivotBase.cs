@@ -1,5 +1,5 @@
 ﻿using Accelib.Module.Deck.Base.Model;
-using NaughtyAttributes;
+using Sirenix.OdinInspector;
 using UnityEngine;
 
 namespace Accelib.Module.Deck.Base.View

@@ -1,5 +1,5 @@
 ﻿using Accelib.Module.AccelTag.TaggerSystem;
-using NaughtyAttributes;
+using Sirenix.OdinInspector;
 using UnityEngine;
 
 namespace Accelib.Module.AccelTag

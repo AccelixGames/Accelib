@@ -7,7 +7,7 @@ using Accelib.Module.Audio.Data;
 using Accelix.Accelib.AccelNovel.Model;
 using Cysharp.Threading.Tasks;
 using DG.Tweening;
-using NaughtyAttributes;
+using Sirenix.OdinInspector;
 using TMPro;
 using UnityEngine;
 using UnityEngine.Events;

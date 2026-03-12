@@ -1,7 +1,7 @@
 ﻿using System;
 using Accelib.Data;
 using DG.Tweening;
-using NaughtyAttributes;
+using Sirenix.OdinInspector;
 using UnityEngine;
 
 namespace Accelib.Utility
@@ -28,9 +28,9 @@ namespace Accelib.Utility
         public Tweener DoZoomIn() => Internal_Zoom(true);
         public Tweener DoZoomOut() => Internal_Zoom(false);
         
-        [Button(enabledMode: EButtonEnableMode.Playmode)]
+        [Button, EnableIf("@UnityEngine.Application.isPlaying")]
         public void ZoomIn() => DoZoomIn();
-        [Button(enabledMode: EButtonEnableMode.Playmode)]
+        [Button, EnableIf("@UnityEngine.Application.isPlaying")]
         public void ZoomOut() => DoZoomOut();
 
         private Tweener Internal_Zoom(bool zoomIn)

@@ -1,7 +1,7 @@
 ﻿using System;
 using Accelib.Core;
 using Accelib.Logging;
-using NaughtyAttributes;
+using Sirenix.OdinInspector;
 using UnityEngine;
 
 #if UNITY_STANDALONE && STEAMWORKS_NET && !DISABLESTEAMWORKS

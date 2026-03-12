@@ -1,6 +1,6 @@
 ﻿#if ACCELIB_AIT
 using Accelib.AccelixWeb.Module.Advertisement.Model;
-using NaughtyAttributes;
+using Sirenix.OdinInspector;
 using UnityEngine;
 
 namespace Accelib.AccelixWeb.Module.Advertisement.Control.Emulator.Screen

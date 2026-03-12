@@ -1,5 +1,5 @@
 using Accelib.Helper;
-using NaughtyAttributes;
+using Sirenix.OdinInspector;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.EventSystems;
@@ -15,10 +15,10 @@ namespace Accelib.Module.UI.Utility
         [SerializeField, Range(0.01f, 5f)] private float speedMultiplier = 1f;
         
         [Header("파라메터")]
-        [SerializeField, AnimatorParam(nameof(anim))] private string animBoolHover = "isHover";
-        [SerializeField, AnimatorParam(nameof(anim))] private string animBoolClick = "isClicked";
-        [SerializeField, AnimatorParam(nameof(anim))] private string animBoolDisabled = "isDisabled";
-        [SerializeField, AnimatorParam(nameof(anim))] private string animFloatSpeed = "speed";
+        [SerializeField] private string animBoolHover = "isHover";
+        [SerializeField] private string animBoolClick = "isClicked";
+        [SerializeField] private string animBoolDisabled = "isDisabled";
+        [SerializeField] private string animFloatSpeed = "speed";
         
         [Header("이벤트")]
         [SerializeField] public UnityEvent onPointerClick = new();

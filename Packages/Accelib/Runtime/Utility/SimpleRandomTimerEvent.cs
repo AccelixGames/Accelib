@@ -1,5 +1,5 @@
 ﻿using Accelib.Extensions;
-using NaughtyAttributes;
+using Sirenix.OdinInspector;
 using UnityEngine;
 using UnityEngine.Events;
 

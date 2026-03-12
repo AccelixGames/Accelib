@@ -1,7 +1,7 @@
 ﻿using System;
 using Accelib.Data;
 using DG.Tweening;
-using NaughtyAttributes;
+using Sirenix.OdinInspector;
 using UnityEngine;
 
 namespace Accelib.Effect
@@ -63,7 +63,7 @@ namespace Accelib.Effect
         }
         public void EffectOut() => DoEffectOut();
 
-        [Button(enabledMode: EButtonEnableMode.Playmode)]
+        [Button, EnableIf("@UnityEngine.Application.isPlaying")]
         public void OnSetDisable() => DoEffectOut();
     }
 }

@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-using NaughtyAttributes;
+using Sirenix.OdinInspector;
 using NaughtyWaterBuoyancy.Scripts.Core.Collections;
 using UnityEngine;
 

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Accelib.Logging;
 using Cysharp.Threading.Tasks;
-using NaughtyAttributes;
+using Sirenix.OdinInspector;
 using UnityEditor;
 using UnityEngine;
 

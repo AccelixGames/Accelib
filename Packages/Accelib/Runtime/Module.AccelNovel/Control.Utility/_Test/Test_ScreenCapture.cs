@@ -1,4 +1,4 @@
-﻿using NaughtyAttributes;
+﻿using Sirenix.OdinInspector;
 using UnityEngine;
 
 namespace Accelib.Module.AccelNovel.Control.Utility._Test
@@ -7,7 +7,7 @@ namespace Accelib.Module.AccelNovel.Control.Utility._Test
     {
         [SerializeField] private Texture2D screenShot;
 
-        [Button("Capture", EButtonEnableMode.Playmode)]
+        [Button("Capture"), EnableIf("@UnityEngine.Application.isPlaying")]
         public async void CaptureScreen()
         {
             screenShot = await ScreenCaptureUtility.CaptureScreen();

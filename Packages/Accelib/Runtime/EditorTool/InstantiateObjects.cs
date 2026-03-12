@@ -1,5 +1,5 @@
 ﻿using System;
-using NaughtyAttributes;
+using Sirenix.OdinInspector;
 using UnityEngine;
 
 #if UNITY_EDITOR
@@ -16,7 +16,7 @@ namespace Accelib.EditorTool
         [SerializeField] private string naming;
         [SerializeField, ReadOnly] private string namingPreview;
 
-        [Button(enabledMode: EButtonEnableMode.Editor)]
+        [Button, EnableIf("@!UnityEngine.Application.isPlaying")]
         private void Instantiate()
         {
             for (var y = 0; y < count.y; y++)

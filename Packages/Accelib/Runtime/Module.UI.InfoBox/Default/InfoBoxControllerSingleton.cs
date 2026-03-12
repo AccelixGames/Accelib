@@ -3,7 +3,7 @@ using Accelib.Core;
 using Accelib.Extensions;
 using Accelib.Module.UI.InfoBox.Base.Control.Receiver.Interface;
 using Accelib.Module.UI.InfoBox.Base.Model;
-using NaughtyAttributes;
+using Sirenix.OdinInspector;
 using UnityEngine;
 
 namespace Accelib.Module.UI.InfoBox

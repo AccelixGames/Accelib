@@ -1,5 +1,5 @@
 ﻿using Accelib.AccelixWeb.Module.Advertisement.Control;
-using NaughtyAttributes;
+using Sirenix.OdinInspector;
 using UnityEngine;
 using UnityEngine.Events;
 

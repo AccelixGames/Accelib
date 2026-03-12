@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Accelib.Tween.Effect.Base;
 using DG.Tweening;
-using NaughtyAttributes;
+using Sirenix.OdinInspector;
 using UnityEngine;
 
 namespace Accelib.Tween.Effect.Helper
@@ -75,8 +75,8 @@ namespace Accelib.Tween.Effect.Helper
         }
         
 #if UNITY_EDITOR
-        [Button(enabledMode: EButtonEnableMode.Playmode)] private void PlayEnableEffect() => EnableEffect();
-        [Button(enabledMode: EButtonEnableMode.Playmode)] private void PlayDisableEffect() => DisableEffect();
+        [Button, EnableIf("@UnityEngine.Application.isPlaying")] private void PlayEnableEffect() => EnableEffect();
+        [Button, EnableIf("@UnityEngine.Application.isPlaying")] private void PlayDisableEffect() => DisableEffect();
 #endif
     }
 }

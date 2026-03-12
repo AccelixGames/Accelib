@@ -1,7 +1,7 @@
 ﻿using System;
 using Accelib.Data;
 using DG.Tweening;
-using NaughtyAttributes;
+using Sirenix.OdinInspector;
 using UnityEngine;
 
 namespace Accelib.Tween.Effect.Base
@@ -58,8 +58,8 @@ namespace Accelib.Tween.Effect.Base
         protected abstract Tweener Internal_DisableEffect(bool resetOnStart = true);
         
 #if UNITY_EDITOR
-        [Button(enabledMode: EButtonEnableMode.Playmode)] private void PlayEnableEffect() => EnableEffect();
-        [Button(enabledMode: EButtonEnableMode.Playmode)] private void PlayDisableEffect() => DisableEffect();
+        [Button, EnableIf("@UnityEngine.Application.isPlaying")] private void PlayEnableEffect() => EnableEffect();
+        [Button, EnableIf("@UnityEngine.Application.isPlaying")] private void PlayDisableEffect() => DisableEffect();
 #endif
     }
 }

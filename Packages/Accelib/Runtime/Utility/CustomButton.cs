@@ -2,7 +2,7 @@
 using Accelib.Data;
 using Accelib.Logging;
 using DG.Tweening;
-using NaughtyAttributes;
+using Sirenix.OdinInspector;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.EventSystems;

@@ -1,5 +1,5 @@
 ﻿#if ACCELIB_AIT
-using NaughtyAttributes;
+using Sirenix.OdinInspector;
 using UnityEngine;
 
 namespace Accelib.AccelixWeb.Module.Utility

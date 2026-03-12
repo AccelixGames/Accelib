@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using Accelib.Utility.Rb;
 using Accelix.GameSystem.Utility.Rb;
-using NaughtyAttributes;
+using Sirenix.OdinInspector;
 using NaughtyWaterBuoyancy.Scripts.Core.Utils;
 using UnityEngine;
 

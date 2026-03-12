@@ -2,7 +2,7 @@
 using Accelib.Extensions;
 using Accelib.Module.Deck.Base.Control;
 using Accelib.Module.Deck.Base.Model;
-using NaughtyAttributes;
+using Sirenix.OdinInspector;
 using UnityAtoms.BaseAtoms;
 using UnityEngine;
 

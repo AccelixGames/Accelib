@@ -1,7 +1,7 @@
 ﻿#if ACCELIB_AIT
 using Accelib.AccelixWeb.Module.Advertisement.Model;
 using Cysharp.Threading.Tasks;
-using NaughtyAttributes;
+using Sirenix.OdinInspector;
 using UnityEngine;
 
 namespace Accelib.AccelixWeb.Module.Advertisement.Control

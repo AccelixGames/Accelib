@@ -5,7 +5,7 @@ using Accelib.Logging;
 using Accelib.Module.SaveLoad.SaveData;
 using Accelib.Utility;
 using Cysharp.Threading.Tasks;
-using NaughtyAttributes;
+using Sirenix.OdinInspector;
 using UnityEngine;
 
 namespace Accelib.Module.SaveLoad.SaveDataHolder
@@ -226,9 +226,9 @@ namespace Accelib.Module.SaveLoad.SaveDataHolder
             SaveLoadSingleton.Config = null;
         }
 
-        [Button(enabledMode: EButtonEnableMode.Playmode)]
+        [Button, EnableIf("@UnityEngine.Application.isPlaying")]
         private void Test_Read() => ReadAsync().Forget();
-        [Button(enabledMode: EButtonEnableMode.Playmode)]
+        [Button, EnableIf("@UnityEngine.Application.isPlaying")]
         private void Test_Write() => WriteAsync().Forget();
 #endif
     }

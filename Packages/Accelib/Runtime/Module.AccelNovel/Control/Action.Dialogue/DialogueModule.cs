@@ -4,7 +4,7 @@ using Accelib.Module.AccelNovel.Control.Utility;
 using DG.Tweening;
 using Febucci.UI;
 using Febucci.UI.Core;
-using NaughtyAttributes;
+using Sirenix.OdinInspector;
 using UnityAtoms.BaseAtoms;
 using UnityEngine;
 using Random = UnityEngine.Random;
@@ -42,7 +42,7 @@ namespace Accelib.Module.AccelNovel.Control.Action.Dialogue
 
         protected Sequence _seq;
         
-        [ShowNativeProperty] public bool IsShowingText => textWriter != null && textWriter.isShowingText;
+        [ShowInInspector, ReadOnly] public bool IsShowingText => textWriter != null && textWriter.isShowingText;
 
         // 이벤트 등록
         protected void Awake()

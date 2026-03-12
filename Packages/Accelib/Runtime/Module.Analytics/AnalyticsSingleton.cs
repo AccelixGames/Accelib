@@ -7,7 +7,7 @@ using Unity.Services.Analytics;
 #endif
 using System.Collections.Generic;
 using Accelib.Core;
-using NaughtyAttributes;
+using Sirenix.OdinInspector;
 using UnityEngine;
 
 namespace Accelib.Module.Analytics

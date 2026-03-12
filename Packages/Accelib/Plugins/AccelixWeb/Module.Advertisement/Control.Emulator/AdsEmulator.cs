@@ -3,7 +3,7 @@ using System;
 using Accelib.AccelixWeb.Module.Advertisement.Control.Emulator.Screen;
 using Accelib.AccelixWeb.Module.Advertisement.Model;
 using Cysharp.Threading.Tasks;
-using NaughtyAttributes;
+using Sirenix.OdinInspector;
 using Newtonsoft.Json;
 using UnityEngine;
 

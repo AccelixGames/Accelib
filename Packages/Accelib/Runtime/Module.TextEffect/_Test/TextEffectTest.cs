@@ -1,5 +1,5 @@
 ﻿#if FEBUCCI
-using NaughtyAttributes;
+using Sirenix.OdinInspector;
 using UnityEngine;
 
 namespace Accelib.Module.TextEffect._Test
@@ -8,7 +8,7 @@ namespace Accelib.Module.TextEffect._Test
     {
         [SerializeField] private string text;
 
-        [Button(enabledMode: EButtonEnableMode.Playmode)]
+        [Button, EnableIf("@UnityEngine.Application.isPlaying")]
         private void Test() => TextEffectSingleton.ShowText(transform.position, text);
     }
 }

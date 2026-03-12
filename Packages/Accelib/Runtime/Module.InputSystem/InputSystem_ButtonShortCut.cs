@@ -1,5 +1,5 @@
 ﻿#if ACCELIB_InputSystem
-using NaughtyAttributes;
+using Sirenix.OdinInspector;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;

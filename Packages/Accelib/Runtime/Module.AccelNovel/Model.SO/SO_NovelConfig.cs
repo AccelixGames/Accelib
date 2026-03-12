@@ -3,7 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using Accelib.Logging;
 using Cysharp.Threading.Tasks;
-using NaughtyAttributes;
+using Accelib.OdinExtension;
+using Sirenix.OdinInspector;
 using UnityEditor;
 using UnityEngine;
 
@@ -13,7 +14,7 @@ namespace Accelib.Module.AccelNovel.Model.SO
     public class SO_NovelConfig : ScriptableObject
     {
         [field: Header("시나리오")] 
-        [field: SerializeField, Scene] public string DialogueScn { get; private set; }
+        [field: SerializeField, SceneDropdown] public string DialogueScn { get; private set; }
         [SerializeField] private List<SO_Scenario> scenarios;
         
         public IReadOnlyList<SO_Scenario> Scenarios => scenarios;

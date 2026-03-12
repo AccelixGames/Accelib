@@ -1,6 +1,6 @@
 ﻿using System;
 using DG.Tweening;
-using NaughtyAttributes;
+using Sirenix.OdinInspector;
 using UnityEngine;
 
 namespace Accelib.Effect.Material
@@ -43,7 +43,7 @@ namespace Accelib.Effect.Material
             return _seq;
         }
 
-        [Button(enabledMode: EButtonEnableMode.Playmode)]
+        [Button, EnableIf("@UnityEngine.Application.isPlaying")]
         public void Hit() => DoHit();
 
         private void Reset()

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using Accelib.Module.AccelTag.TaggerSystem;
-using NaughtyAttributes;
+using Sirenix.OdinInspector;
 using UnityEngine;
 
 namespace Accelib.Module.AccelTag
@@ -12,12 +12,10 @@ namespace Accelib.Module.AccelTag
         // 모두 있어야 함, 하나라도 있어도 됨, 사용 안함
         [Header("혀용")]
         [SerializeField] private ETagRegex allowedRule;
-        [AllowNesting]
         [HideIf(nameof(allowedRule), ETagRegex.UnUsed), SerializeField] private List<SO_AccelTag> allowed;
         
         [Header("비혀용")]
         [SerializeField] private ETagRegex disallowedRule;
-        [AllowNesting]
         [HideIf(nameof(disallowedRule), ETagRegex.UnUsed), SerializeField] private List<SO_AccelTag> disallowed;
 
         [Header("상관관계")]

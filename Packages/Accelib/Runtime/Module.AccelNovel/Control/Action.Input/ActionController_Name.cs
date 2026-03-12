@@ -7,7 +7,7 @@ using Accelib.Utility;
 using Accelix.Accelib.AccelNovel.Model;
 using Accelix.Accelib.AccelNovel.Model.Enum;
 using DG.Tweening;
-using NaughtyAttributes;
+using Sirenix.OdinInspector;
 using TMPro;
 using UnityAtoms.BaseAtoms;
 using UnityEngine;

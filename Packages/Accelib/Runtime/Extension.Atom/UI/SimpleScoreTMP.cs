@@ -1,6 +1,6 @@
 ﻿using System;
 using DG.Tweening;
-using NaughtyAttributes;
+using Sirenix.OdinInspector;
 using TMPro;
 using UnityAtoms.BaseAtoms;
 using UnityEngine;
