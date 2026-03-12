@@ -3,7 +3,6 @@
     "rootNamespace": "Accelib.AccelixWeb",
     "references": [
         "UniTask",
-        "NaughtyAttributes.Core",
         "Unity.TextMeshPro"
     ],
     "includePlatforms": [

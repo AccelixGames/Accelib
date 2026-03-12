@@ -2,7 +2,6 @@
     "name": "Accelib.Editor",
     "rootNamespace": "Accelib.Editor",
     "references": [
-        "NaughtyAttributes.Core",
         "UniTask",
         "UniTask.DOTween",
         "Unity.TextMeshPro",

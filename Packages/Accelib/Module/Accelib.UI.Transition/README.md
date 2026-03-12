@@ -72,8 +72,7 @@ await TransitionSingleton.EndTransition();
 | `Accelib.Runtime` | MonoSingleton, AudioRefSO |
 | `Accelib.Flag` | 커서 플래그 연동 (Optional) |
 | `DOTween` | 트위닝 애니메이션 |
-| `Odin Inspector` | 인스펙터 어트리뷰트 (ShowIf, ReadOnly 등) |
-| `NaughtyAttributes` | 인스펙터 어트리뷰트 (Button) |
+| `Odin Inspector` | 인스펙터 어트리뷰트 (Button, ShowIf, ReadOnly 등) |
 
 ## 네임스페이스
 

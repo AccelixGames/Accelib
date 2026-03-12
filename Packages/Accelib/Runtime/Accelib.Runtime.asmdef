@@ -2,7 +2,6 @@
     "name": "Accelib.Runtime",
     "rootNamespace": "Accelib",
     "references": [
-        "NaughtyAttributes.Core",
         "UniTask",
         "UniTask.DOTween",
         "Unity.TextMeshPro",

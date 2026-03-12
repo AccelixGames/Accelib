@@ -92,7 +92,6 @@ localizedTMP.ChangeKey("new_key", "format_arg1", "format_arg2");
 |--------|------|
 | `Accelib.Runtime` | MonoSingleton, Deb 로깅, Extensions |
 | `TextMeshPro` | TMP 폰트/텍스트 |
-| `NaughtyAttributes` | 인스펙터 어트리뷰트 |
 | `SerializedCollections` | SerializedDictionary |
 | `Odin Inspector` | 커스텀 드로어, 어트리뷰트 (precompiled) |
 | `UniTask` | 비동기 다운로드 (Editor) |
