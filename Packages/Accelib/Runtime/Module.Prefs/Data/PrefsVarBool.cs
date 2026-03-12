@@ -3,6 +3,7 @@ using UnityAtoms.BaseAtoms;
 
 namespace Accelib.Module.Prefs.Data
 {
+    [System.Serializable]
     public class PrefsVarBool : PrefsVarT<bool>
     {
         public PrefsVarBool(BoolVariable v)

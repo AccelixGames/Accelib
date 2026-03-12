@@ -4,6 +4,7 @@ using UnityEngine;
 
 namespace Accelib.Module.Prefs.Data
 {
+    [System.Serializable]
     public class PrefsVarString : PrefsVarT<string>
     {
         public PrefsVarString(StringVariable v)
